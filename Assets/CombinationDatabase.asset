@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd0cb5daf349879409cf5c934b4e9479, type: 3}
+  m_Name: CombinationDatabase
+  m_EditorClassIdentifier: 
+  combinations:
+  - combinationKey: "pi\xF1a"
+    combinationName: Bromelina
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "La pi\xF1a contiene tanto de esto que se divide y te pincha sin
+      parar"
+    isUnlocked: 1
+    attackPrefab: {fileID: 1842283516559737521, guid: c06cb43a3371b3246b68d0d42e5c5589, type: 3}
+  - combinationKey: queso
+    combinationName: Escudo fundido
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "Un escudo de queso fundido que...\xBFHace que las cosas reboten?
+      \xBFC\xF3mo lo har\xE1?"
+    isUnlocked: 1
+    attackPrefab: {fileID: 3296876625667063558, guid: afdf498ccfd87004eb888c9a45bab2ec, type: 3}
+  - combinationKey: pepperoni
+    combinationName: Pepperoni
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: Es una rodaja de pepperoni no creo que nada salga mal...
+    isUnlocked: 1
+    attackPrefab: {fileID: 1842283516559737521, guid: f37d59c970b4a024382b1601bfb49fc9, type: 3}
+  - combinationKey: "pi\xF1a|pi\xF1a"
+    combinationName: Reina del picho
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Est\xE1s incitando que la bromelina pinche todos y todo, cuidado."
+    isUnlocked: 1
+    attackPrefab: {fileID: 1842283516559737521, guid: 648e9614373a8354193468d5f3a796ff, type: 3}
+  - combinationKey: "pi\xF1a|pepperoni"
+    combinationName: Salto explosivo
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Ha\ncen contacto los pinchitos y el fuego, despl\xE1zate muy r\xE1pido
+      y... EXPLOTA"
+    isUnlocked: 1
+    attackPrefab: {fileID: 5032025397040957297, guid: 654765e19c73e584a828498eeb44c321, type: 3}
+  - combinationKey: "pi\xF1a|queso"
+    combinationName: Proyectil absorbente
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "Si mezclas zumo de pi\xF1a con este l\xE1cteo... \xBFTienes un
+      agujero negro?"
+    isUnlocked: 1
+    attackPrefab: {fileID: 6716998472701501543, guid: ed0db4bfa90143844966f20e760645ca, type: 3}
+  - combinationKey: "pepperoni|pi\xF1a"
+    combinationName: Pataculta
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Si la rodaja de pi\xF1a la llenas con pepperoni, tienes una catapulta
+      funcional"
+    isUnlocked: 1
+    attackPrefab: {fileID: 1898762109853514248, guid: a4b7ccea5aceff347805163150f497f1, type: 3}
+  - combinationKey: pepperoni|pepperoni
+    combinationName: "Disparo S\xFAper-Hot"
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: A falta de una loncha de pepperoni, DOS, ahora dejando una estela
+      con el doble de picante
+    isUnlocked: 1
+    attackPrefab: {fileID: 63549745061065039, guid: 7941637f5c77d324d960c0e32038d0a1, type: 3}
+  - combinationKey: pepperoni|pepperoni|pepperoni
+    combinationName: "Disc\xF3bolo ardiente"
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: Una rodaja de pepperoni ha ascendido hasta no parar de soltar fuego
+    isUnlocked: 1
+    attackPrefab: {fileID: 63549745061065039, guid: ed3e16929e0e594488616087836a1a94, type: 3}
+  - combinationKey: "pepperoni|pepperoni|pi\xF1a"
+    combinationName: "Disc\xF3bolo punzadiente"
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Ahora el pepperoni suelta m\xE1s pepperonis???"
+    isUnlocked: 1
+    attackPrefab: {fileID: 63549745061065039, guid: b597fa551203854459cc86e47c38ac61, type: 3}
+  - combinationKey: pepperoni|pepperoni|queso
+    combinationName: "M\xE1s disc\xF3bolo"
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "M\xE1s pepperoni, m\xE1s fuego, m\xE1s grande"
+    isUnlocked: 1
+    attackPrefab: {fileID: 63549745061065039, guid: 9b07bf8eb131a1e4e813f5019c35fce0, type: 3}
+  - combinationKey: "pepperoni|pi\xF1a|pepperoni"
+    combinationName: Super catapulta
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Una s\xFAper catapulta que deja la zona prendida cuando atterriza"
+    isUnlocked: 1
+    attackPrefab: {fileID: 1898762109853514248, guid: a60562413b419ee4bb0b08d7387b8cdc, type: 3}
+  - combinationKey: "pepperoni|pi\xF1a|pi\xF1a"
+    combinationName: "S\xFAper catapulta"
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "La catapulta, ahora m\xE1s \xE1rea, m\xE1s da\xF1o y m\xE1s diversi\xF3n"
+    isUnlocked: 1
+    attackPrefab: {fileID: 1898762109853514248, guid: b0f631f809c06774e9cf13767ef4ea7a, type: 3}
+  - combinationKey: "pepperoni|pi\xF1a|queso"
+    combinationName: Gran catapulta
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "Un \xE1rea de fuego tras una enorme explosi\xF3n"
+    isUnlocked: 1
+    attackPrefab: {fileID: 1898762109853514248, guid: 9c30859cb8cc1864986ee957020542cf, type: 3}
+  - combinationKey: pepperoni|queso|pepperoni
+    combinationName: El moco
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Es algo parecido a un moco, se queda pegado y te va quemando m\xE1s
+      y m\xE1s"
+    isUnlocked: 1
+    attackPrefab: {fileID: 63549745061065039, guid: 99ba5f986525dcc4da43646d522b469d, type: 3}
+  - combinationKey: "pepperoni|queso|pi\xF1a"
+    combinationName: Multimoco
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: Un moquete, hecho de pizzzas, cuando parece terminar, es simplemente
+      broma
+    isUnlocked: 1
+    attackPrefab: {fileID: 63549745061065039, guid: 0268fe4a1d570394abbd1a466869b92d, type: 3}
+  - combinationKey: pepperoni|queso|queso
+    combinationName: "S\xFAper moco"
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: Se queda pega por muchisisimo tiempo
+    isUnlocked: 1
+    attackPrefab: {fileID: 1842283516559737521, guid: eb97e18edc616ac4e89cc875093a45f8, type: 3}
+  - combinationKey: "queso|queso|pi\xF1a"
+    combinationName: Gran muro
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Un muro enormidable que por alg\xFAn motivo, sigue rebotando los
+      proyectiles"
+    isUnlocked: 1
+    attackPrefab: {fileID: 313996111929754890, guid: 951da8c2b64eb6e48a6bb49fc1c3ac30, type: 3}
+  - combinationKey: queso|queso|pepperoni
+    combinationName: Gran muro de fuego
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Un muro enormidable que por alg\xFAn motivo, sigue rebotando los
+      proyectiles y les prende fuego"
+    isUnlocked: 1
+    attackPrefab: {fileID: 313996111929754890, guid: b444c17b84b2e384193861ef4bc54e75, type: 3}

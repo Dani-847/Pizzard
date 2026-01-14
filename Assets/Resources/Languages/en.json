@@ -1,0 +1,11 @@
+{
+  "entries": [
+    { "key": "menu_play", "value": "Play" },
+    { "key": "menu_options", "value": "Options" },
+    { "key": "menu_exit", "value": "Exit" },
+    { "key": "options_language", "value": "Language" },
+    { "key": "options_volume", "value": "Volume" },
+    { "key": "options_combinations", "value": "Combinations" },
+    { "key": "options_accept", "value": "Accept" }
+  ]
+}

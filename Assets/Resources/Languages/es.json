@@ -1,0 +1,11 @@
+{
+  "entries": [
+    { "key": "menu_play", "value": "Jugar" },
+    { "key": "menu_options", "value": "Opciones" },
+    { "key": "menu_exit", "value": "Salir" },
+    { "key": "options_language", "value": "Idioma" },
+    { "key": "options_volume", "value": "Volumen" },
+    { "key": "options_combinations", "value": "Combinaciones" },
+    { "key": "options_accept", "value": "Aceptar" }
+  ]
+}
