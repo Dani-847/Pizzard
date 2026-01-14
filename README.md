@@ -1,2 +1,0 @@
-# Pizzard
-Asignatura Proyecto Intermodular
