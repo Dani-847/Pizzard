@@ -2,7 +2,149 @@
 
 Este documento explica cómo está organizada la escena del boss (Pblob) y cómo crear nuevas escenas de boss siguiendo la misma estructura.
 
-## Estructura de la Escena
+## 🔧 RECONSTRUIR ESCENA1 DESDE CERO
+
+Sigue estos pasos en orden para crear una escena limpia y funcional:
+
+### Paso 1: Crear Nueva Escena Vacía
+1. En Unity: `File > New Scene > Empty`
+2. Guardar como `Escena1_Nueva.unity`
+
+### Paso 2: Crear Estructura de GameObjects
+Crea estos GameObjects vacíos como contenedores (usar Create Empty):
+
+```
+📦 Escena1
+├── --- MANAGERS ---          (Empty GameObject - contenedor)
+│   ├── GameFlowManager       (+ componente GameFlowManager.cs)
+│   ├── SoundManager          (+ componente SoundManager.cs + AudioSource)
+│   ├── UIManager             (+ componente UIManager.cs)
+│   ├── LocalizationManager   (+ componente LocalizationManager.cs)
+│   └── ElementsRegister      (+ componente ElementsRegister.cs)
+│
+├── --- PLAYER ---            (Empty GameObject - contenedor)
+│   └── MainCharacter         (Instanciar Prefab: Assets/Prefabs/MainCharacter.prefab)
+│
+├── --- BOSS ---              (Empty GameObject - contenedor)
+│   ├── Pblob                 (+ componente PblobController.cs)
+│   │   └── MoustachePoints   (+ puntos MP1-MP6 para proyectiles)
+│   ├── PblobArena            (Tilemap con paredes, tag: Wall)
+│   └── PblobRhythmManager    (+ componente PblobRhythmManager.cs)
+│
+├── --- ENVIRONMENT ---       (Empty GameObject - contenedor)
+│   └── (Tilemaps decorativos, luces, etc.)
+│
+├── --- UI ---                (Empty GameObject - contenedor)
+│   ├── Canvas                (+ Canvas + CanvasScaler + GraphicRaycaster)
+│   │   ├── MenuUI            (+ componente MenuUI.cs)
+│   │   │   ├── ButtonPlay    (Button + TextMeshPro)
+│   │   │   ├── ButtonOptions (Button + TextMeshPro)
+│   │   │   ├── ButtonExit    (Button + TextMeshPro)
+│   │   │   ├── ButtonResume  (Button - oculto por defecto)
+│   │   │   └── ButtonBackToMenu (Button - oculto por defecto)
+│   │   │
+│   │   ├── DialogUI          (+ componente DialogUI.cs)
+│   │   │   └── DialogPanel   (Panel con texto y botón)
+│   │   │       ├── DialogText    (TextMeshPro)
+│   │   │       └── ButtonNext    (Button para continuar)
+│   │   │
+│   │   ├── ShopUI            (+ componente ShopUI.cs)
+│   │   │   ├── ElementSelection  (Selección de elementos)
+│   │   │   ├── EquipSelector     (Selector de equipamiento)
+│   │   │   └── ButtonExitShop    (Button para salir)
+│   │   │
+│   │   ├── DeathUI           (+ componente DeathUI.cs)
+│   │   │   ├── DeathPanel    (Panel principal - oculto por defecto)
+│   │   │   ├── ButtonRetry   (Button para reintentar)
+│   │   │   └── ButtonExitToMenu (Button para volver al menú)
+│   │   │
+│   │   ├── OptionsUI         (+ componente OptionsUI.cs)
+│   │   │   └── (Controles de volumen, idioma, etc.)
+│   │   │
+│   │   ├── HealthUI          (Corazones del jugador)
+│   │   ├── PotionUI          (UI de pociones)
+│   │   ├── PblobUI           (+ componente PblobUI.cs - barra de vida del boss)
+│   │   ├── ElementsUI        (UI de elementos equipados)
+│   │   └── CombinationsUI    (UI de combinaciones)
+│   │
+│   └── EventSystem           (+ EventSystem + InputSystemUIInputModule)
+│
+└── Main Camera               (+ Camera + AudioListener + CameraFollow.cs)
+```
+
+### Paso 3: Configurar Referencias en Inspector
+
+**GameFlowManager** necesita referencias a:
+- `uiManager`: → UIManager
+- `pblobController`: → Pblob (PblobController)
+- `playerController`: → MainCharacter (PlayerController)
+- `playerHPController`: → MainCharacter (PlayerHPController)
+- `faseInicial`: MainMenu
+
+**UIManager** necesita referencias a:
+- `menuUI`: → MenuUI
+- `optionsUI`: → OptionsUI
+- `tiendaUI`: → ShopUI
+- `dialogUI`: → DialogUI
+- `deathUI`: → DeathUI
+
+**MenuUI** necesita referencias a:
+- `botonJugar`: → ButtonPlay
+- `botonAjustes`: → ButtonOptions
+- `botonSalir`: → ButtonExit
+- `botonReanudar`: → ButtonResume
+- `botonVolverMenu`: → ButtonBackToMenu
+
+**DialogUI** necesita referencias a:
+- `dialogPanel`: → DialogPanel
+- `dialogText`: → DialogText
+- `continueButton`: → ButtonNext
+
+**DeathUI** necesita referencias a:
+- `pantallaMuerte`: → DeathPanel
+- `botonReintentar`: → ButtonRetry
+- `botonSalirAlMenu`: → ButtonExitToMenu
+
+**ShopUI** necesita referencias a:
+- `btnShopExit`: → ButtonExitShop
+- `elementSelectionUI`: → ElementSelection
+- `equipSelectorUI`: → EquipSelector
+- `playerEquip`: → MainCharacter (PlayerEquip)
+
+**PblobController** necesita referencias a:
+- `attackPatterns`: Array con patrones de ataque
+- `phase2Door`: (opcional) Puerta de fase 2
+
+### Paso 4: Configurar Tags y Layers
+
+Verificar que estos Tags existan en Project Settings:
+- `Player` - Para MainCharacter y DmgReciever
+- `Boss` - Para Pblob
+- `Wall` - Para paredes del arena
+- `Enemy` - Para enemigos
+- `Projectile`, `CharacterProjectile`, `EnemyProjectile`
+- `CastPoint`, `Weapon`, `FireTrail`
+
+### Paso 5: Estado Inicial de UIs
+
+Al iniciar, solo MenuUI debe estar visible:
+- MenuUI: **Activo**
+- DialogUI: Inactivo (DialogPanel inactivo)
+- ShopUI: Inactivo
+- DeathUI: Inactivo (DeathPanel inactivo)
+- OptionsUI: Inactivo
+
+### Paso 6: Probar el Flujo
+
+1. Iniciar juego → Debe aparecer MenuUI
+2. Click en Play → Debe ir a IntroDialog (DialogUI)
+3. Click en Continuar → Debe ir a ShopBeforeBoss (ShopUI)
+4. Click en Salir Tienda → Debe ir a PreBossDialog (DialogUI)
+5. Click en Continuar → Debe iniciar BossFight (Pblob activo)
+6. Si muere → DeathUI aparece
+7. Si gana → PostBossDialog → ShopAfterBoss → etc.
+
+## Estructura de la Escena (Referencia)
 
 Una escena de boss debe tener la siguiente jerarquía organizada:
 
