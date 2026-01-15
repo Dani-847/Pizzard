@@ -25,6 +25,8 @@ public class MenuUI : MonoBehaviour
     public GameObject optionsUIPanel;
     [Tooltip("Nombre de la escena del primer boss")]
     public string escenaBoss1 = "Escena_Boss1";
+    [Tooltip("Nombre de la escena del menú principal")]
+    public string escenaMenu = "Escena_Menu";
 
     [Header("Estado")]
     [Tooltip("Indica si este menú está en modo pausa")]
@@ -103,7 +105,14 @@ public class MenuUI : MonoBehaviour
     {
         Debug.Log("Volviendo al menú principal");
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Escena_Menu");
+        if (!string.IsNullOrEmpty(escenaMenu))
+        {
+            SceneManager.LoadScene(escenaMenu);
+        }
+        else
+        {
+            Debug.LogError("[MenuUI] escenaMenu no está configurada");
+        }
     }
 
     /// <summary>

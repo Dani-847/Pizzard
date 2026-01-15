@@ -8,6 +8,7 @@ using TMPro;
 /// Gestiona la interfaz de diálogos durante el flujo del juego.
 /// Muestra textos narrativos en distintos momentos (intro, pre-boss, post-boss, etc.)
 /// y notifica al GameFlowManager cuando el jugador avanza.
+/// Soporta localización a través de LocalizationManager.
 /// </summary>
 public class DialogUI : MonoBehaviour
 {
@@ -19,19 +20,29 @@ public class DialogUI : MonoBehaviour
     [Tooltip("Botón para continuar/avanzar el diálogo")]
     public Button continueButton;
     
-    [Header("Configuración de Diálogos")]
-    [Tooltip("Líneas del diálogo introductorio")]
+    [Header("Configuración de Diálogos (Fallback)")]
+    [Tooltip("Líneas del diálogo introductorio (usado si no hay localización)")]
     [TextArea(2, 4)]
-    public string[] introDialogLines = { "¡Bienvenido al mundo de Pizzard!", "Prepárate para enfrentar a tu primer enemigo..." };
-    [Tooltip("Líneas del diálogo antes del boss")]
+    public string[] introDialogLines = { "Welcome to the world of Pizzard!", "Prepare to face your first enemy..." };
+    [Tooltip("Líneas del diálogo antes del boss (usado si no hay localización)")]
     [TextArea(2, 4)]
-    public string[] preBossDialogLines = { "El boss te espera...", "¡Buena suerte!" };
-    [Tooltip("Líneas del diálogo después de derrotar al boss")]
+    public string[] preBossDialogLines = { "The boss awaits...", "Good luck!" };
+    [Tooltip("Líneas del diálogo después de derrotar al boss (usado si no hay localización)")]
     [TextArea(2, 4)]
-    public string[] postBossDialogLines = { "¡Felicidades! Has derrotado al boss.", "Continúa tu aventura..." };
-    [Tooltip("Líneas del diálogo antes del siguiente boss")]
+    public string[] postBossDialogLines = { "Congratulations! You defeated the boss.", "Continue your adventure..." };
+    [Tooltip("Líneas del diálogo antes del siguiente boss (usado si no hay localización)")]
     [TextArea(2, 4)]
-    public string[] preNextBossDialogLines = { "Un nuevo desafío te espera...", "¡Adelante!" };
+    public string[] preNextBossDialogLines = { "A new challenge awaits...", "Forward!" };
+
+    [Header("Claves de Localización")]
+    [Tooltip("Prefijo para las claves de diálogo intro (ej: dialog_intro_1, dialog_intro_2)")]
+    public string introDialogKeyPrefix = "dialog_intro_";
+    [Tooltip("Prefijo para las claves de diálogo pre-boss")]
+    public string preBossDialogKeyPrefix = "dialog_preboss_";
+    [Tooltip("Prefijo para las claves de diálogo post-boss")]
+    public string postBossDialogKeyPrefix = "dialog_postboss_";
+    [Tooltip("Prefijo para las claves de diálogo pre-next-boss")]
+    public string preNextBossDialogKeyPrefix = "dialog_prenextboss_";
 
     private GameFlowManager flowManager;
     private string[] currentLines;
@@ -71,12 +82,13 @@ public class DialogUI : MonoBehaviour
 
     /// <summary>
     /// Inicia el diálogo introductorio.
+    /// Intenta usar localización, si no hay usa los textos por defecto.
     /// </summary>
     /// <param name="manager">GameFlowManager que recibirá la notificación al terminar.</param>
     public void ShowIntroDialog(GameFlowManager manager)
     {
         flowManager = manager;
-        StartDialog(introDialogLines);
+        StartDialogWithLocalization(introDialogKeyPrefix, introDialogLines);
     }
 
     /// <summary>
@@ -86,7 +98,7 @@ public class DialogUI : MonoBehaviour
     public void ShowPreBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
-        StartDialog(preBossDialogLines);
+        StartDialogWithLocalization(preBossDialogKeyPrefix, preBossDialogLines);
     }
 
     /// <summary>
@@ -96,7 +108,7 @@ public class DialogUI : MonoBehaviour
     public void ShowPostBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
-        StartDialog(postBossDialogLines);
+        StartDialogWithLocalization(postBossDialogKeyPrefix, postBossDialogLines);
     }
 
     /// <summary>
@@ -106,7 +118,49 @@ public class DialogUI : MonoBehaviour
     public void ShowPreNextBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
-        StartDialog(preNextBossDialogLines);
+        StartDialogWithLocalization(preNextBossDialogKeyPrefix, preNextBossDialogLines);
+    }
+
+    /// <summary>
+    /// Inicia un diálogo intentando usar localización primero.
+    /// </summary>
+    /// <param name="keyPrefix">Prefijo de la clave de localización.</param>
+    /// <param name="fallbackLines">Líneas por defecto si no hay localización.</param>
+    private void StartDialogWithLocalization(string keyPrefix, string[] fallbackLines)
+    {
+        string[] lines = GetLocalizedLines(keyPrefix, fallbackLines);
+        StartDialog(lines);
+    }
+
+    /// <summary>
+    /// Obtiene las líneas de diálogo localizadas o las de fallback.
+    /// </summary>
+    private string[] GetLocalizedLines(string keyPrefix, string[] fallbackLines)
+    {
+        if (LocalizationManager.Instance == null)
+        {
+            return fallbackLines;
+        }
+
+        List<string> localizedLines = new List<string>();
+        for (int i = 0; i < fallbackLines.Length; i++)
+        {
+            string key = keyPrefix + (i + 1);
+            string localized = LocalizationManager.Instance.GetText(key);
+            
+            // Si la clave no existe, GetText devuelve [key]
+            if (localized.StartsWith("[") && localized.EndsWith("]"))
+            {
+                // Usar el fallback para esta línea
+                localizedLines.Add(fallbackLines[i]);
+            }
+            else
+            {
+                localizedLines.Add(localized);
+            }
+        }
+        
+        return localizedLines.ToArray();
     }
 
     /// <summary>

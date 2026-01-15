@@ -240,18 +240,22 @@ public class GameFlowManager : MonoBehaviour
         else if (pblobController != null)
         {
             pblobController.enabled = true;
+            // PblobController.StartBossBattle() ya llama a SoundManager.PlayBossMusic()
             pblobController.StartBossBattle();
+        }
+        else
+        {
+            // Solo reproducir música si no hay ningún boss controller
+            // (los controllers ya manejan la música internamente)
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayBossMusic();
+            }
         }
         
         if (playerController != null) 
         {
             playerController.EnableInput(true);
-        }
-        
-        // Reproducir música de boss si está disponible
-        if (SoundManager.Instance != null)
-        {
-            SoundManager.Instance.PlayBossMusic();
         }
 
         Debug.Log("[GameFlowManager] ¡Combate de boss iniciado!");
@@ -300,8 +304,28 @@ public class GameFlowManager : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(siguienteBossEscena))
         {
-            Debug.Log($"[GameFlowManager] Cargando siguiente boss: {siguienteBossEscena}");
-            SceneManager.LoadScene(siguienteBossEscena);
+            // Verificar que la escena existe en los build settings
+            bool sceneExists = false;
+            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+                if (sceneName == siguienteBossEscena)
+                {
+                    sceneExists = true;
+                    break;
+                }
+            }
+
+            if (sceneExists)
+            {
+                Debug.Log($"[GameFlowManager] Cargando siguiente boss: {siguienteBossEscena}");
+                SceneManager.LoadScene(siguienteBossEscena);
+            }
+            else
+            {
+                Debug.LogError($"[GameFlowManager] La escena '{siguienteBossEscena}' no existe en Build Settings");
+            }
         }
         else
         {
