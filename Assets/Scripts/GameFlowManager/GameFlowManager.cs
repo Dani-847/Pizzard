@@ -253,8 +253,7 @@ public class GameFlowManager : MonoBehaviour
         // Restaurar vida del jugador
         if (playerHPController != null)
         {
-            playerHPController.vidaActual = playerHPController.vidaMaxima;
-            playerHPController.hpUI?.ActualizarUI(playerHPController.vidaActual);
+            playerHPController.RestaurarVidaCompleta();
         }
         
         CambiarFase(GamePhase.BossFight);

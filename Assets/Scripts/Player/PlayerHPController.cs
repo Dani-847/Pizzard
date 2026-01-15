@@ -70,6 +70,16 @@ public class PlayerHPController : MonoBehaviour
     }
 
     /// <summary>
+    /// Restaura la vida al máximo. Usado al reiniciar el combate.
+    /// </summary>
+    public void RestaurarVidaCompleta()
+    {
+        vidaActual = vidaMaxima;
+        if (hpUI != null)
+            hpUI.ActualizarUI(vidaActual);
+    }
+
+    /// <summary>
     /// Controla el estado de muerte:
     /// - Bloquear movimiento y acciones
     /// - Mostrar DeathUI o notificar a GameFlowManager
