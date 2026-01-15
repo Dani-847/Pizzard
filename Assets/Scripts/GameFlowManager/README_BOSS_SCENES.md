@@ -138,7 +138,9 @@ El orden de ejecución es importante. Así es como funciona:
 
 Para crear un nuevo boss:
 
-1. **Copia la escena template** (`Boss2Template.unity`)
+1. **Duplica la escena `Escena1.unity`** como base
+   - Renómbrala según el boss (ej: `Escena2_Boss2.unity`)
+   - Elimina los objetos específicos del boss anterior
 
 2. **Crea el controlador del boss**
    - Hereda de `BossController` si quieres compatibilidad con `GameFlowManager`

@@ -13,6 +13,7 @@ TagManager:
   - Undefined
   - Boss
   - FireTrail
+  - Enemy
   layers:
   - Default
   - TransparentFX
