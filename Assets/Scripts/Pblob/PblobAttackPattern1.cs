@@ -37,25 +37,32 @@ public class PblobAttackPattern1 : PblobAttackPattern
             rhythmManager = FindObjectOfType<PblobRhythmManager>();
         }
         
+        lastProcessedBeat = -1; // Resetear el último beat procesado
+        
         if (rhythmManager == null)
         {
             DebugPattern("No se encontró RhythmManager - usando timing por defecto");
-            isPatternActive = true;
             attackCoroutine = StartCoroutine(AttackRoutineFallback());
+            if (attackCoroutine != null)
+            {
+                isPatternActive = true; // Solo marcar activo si la corrutina inició
+            }
             return;
         }
-
-        isPatternActive = true;
-        lastProcessedBeat = -1; // Resetear el último beat procesado
 
         if (useRhythm)
         {
             rhythmManager.OnBeat += OnMusicBeat;
+            isPatternActive = true; // Marcar activo después de suscribirse exitosamente
             DebugPattern($"Iniciado - Ritmo: cada {beatsBetweenShots} beats - Puntos activos: {activeMustachePoints}");
         }
         else
         {
             attackCoroutine = StartCoroutine(AttackRoutineFallback());
+            if (attackCoroutine != null)
+            {
+                isPatternActive = true; // Solo marcar activo si la corrutina inició
+            }
         }
     }
 

@@ -65,10 +65,8 @@ public class PblobAttackPattern2 : PblobAttackPattern
             // Por ahora solo mostramos mensajes de debug
             yield return new WaitForSeconds(5f);
             
-            if (isPatternActive) // Verificar que sigue activo después de esperar
-            {
-                Debug.Log("⭕ Círculo debería aparecer aquí (sincronizado con beat)");
-            }
+            // Verificación redundante removida - el while ya verifica isPatternActive
+            Debug.Log("⭕ Círculo debería aparecer aquí (sincronizado con beat)");
         }
     }
     

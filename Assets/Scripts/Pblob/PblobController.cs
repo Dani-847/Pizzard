@@ -67,7 +67,7 @@ public class PblobController : MonoBehaviour
         
         if (debugMode)
         {
-            Debug.Log("✔ Boss inicializado - Vida: " + currentHealth);
+            Debug.Log($"✔ Boss inicializado - Vida: {currentHealth}");
             Debug.Log("📞 Presiona T para aplicar daño (100)");
             Debug.Log("📞 Presiona V para toggle vulnerabilidad");
             Debug.Log("📞 Presiona P para avanzar fase (DEBUG)");

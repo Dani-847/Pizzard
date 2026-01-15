@@ -76,13 +76,14 @@ public class PblobRhythmManager : MonoBehaviour
     
     public void StartRhythm()
     {
+        nextBeatTime = 0f;
+        currentBeat = 0;
+        currentMeasure = 0;
+        
         if (SoundManager.Instance == null)
         {
-            Debug.LogWarning("⚠️ SoundManager no encontrado - ritmo no iniciado pero no bloquea la batalla");
-            // No bloqueamos el inicio, solo marcamos como activo para que otros scripts lo sepan
-            nextBeatTime = 0f;
-            currentBeat = 0;
-            currentMeasure = 0;
+            Debug.LogWarning("⚠️ SoundManager no encontrado - ritmo en modo fallback");
+            // Marcar como activo pero el Update no procesará beats sin SoundManager
             rhythmActive = true;
             return;
         }
@@ -90,9 +91,6 @@ public class PblobRhythmManager : MonoBehaviour
         // Asegurar que la música del boss está sonando
         SoundManager.Instance.PlayBossMusic();
         
-        nextBeatTime = 0f;
-        currentBeat = 0;
-        currentMeasure = 0;
         rhythmActive = true;
         
         Debug.Log("🎵 Ritmo del boss iniciado");
