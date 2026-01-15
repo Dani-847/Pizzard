@@ -15,18 +15,33 @@ public class Phase2Door : MonoBehaviour
     
     void Start()
     {
+        // Buscar el BossController en la escena
         bossController = FindObjectOfType<PblobController>();
         
-        // ✅ Suscribirse al evento de desbloqueo de fase 2
-        if (bossController != null)
+        // ✅ Suscribirse al evento de desbloqueo de fase 2 (con verificación de null)
+        if (bossController != null && bossController.OnPhase2Unlocked != null)
         {
             bossController.OnPhase2Unlocked.AddListener(OnPhase2Unlocked);
+            Debug.Log("🚪 Phase2Door: Suscrito a evento OnPhase2Unlocked");
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ Phase2Door: PblobController no encontrado o evento no disponible");
         }
         
         // Inicialmente la puerta está cerrada y bloqueada
         if (doorAnimator != null && isLocked)
         {
             doorAnimator.Play(closeAnimationName);
+        }
+    }
+    
+    void OnDestroy()
+    {
+        // Desuscribirse del evento al destruirse para evitar memory leaks
+        if (bossController != null && bossController.OnPhase2Unlocked != null)
+        {
+            bossController.OnPhase2Unlocked.RemoveListener(OnPhase2Unlocked);
         }
     }
     

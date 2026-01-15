@@ -31,15 +31,22 @@ public class PblobAttackPattern1 : PblobAttackPattern
     {
         if (isPatternActive) return;
 
-        rhythmManager = FindObjectOfType<PblobRhythmManager>();
+        // Buscar RhythmManager si no está asignado
+        if (rhythmManager == null)
+        {
+            rhythmManager = FindObjectOfType<PblobRhythmManager>();
+        }
+        
         if (rhythmManager == null)
         {
             DebugPattern("No se encontró RhythmManager - usando timing por defecto");
-            StartCoroutine(AttackRoutineFallback());
+            isPatternActive = true;
+            attackCoroutine = StartCoroutine(AttackRoutineFallback());
             return;
         }
 
         isPatternActive = true;
+        lastProcessedBeat = -1; // Resetear el último beat procesado
 
         if (useRhythm)
         {

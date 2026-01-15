@@ -50,19 +50,29 @@ public class PblobController : MonoBehaviour
     private PblobRhythmManager rhythmManager;
     private Coroutine battleCoroutine;
 
-    private void Start()
+    private void Awake()
     {
+        // Inicializar valores en Awake para que estén listos antes de que otros scripts los necesiten
         currentHealth = maxHealth;
         InitializePhaseThresholds();
-        rhythmManager = FindObjectOfType<PblobRhythmManager>();
+    }
+
+    private void Start()
+    {
+        // Buscar RhythmManager solo si no está asignado manualmente
+        if (rhythmManager == null)
+        {
+            rhythmManager = FindObjectOfType<PblobRhythmManager>();
+        }
         
         if (debugMode)
         {
-            Debug.Log("✔ Boss iniciado - Vida: " + currentHealth);
+            Debug.Log("✔ Boss inicializado - Vida: " + currentHealth);
             Debug.Log("📞 Presiona T para aplicar daño (100)");
             Debug.Log("📞 Presiona V para toggle vulnerabilidad");
             Debug.Log("📞 Presiona P para avanzar fase (DEBUG)");
             Debug.Log("📞 Presiona 2 para desbloquear Fase 2 (DEBUG)");
+            Debug.Log("⚠️ La batalla NO inicia automáticamente. Usa GameFlowManager o llama StartBossBattle()");
         }
     }
 
@@ -104,18 +114,35 @@ public class PblobController : MonoBehaviour
 
     public void StartBossBattle()
     {
-        if (battleActive) return;
+        if (battleActive)
+        {
+            Debug.Log("⚠️ La batalla ya está en curso");
+            return;
+        }
 
         Debug.Log("🎵 Iniciando batalla contra el boss...");
         battleActive = true;
         currentPhase = 1;
         damageInCurrentPhase = 0f;
 
-        SoundManager.Instance.PlayBossMusic();
+        // Reproducir música del boss
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayBossMusic();
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ SoundManager no encontrado - continuando sin música");
+        }
 
+        // Iniciar sistema de ritmo si existe
         if (rhythmManager != null)
         {
             rhythmManager.StartRhythm();
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ RhythmManager no encontrado - continuando sin ritmo");
         }
 
         battleCoroutine = StartCoroutine(BattleSequence());

@@ -33,10 +33,15 @@ public class PblobRhythmManager : MonoBehaviour
     
     void Update()
     {
-        if (!rhythmActive || SoundManager.Instance == null || !SoundManager.Instance.GetMusicSource().isPlaying) 
-            return;
+        if (!rhythmActive) return;
         
-        float currentTime = SoundManager.Instance.GetMusicSource().time;
+        // Verificar que SoundManager y el AudioSource existen y están reproduciendo
+        if (SoundManager.Instance == null) return;
+        
+        AudioSource musicSource = SoundManager.Instance.GetMusicSource();
+        if (musicSource == null || !musicSource.isPlaying) return;
+        
+        float currentTime = musicSource.time;
         
         // Detección de beats
         if (currentTime >= nextBeatTime - beatThreshold)
@@ -73,7 +78,12 @@ public class PblobRhythmManager : MonoBehaviour
     {
         if (SoundManager.Instance == null)
         {
-            Debug.LogError("❌ SoundManager no encontrado");
+            Debug.LogWarning("⚠️ SoundManager no encontrado - ritmo no iniciado pero no bloquea la batalla");
+            // No bloqueamos el inicio, solo marcamos como activo para que otros scripts lo sepan
+            nextBeatTime = 0f;
+            currentBeat = 0;
+            currentMeasure = 0;
+            rhythmActive = true;
             return;
         }
         
@@ -112,8 +122,13 @@ public class PblobRhythmManager : MonoBehaviour
     
     public bool IsOnBeat(float margin = 0.1f)
     {
-        if (!rhythmActive || SoundManager.Instance == null) return false;
-        float timeUntilNextBeat = nextBeatTime - SoundManager.Instance.GetMusicSource().time;
+        if (!rhythmActive) return false;
+        if (SoundManager.Instance == null) return false;
+        
+        AudioSource musicSource = SoundManager.Instance.GetMusicSource();
+        if (musicSource == null || !musicSource.isPlaying) return false;
+        
+        float timeUntilNextBeat = nextBeatTime - musicSource.time;
         return Mathf.Abs(timeUntilNextBeat) < margin;
     }
 }

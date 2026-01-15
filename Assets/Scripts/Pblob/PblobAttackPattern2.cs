@@ -14,6 +14,7 @@ public class PblobAttackPattern2 : PblobAttackPattern
     
     private bool isPatternActive = false;
     private List<GameObject> activeCircles = new List<GameObject>();
+    private Coroutine circleCoroutine;
 
     public override void StartPattern()
     {
@@ -22,8 +23,8 @@ public class PblobAttackPattern2 : PblobAttackPattern
         isPatternActive = true;
         DebugPattern("🎵 FASE 2 INICIADA - Patrón de círculos de movimiento activado");
         
-        // ✅ NUEVO: Iniciar lógica de círculos
-        StartCoroutine(CirclePatternRoutine());
+        // Iniciar lógica de círculos
+        circleCoroutine = StartCoroutine(CirclePatternRoutine());
         
         Debug.Log("🔵 Círculos de movimiento: Sigue el círculo que aparece en el beat correcto!");
         Debug.Log("🎯 Pista: Los círculos falsos aparecen en momentos aleatorios");
@@ -35,7 +36,14 @@ public class PblobAttackPattern2 : PblobAttackPattern
         
         isPatternActive = false;
         
-        // ✅ NUEVO: Limpiar círculos
+        // Detener corrutina si está activa
+        if (circleCoroutine != null)
+        {
+            StopCoroutine(circleCoroutine);
+            circleCoroutine = null;
+        }
+        
+        // Limpiar círculos
         foreach (var circle in activeCircles)
         {
             if (circle != null)
@@ -46,7 +54,7 @@ public class PblobAttackPattern2 : PblobAttackPattern
         DebugPattern("Fase 2 detenida - Círculos eliminados");
     }
     
-    // ✅ NUEVO: Corrutina para el patrón de círculos
+    // Corrutina para el patrón de círculos
     private IEnumerator CirclePatternRoutine()
     {
         Debug.Log("🔄 Iniciando rutina de círculos...");
@@ -56,7 +64,11 @@ public class PblobAttackPattern2 : PblobAttackPattern
             // Aquí irá la lógica de spawn de círculos
             // Por ahora solo mostramos mensajes de debug
             yield return new WaitForSeconds(5f);
-            Debug.Log("⭕ Círculo debería aparecer aquí (sincronizado con beat)");
+            
+            if (isPatternActive) // Verificar que sigue activo después de esperar
+            {
+                Debug.Log("⭕ Círculo debería aparecer aquí (sincronizado con beat)");
+            }
         }
     }
     

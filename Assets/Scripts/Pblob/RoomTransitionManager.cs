@@ -20,10 +20,24 @@ public class RoomTransitionManager : MonoBehaviour
     {
         bossController = FindObjectOfType<PblobController>();
         
-        // Suscribirse a eventos del boss
-        if (bossController != null)
+        // Suscribirse a eventos del boss (con verificación de null)
+        if (bossController != null && bossController.OnPhaseTransition != null)
         {
             bossController.OnPhaseTransition.AddListener(StartRoomTransition);
+            Debug.Log("🚀 RoomTransitionManager: Suscrito a evento OnPhaseTransition");
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ RoomTransitionManager: PblobController no encontrado o evento no disponible");
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        // Desuscribirse del evento al destruirse para evitar memory leaks
+        if (bossController != null && bossController.OnPhaseTransition != null)
+        {
+            bossController.OnPhaseTransition.RemoveListener(StartRoomTransition);
         }
     }
 
