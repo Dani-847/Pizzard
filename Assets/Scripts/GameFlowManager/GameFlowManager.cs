@@ -2,12 +2,15 @@
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Orquesta el flujo del juego por escena de boss.
-/// Controla las fases: Diálogo -> Tienda -> Diálogo -> Boss -> (ciclo) 
-/// y gestiona la pausa con Escape.
+/// Orquesta el flujo del juego completo en una sola escena.
+/// Controla las fases: MainMenu -> IntroDialog -> ShopBeforeBoss -> PreBossDialog -> BossFight -> 
+/// (si muere: PlayerDeath, si gana: PostBossDialog -> ciclo siguiente boss).
+/// Gestiona la pausa con Escape.
 /// </summary>
 public class GameFlowManager : MonoBehaviour
 {
+    public static GameFlowManager Instance { get; private set; }
+
     [Header("Referencias")]
     [SerializeField] private UIManager uiManager;
     [Tooltip("Referencia al BossController abstracto (si se usa)")]
@@ -15,19 +18,29 @@ public class GameFlowManager : MonoBehaviour
     [Tooltip("Referencia al PblobController específico (si no hay BossController)")]
     [SerializeField] private PblobController pblobController;
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerHPController playerHPController;
 
     [Header("Fase inicial")]
-    [SerializeField] private GamePhase faseInicial = GamePhase.IntroDialog;
+    [Tooltip("Fase inicial del juego (MainMenu para empezar con menú)")]
+    [SerializeField] private GamePhase faseInicial = GamePhase.MainMenu;
 
     [Header("Configuración de Escenas")]
-    [Tooltip("Nombre de la escena del siguiente boss")]
+    [Tooltip("Nombre de la escena del siguiente boss (vacío si no hay más)")]
     [SerializeField] private string siguienteBossEscena = "";
 
     private GamePhase faseActual;
-    private GamePhase faseAntesPausa; // Para volver a la fase correcta al reanudar
+    private GamePhase faseAntesPausa;
 
     private void Awake()
     {
+        // Singleton pattern
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         if (uiManager == null)
         {
             uiManager = UIManager.Instance;
@@ -48,7 +61,6 @@ public class GameFlowManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Desuscribirse para evitar memory leaks
         if (bossController != null)
         {
             bossController.OnBossDefeated -= OnBossDefeated;
@@ -57,6 +69,11 @@ public class GameFlowManager : MonoBehaviour
         if (pblobController != null)
         {
             pblobController.OnBossDefeated.RemoveListener(OnBossDefeated);
+        }
+
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 
@@ -67,9 +84,15 @@ public class GameFlowManager : MonoBehaviour
 
     private void Update()
     {
-        // Manejo de pausa con Escape
+        // Manejo de pausa con Escape (solo si no estamos en menú principal o muerte)
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (faseActual == GamePhase.MainMenu || faseActual == GamePhase.PlayerDeath)
+            {
+                // No hacer nada en menú principal o pantalla de muerte
+                return;
+            }
+
             if (faseActual != GamePhase.Paused)
             {
                 EntrarPausa();
@@ -98,6 +121,10 @@ public class GameFlowManager : MonoBehaviour
 
         switch (faseActual)
         {
+            case GamePhase.MainMenu:
+                MostrarMenuPrincipal();
+                break;
+
             case GamePhase.IntroDialog:
                 MostrarDialogoIntro();
                 break;
@@ -129,6 +156,10 @@ public class GameFlowManager : MonoBehaviour
             case GamePhase.Paused:
                 MostrarMenuPausa();
                 break;
+
+            case GamePhase.PlayerDeath:
+                MostrarPantallaMuerte();
+                break;
         }
 
         Debug.Log($"[GameFlowManager] Fase cambiada a: {faseActual}");
@@ -145,6 +176,7 @@ public class GameFlowManager : MonoBehaviour
             if (uiManager.optionsUI != null) uiManager.optionsUI.Hide();
             if (uiManager.tiendaUI != null) uiManager.tiendaUI.Hide();
             if (uiManager.dialogUI != null) uiManager.dialogUI.Hide();
+            if (uiManager.deathUI != null) uiManager.deathUI.OcultarPantallaMuerte();
         }
     }
 
@@ -156,6 +188,11 @@ public class GameFlowManager : MonoBehaviour
     {
         switch (faseActual)
         {
+            case GamePhase.MainMenu:
+                // Play fue presionado, ir al diálogo intro
+                CambiarFase(GamePhase.IntroDialog);
+                break;
+
             case GamePhase.IntroDialog:
                 CambiarFase(GamePhase.ShopBeforeBoss);
                 break;
@@ -186,9 +223,70 @@ public class GameFlowManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Llamado desde MenuUI cuando el jugador presiona "Jugar".
+    /// Inicia el flujo de juego desde el diálogo intro.
+    /// </summary>
+    public void IniciarJuego()
+    {
+        Debug.Log("[GameFlowManager] Iniciando juego desde menú principal");
+        CambiarFase(GamePhase.IntroDialog);
+    }
+
+    /// <summary>
+    /// Llamado cuando el jugador muere.
+    /// </summary>
+    public void OnPlayerDeath()
+    {
+        Debug.Log("[GameFlowManager] Jugador ha muerto");
+        CambiarFase(GamePhase.PlayerDeath);
+    }
+
+    /// <summary>
+    /// Reinicia el combate del boss actual (desde pantalla de muerte).
+    /// </summary>
+    public void ReiniciarBossFight()
+    {
+        Debug.Log("[GameFlowManager] Reiniciando combate de boss");
+        Time.timeScale = 1f;
+        
+        // Restaurar vida del jugador
+        if (playerHPController != null)
+        {
+            playerHPController.vidaActual = playerHPController.vidaMaxima;
+            playerHPController.hpUI?.ActualizarUI(playerHPController.vidaActual);
+        }
+        
+        CambiarFase(GamePhase.BossFight);
+    }
+
+    /// <summary>
+    /// Vuelve al menú principal.
+    /// </summary>
+    public void VolverAlMenu()
+    {
+        Debug.Log("[GameFlowManager] Volviendo al menú principal");
+        Time.timeScale = 1f;
+        CambiarFase(GamePhase.MainMenu);
+    }
+
     // ========================================
-    // MÉTODOS DE MOSTRAR DIÁLOGOS/TIENDA
+    // MÉTODOS DE MOSTRAR UIs
     // ========================================
+
+    private void MostrarMenuPrincipal()
+    {
+        if (uiManager != null && uiManager.menuUI != null)
+        {
+            uiManager.menuUI.Show();
+        }
+        
+        // Reproducir música de menú
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayMenuMusic();
+        }
+    }
 
     private void MostrarDialogoIntro()
     {
@@ -240,13 +338,10 @@ public class GameFlowManager : MonoBehaviour
         else if (pblobController != null)
         {
             pblobController.enabled = true;
-            // PblobController.StartBossBattle() ya llama a SoundManager.PlayBossMusic()
             pblobController.StartBossBattle();
         }
         else
         {
-            // Solo reproducir música si no hay ningún boss controller
-            // (los controllers ya manejan la música internamente)
             if (SoundManager.Instance != null)
             {
                 SoundManager.Instance.PlayBossMusic();
@@ -300,11 +395,18 @@ public class GameFlowManager : MonoBehaviour
         }
     }
 
+    private void MostrarPantallaMuerte()
+    {
+        if (uiManager != null && uiManager.deathUI != null)
+        {
+            uiManager.deathUI.MostrarPantallaMuerte();
+        }
+    }
+
     private void CargarSiguienteBoss()
     {
         if (!string.IsNullOrEmpty(siguienteBossEscena))
         {
-            // Verificar que la escena existe en los build settings
             bool sceneExists = false;
             for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
             {
@@ -330,7 +432,8 @@ public class GameFlowManager : MonoBehaviour
         else
         {
             Debug.Log("[GameFlowManager] No hay siguiente boss configurado. ¡Victoria!");
-            // Aquí podrías mostrar una pantalla de victoria o volver al menú
+            // Volver al menú principal después de ganar
+            VolverAlMenu();
         }
     }
 
@@ -351,10 +454,6 @@ public class GameFlowManager : MonoBehaviour
         CambiarFase(faseAntesPausa);
     }
 
-    /// <summary>
-    /// Reanuda el juego desde el menú de pausa.
-    /// Llamado por MenuUI.
-    /// </summary>
     public void ReanudarJuego()
     {
         SalirPausa();
@@ -372,18 +471,12 @@ public class GameFlowManager : MonoBehaviour
     // EVENTOS
     // ========================================
 
-    /// <summary>
-    /// Callback cuando el boss es derrotado.
-    /// </summary>
     private void OnBossDefeated()
     {
         Debug.Log("[GameFlowManager] ¡Boss derrotado!");
         AvanzarFase();
     }
 
-    /// <summary>
-    /// Obtiene la fase actual del flujo.
-    /// </summary>
     public GamePhase GetFaseActual()
     {
         return faseActual;

@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
     public ShopUI tiendaUI;
     [Tooltip("Panel de diálogos")]
     public DialogUI dialogUI;
+    [Tooltip("Panel de muerte")]
+    public DeathUI deathUI;
 
     private UIContext lastContext = UIContext.None;
 
@@ -85,5 +87,7 @@ public class UIManager : MonoBehaviour
             tiendaUI.Hide();
         if (dialogUI != null)
             dialogUI.Hide();
+        if (deathUI != null)
+            deathUI.OcultarPantallaMuerte();
     }
 }

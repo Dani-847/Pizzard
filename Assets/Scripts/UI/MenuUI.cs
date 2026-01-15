@@ -23,13 +23,8 @@ public class MenuUI : MonoBehaviour
     [Header("Referencias externas")]
     [Tooltip("Panel de ajustes (activar/desactivar)")]
     public GameObject optionsUIPanel;
-    [Tooltip("Nombre de la escena del primer boss")]
-    public string escenaBoss1 = "Escena_Boss1";
-    [Tooltip("Nombre de la escena del menú principal")]
-    public string escenaMenu = "Escena_Menu";
 
     [Header("Estado")]
-    [Tooltip("Indica si este menú está en modo pausa")]
     private bool isPauseMenu = false;
     private GameFlowManager flowManager;
 
@@ -51,17 +46,21 @@ public class MenuUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Iniciar flujo jugable: cierra menú principal y carga la escena del primer boss.
+    /// Iniciar flujo jugable: cierra menú principal e inicia el flujo del juego.
     /// </summary>
     public void OnClickJugar()
     {
         Debug.Log("Iniciando flujo jugable");
         Hide();
 
-        // Cargar la escena del primer boss
-        if (!string.IsNullOrEmpty(escenaBoss1))
+        // Usar GameFlowManager para iniciar el juego
+        if (GameFlowManager.Instance != null)
         {
-            SceneManager.LoadScene(escenaBoss1);
+            GameFlowManager.Instance.IniciarJuego();
+        }
+        else
+        {
+            Debug.LogError("[MenuUI] GameFlowManager.Instance no encontrado");
         }
     }
 
@@ -104,14 +103,10 @@ public class MenuUI : MonoBehaviour
     public void OnClickVolverMenu()
     {
         Debug.Log("Volviendo al menú principal");
-        Time.timeScale = 1f;
-        if (!string.IsNullOrEmpty(escenaMenu))
+        Hide();
+        if (GameFlowManager.Instance != null)
         {
-            SceneManager.LoadScene(escenaMenu);
-        }
-        else
-        {
-            Debug.LogError("[MenuUI] escenaMenu no está configurada");
+            GameFlowManager.Instance.VolverAlMenu();
         }
     }
 

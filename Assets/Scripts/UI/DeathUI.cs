@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Gestiona la pantalla de muerte: mostrar/ocultar y botones de acciones.
+/// Se integra con GameFlowManager para controlar el flujo del juego.
 /// </summary>
 public class DeathUI : MonoBehaviour
 {
@@ -11,20 +12,14 @@ public class DeathUI : MonoBehaviour
     [Tooltip("Panel raíz de la pantalla de muerte (contiene el mensaje y los botones).")]
     [SerializeField] public GameObject pantallaMuerte;
 
-    [Tooltip("Botón de reintentar (reinicia la escena actual).")]
+    [Tooltip("Botón de reintentar (reinicia el combate del boss).")]
     [SerializeField] public Button botonReintentar;
 
     [Tooltip("Botón de salir al menú principal.")]
     [SerializeField] public Button botonSalirAlMenu;
 
-    [Header("Opciones")]
-    [Tooltip("Nombre de la escena del menú principal. Déjalo vacío si aún no la tienes.")]
-    [SerializeField] public MenuUI escenaMenuPrincipal;
-
     private bool _estaActiva = false;
 
-    
-    
     private void Awake()
     {
         // Asegura que la pantalla de muerte empieza oculta
@@ -73,13 +68,23 @@ public class DeathUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Botón de reintentar: reinicia la escena actual.
+    /// Botón de reintentar: reinicia el combate del boss actual.
     /// </summary>
     private void OnClickReintentar()
     {
-        Time.timeScale = 1f; // Asegura que el tiempo vuelve a la normalidad
-        Scene escenaActual = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(escenaActual.buildIndex);
+        OcultarPantallaMuerte();
+        
+        if (GameFlowManager.Instance != null)
+        {
+            GameFlowManager.Instance.ReiniciarBossFight();
+        }
+        else
+        {
+            // Fallback: reiniciar la escena actual
+            Time.timeScale = 1f;
+            Scene escenaActual = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(escenaActual.buildIndex);
+        }
     }
 
     /// <summary>
@@ -87,18 +92,15 @@ public class DeathUI : MonoBehaviour
     /// </summary>
     private void OnClickSalirAlMenu()
     {
-        Time.timeScale = 1f;
-
-        if (escenaMenuPrincipal == null)
+        OcultarPantallaMuerte();
+        
+        if (GameFlowManager.Instance != null)
         {
-            Debug.Log("Falta la escena del menú principal. Por favor, configúrala en el inspector.");
-            return;
+            GameFlowManager.Instance.VolverAlMenu();
         }
         else
         {
-            //SceneManager.LoadScene(escenaMenuPrincipal);
-            escenaMenuPrincipal.Show();
-            gameObject.SetActive(false);
+            Debug.LogError("[DeathUI] GameFlowManager.Instance no encontrado");
         }
     }
 }

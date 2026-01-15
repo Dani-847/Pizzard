@@ -1,11 +1,13 @@
 /// <summary>
-/// Fases del flujo de juego por cada boss.
-/// El ciclo típico es: IntroDialog -> ShopBeforeBoss -> PreBossDialog -> BossFight -> 
+/// Fases del flujo de juego.
+/// El ciclo típico es: MainMenu -> IntroDialog -> ShopBeforeBoss -> PreBossDialog -> BossFight -> 
 /// PostBossDialog -> ShopAfterBoss -> PreNextBossDialog -> (siguiente boss o fin).
 /// </summary>
 public enum GamePhase
 {
     None,
+    /// <summary>Menú principal inicial del juego.</summary>
+    MainMenu,
     /// <summary>Diálogo introductorio al entrar en la escena del boss.</summary>
     IntroDialog,
     /// <summary>Tienda antes de enfrentar al boss.</summary>
@@ -21,5 +23,7 @@ public enum GamePhase
     /// <summary>Diálogo antes de pasar al siguiente boss.</summary>
     PreNextBossDialog,
     /// <summary>Juego pausado.</summary>
-    Paused
+    Paused,
+    /// <summary>Pantalla de muerte del jugador.</summary>
+    PlayerDeath
 }
