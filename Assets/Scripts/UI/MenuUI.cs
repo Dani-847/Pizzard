@@ -1,79 +1,160 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement; // Opcional si el helper reinicia la escena
+using UnityEngine.SceneManagement;
 
-// Gestionar botones principales del menú (Jugar, Ajustes, Salir) 
-// y lanzar el flujo jugable hacia el primer diálogo.
+/// <summary>
+/// Gestionar botones principales del menú (Jugar, Ajustes, Salir),
+/// el menú de pausa y lanzar el flujo jugable hacia el primer diálogo.
+/// </summary>
 public class MenuUI : MonoBehaviour
 {
     [Header("Referencias UI")]
-    // Inicia el bucle jugable -> primer diálogo
+    [Tooltip("Inicia el bucle jugable -> primer diálogo")]
     public Button botonJugar;
-    // Abre OptionsUI
+    [Tooltip("Abre OptionsUI")]
     public Button botonAjustes;
-    // Cierra la aplicación
+    [Tooltip("Cierra la aplicación")]
     public Button botonSalir;
+    [Tooltip("Botón para reanudar el juego (solo visible en pausa)")]
+    public Button botonReanudar;
+    [Tooltip("Botón para volver al menú principal desde la pausa")]
+    public Button botonVolverMenu;
 
     [Header("Referencias externas")]
-    // Panel de ajustes (activar/desactivar)
+    [Tooltip("Panel de ajustes (activar/desactivar)")]
     public GameObject optionsUIPanel;
-    // (Opcional) helper para cargar escenas o iniciar juego
-    // public SceneLoader sceneLoader;
-    // (Opcional placeholder) punto de entrada a diálogos
-    // public DialogueManager dialogueManager;
+    [Tooltip("Nombre de la escena del primer boss")]
+    public string escenaBoss1 = "Escena_Boss1";
 
-    // Asignar listeners a los botones
+    [Header("Estado")]
+    [Tooltip("Indica si este menú está en modo pausa")]
+    private bool isPauseMenu = false;
+    private GameFlowManager flowManager;
+
     void Start()
     {
-        botonJugar.onClick.AddListener(OnClickJugar);
-        botonAjustes.onClick.AddListener(OnClickAjustes);
-        botonSalir.onClick.AddListener(OnClickSalir);
+        if (botonJugar != null)
+            botonJugar.onClick.AddListener(OnClickJugar);
+        if (botonAjustes != null)
+            botonAjustes.onClick.AddListener(OnClickAjustes);
+        if (botonSalir != null)
+            botonSalir.onClick.AddListener(OnClickSalir);
+        if (botonReanudar != null)
+            botonReanudar.onClick.AddListener(OnClickReanudar);
+        if (botonVolverMenu != null)
+            botonVolverMenu.onClick.AddListener(OnClickVolverMenu);
+        
+        // Ocultar botones de pausa inicialmente
+        SetPauseButtonsVisible(false);
     }
 
-    // Iniciar flujo jugable:
-    // - Cerrar menú principal
-    // - Preparar game state (GameManager)
-    // - Llamar a dialogueManager.StartFirstDialogue()
+    /// <summary>
+    /// Iniciar flujo jugable: cierra menú principal y carga la escena del primer boss.
+    /// </summary>
     public void OnClickJugar()
     {
         Debug.Log("Iniciando flujo jugable");
+        Hide();
 
-        // Cerrar menú principal
-        gameObject.SetActive(false);
-
-        /*
-        Prueba para luego si hacemos distintas escenas para los
-        diálogos y los bosses, para que el bucle esté bien hecho
-
-            int sceneIndex = SaveSystem.LoadLastSceneIndex();
-            SceneLoader.LoadScene(sceneIndex);
-        */
+        // Cargar la escena del primer boss
+        if (!string.IsNullOrEmpty(escenaBoss1))
+        {
+            SceneManager.LoadScene(escenaBoss1);
+        }
     }
 
-    // Mostrar optionsUIPanel (setActive true)
+    /// <summary>
+    /// Mostrar optionsUIPanel (setActive true).
+    /// </summary>
     public void OnClickAjustes()
     {
         Debug.Log("Abriendo el panel de ajustes");
-
         Hide();
         UIManager.Instance.OpenOptions(UIContext.Menu);
     }
 
-    // Application.Quit() y/o mostrar confirmación en editor
+    /// <summary>
+    /// Application.Quit() y/o mostrar confirmación en editor.
+    /// </summary>
     public void OnClickSalir()
     {
         Debug.Log("Saliendo del juego...");
         #if UNITY_EDITOR
-                        UnityEditor.EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false;
         #else
-                Application.Quit();
+        Application.Quit();
         #endif
     }
-    
-    public void Show(){
+
+    /// <summary>
+    /// Reanuda el juego desde la pausa.
+    /// </summary>
+    public void OnClickReanudar()
+    {
+        Debug.Log("Reanudando juego desde pausa");
+        Hide();
+        flowManager?.ReanudarJuego();
+    }
+
+    /// <summary>
+    /// Vuelve al menú principal desde la pausa.
+    /// </summary>
+    public void OnClickVolverMenu()
+    {
+        Debug.Log("Volviendo al menú principal");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Escena_Menu");
+    }
+
+    /// <summary>
+    /// Muestra el menú principal.
+    /// </summary>
+    public void Show()
+    {
         gameObject.SetActive(true);
-    } 
-    public void Hide(){
+        isPauseMenu = false;
+        SetPauseButtonsVisible(false);
+        SetMainMenuButtonsVisible(true);
+    }
+
+    /// <summary>
+    /// Oculta el menú.
+    /// </summary>
+    public void Hide()
+    {
         gameObject.SetActive(false);
-    } 
+    }
+
+    /// <summary>
+    /// Muestra el menú en modo pausa.
+    /// </summary>
+    /// <param name="manager">GameFlowManager que gestiona el flujo.</param>
+    public void ShowPauseMenu(GameFlowManager manager)
+    {
+        flowManager = manager;
+        isPauseMenu = true;
+        gameObject.SetActive(true);
+        SetMainMenuButtonsVisible(false);
+        SetPauseButtonsVisible(true);
+    }
+
+    /// <summary>
+    /// Configura la visibilidad de los botones de menú principal.
+    /// </summary>
+    private void SetMainMenuButtonsVisible(bool visible)
+    {
+        if (botonJugar != null)
+            botonJugar.gameObject.SetActive(visible);
+    }
+
+    /// <summary>
+    /// Configura la visibilidad de los botones de pausa.
+    /// </summary>
+    private void SetPauseButtonsVisible(bool visible)
+    {
+        if (botonReanudar != null)
+            botonReanudar.gameObject.SetActive(visible);
+        if (botonVolverMenu != null)
+            botonVolverMenu.gameObject.SetActive(visible);
+    }
 }

@@ -4,18 +4,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
+/// <summary>
+/// Controlador del jugador que gestiona el movimiento y la entrada.
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float speed = 5f;
 
     [Header("Collision Settings")]
-    public LayerMask wallLayerMask = 1; // Capa por defecto
+    public LayerMask wallLayerMask = 1;
     public float collisionCheckDistance = 0.1f;
 
     private CharacterController controller;
     private Vector3 moveInput;
     private Tilemap wallTilemap;
+    private bool inputEnabled = true;
 
     public MenuUI menuUI;
     public OptionsUI optionsUI;
@@ -37,7 +41,15 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (menuUI.gameObject.activeSelf || optionsUI.gameObject.activeSelf /*|| deathUI.gameObject.activeSelf*/)
+        // Verificar si el input está habilitado
+        if (!inputEnabled)
+        {
+            return;
+        }
+
+        // Verificar si hay menús abiertos
+        if ((menuUI != null && menuUI.gameObject.activeSelf) || 
+            (optionsUI != null && optionsUI.gameObject.activeSelf))
         {
             return;
         }
@@ -103,12 +115,31 @@ public class PlayerController : MonoBehaviour
     {
         if (!context.performed) return;
 
-        if (menuUI.gameObject.activeSelf) return;
+        if (menuUI != null && menuUI.gameObject.activeSelf) return;
 
-        if (UIManager.Instance.optionsUI.gameObject.activeSelf)
-            UIManager.Instance.CloseOptions();
-        else
-            UIManager.Instance.OpenOptions(UIContext.BossFight);
+        if (UIManager.Instance != null && UIManager.Instance.optionsUI != null)
+        {
+            if (UIManager.Instance.optionsUI.gameObject.activeSelf)
+                UIManager.Instance.CloseOptions();
+            else
+                UIManager.Instance.OpenOptions(UIContext.BossFight);
+        }
+    }
+
+    /// <summary>
+    /// Habilita o deshabilita el input del jugador.
+    /// Usado por GameFlowManager para controlar cuándo el jugador puede moverse.
+    /// </summary>
+    /// <param name="enabled">True para habilitar, false para deshabilitar.</param>
+    public void EnableInput(bool enabled)
+    {
+        inputEnabled = enabled;
+        
+        // Resetear el input cuando se deshabilita
+        if (!enabled)
+        {
+            moveInput = Vector3.zero;
+        }
     }
 
     // Para debugging visual
