@@ -23,6 +23,12 @@ public class OptionsUI : MonoBehaviour
 
     private int slicesActuales;
 
+    void Awake()
+    {
+        // Ocultar el panel de opciones al inicio
+        gameObject.SetActive(false);
+    }
+
     void Start()
     {
         if (SoundManager.Instance == null)
@@ -37,10 +43,14 @@ public class OptionsUI : MonoBehaviour
         slicesActuales = Mathf.RoundToInt(SoundManager.Instance.GetMusicVolume() * maxPizzaSlices);
         ActualizarPizzaVisual();
 
-        botonMasVolumen.onClick.AddListener(OnClickMasVolumen);
-        botonMenosVolumen.onClick.AddListener(OnClickMenosVolumen);
-        botonCombinations.onClick.AddListener(OnClickCombinations);
-        acceptButton.onClick.AddListener(GuardarYAceptar);
+        if (botonMasVolumen != null)
+            botonMasVolumen.onClick.AddListener(OnClickMasVolumen);
+        if (botonMenosVolumen != null)
+            botonMenosVolumen.onClick.AddListener(OnClickMenosVolumen);
+        if (botonCombinations != null)
+            botonCombinations.onClick.AddListener(OnClickCombinations);
+        if (acceptButton != null)
+            acceptButton.onClick.AddListener(GuardarYAceptar);
 
         // ----------------------------
         // IDIOMA
@@ -57,13 +67,6 @@ public class OptionsUI : MonoBehaviour
             // Listener
             languageDropdown.onValueChanged.AddListener(OnLanguageChanged);
         }
-
-        if (combinationsUIPanel != null)
-        {
-            combinationsUIPanel.OcultarPanel();
-        }
-
-        Hide();
     }
 
     // ----------------------------

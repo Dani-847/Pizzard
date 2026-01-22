@@ -22,6 +22,12 @@ public class ShopUI : MonoBehaviour
 
     private GameFlowManager flowManager;
 
+    void Awake()
+    {
+        // Ocultar la tienda al inicio
+        gameObject.SetActive(false);
+    }
+
     void Start()
     {
         if (btnShopExit != null)

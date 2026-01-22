@@ -165,7 +165,22 @@ public class SceneRebuilder : EditorWindow
     {
         Debug.Log("🔧 Configurando estado inicial...");
         
-        // Configurar UIs
+        // Primero, ocultar todas las UIs de gameplay
+        var pblobUI = FindObjectOfType<PblobUI>();
+        if (pblobUI != null)
+        {
+            pblobUI.gameObject.SetActive(false);
+            Debug.Log("  ✅ PblobUI desactivado");
+        }
+        
+        var potionUI = FindObjectOfType<PotionUI>();
+        if (potionUI != null)
+        {
+            potionUI.gameObject.SetActive(false);
+            Debug.Log("  ✅ PotionUI desactivado");
+        }
+        
+        // Configurar UIs de flujo
         var menuUI = FindObjectOfType<MenuUI>();
         if (menuUI != null)
         {
@@ -205,6 +220,14 @@ public class SceneRebuilder : EditorWindow
             Debug.Log("  ✅ OptionsUI desactivado");
         }
         
+        var combinationsUI = FindObjectOfType<CombinationsUI>();
+        if (combinationsUI != null)
+        {
+            if (combinationsUI.panelCombinations != null)
+                combinationsUI.panelCombinations.SetActive(false);
+            Debug.Log("  ✅ CombinationsUI desactivado");
+        }
+        
         // Configurar GameFlowManager para empezar en MainMenu
         var gfm = FindObjectOfType<GameFlowManager>();
         if (gfm != null)
@@ -217,6 +240,19 @@ public class SceneRebuilder : EditorWindow
                 prop.enumValueIndex = (int)GamePhase.MainMenu;
                 so.ApplyModifiedProperties();
                 Debug.Log("  ✅ GameFlowManager.faseInicial = MainMenu");
+            }
+            
+            // Verificar que UIManager está asignado
+            var uiManagerProp = so.FindProperty("uiManager");
+            if (uiManagerProp != null && uiManagerProp.objectReferenceValue == null)
+            {
+                var uiManager = FindObjectOfType<UIManager>();
+                if (uiManager != null)
+                {
+                    uiManagerProp.objectReferenceValue = uiManager;
+                    so.ApplyModifiedProperties();
+                    Debug.Log("  ✅ GameFlowManager.uiManager asignado");
+                }
             }
         }
         

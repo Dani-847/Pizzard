@@ -20,6 +20,13 @@ public class CombinationsUI : MonoBehaviour
     [Header("Botón Volver")]
     public Button backButton;               // ⬅️ NUEVO: Botón para volver a opciones
 
+    void Awake()
+    {
+        // Asegurar que el panel está oculto al inicio
+        if (panelCombinations != null)
+            panelCombinations.SetActive(false);
+    }
+
     void Start()
     {
         // Configurar botón de volver

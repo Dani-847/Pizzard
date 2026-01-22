@@ -13,6 +13,12 @@ public class PblobUI : MonoBehaviour
     private PblobController boss;
     private float maxHealth;
     
+    void Awake()
+    {
+        // Ocultar la UI del boss al inicio - GameFlowManager la mostrará cuando sea necesario
+        gameObject.SetActive(false);
+    }
+    
     void Start()
     {
         boss = FindObjectOfType<PblobController>();

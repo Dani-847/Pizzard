@@ -28,6 +28,12 @@ public class MenuUI : MonoBehaviour
     private bool isPauseMenu = false;
     private GameFlowManager flowManager;
 
+    void Awake()
+    {
+        // El MenuUI se activará por GameFlowManager en Start
+        // No ocultamos aquí porque MenuUI debería ser el único visible al inicio
+    }
+
     void Start()
     {
         if (botonJugar != null)
@@ -43,6 +49,9 @@ public class MenuUI : MonoBehaviour
         
         // Ocultar botones de pausa inicialmente
         SetPauseButtonsVisible(false);
+        
+        // Mostrar botones del menú principal
+        SetMainMenuButtonsVisible(true);
     }
 
     /// <summary>
@@ -149,6 +158,10 @@ public class MenuUI : MonoBehaviour
     {
         if (botonJugar != null)
             botonJugar.gameObject.SetActive(visible);
+        if (botonAjustes != null)
+            botonAjustes.gameObject.SetActive(visible);
+        if (botonSalir != null)
+            botonSalir.gameObject.SetActive(visible);
     }
 
     /// <summary>

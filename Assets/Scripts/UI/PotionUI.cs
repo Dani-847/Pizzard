@@ -10,6 +10,12 @@ public class PotionUI : MonoBehaviour
 
     private void Awake()
     {
+        // Ocultar la UI de pociones al inicio - GameFlowManager la mostrará cuando sea necesario
+        gameObject.SetActive(false);
+    }
+    
+    private void Start()
+    {
         if (healthPotionSystem == null)
         {
             healthPotionSystem = FindObjectOfType<HealthPotionSystem>();

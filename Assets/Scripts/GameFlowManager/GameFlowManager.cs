@@ -177,6 +177,10 @@ public class GameFlowManager : MonoBehaviour
             if (uiManager.tiendaUI != null) uiManager.tiendaUI.Hide();
             if (uiManager.dialogUI != null) uiManager.dialogUI.Hide();
             if (uiManager.deathUI != null) uiManager.deathUI.OcultarPantallaMuerte();
+            if (uiManager.combinationsUI != null) uiManager.combinationsUI.OcultarPanel();
+            
+            // Por defecto ocultar UIs de gameplay también
+            uiManager.HideGameplayUIs();
         }
     }
 
@@ -328,6 +332,12 @@ public class GameFlowManager : MonoBehaviour
 
     private void IniciarBossFight()
     {
+        // Mostrar UIs de gameplay
+        if (uiManager != null)
+        {
+            uiManager.ShowGameplayUIs();
+        }
+        
         // Activar el boss controller correspondiente
         if (bossController != null)
         {

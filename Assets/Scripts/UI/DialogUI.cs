@@ -48,14 +48,18 @@ public class DialogUI : MonoBehaviour
     private string[] currentLines;
     private int currentLineIndex;
 
+    void Awake()
+    {
+        // Ocultar el panel de diálogo al inicio
+        Hide();
+    }
+
     void Start()
     {
         if (continueButton != null)
         {
             continueButton.onClick.AddListener(OnContinueClicked);
         }
-        
-        Hide();
     }
 
     /// <summary>
