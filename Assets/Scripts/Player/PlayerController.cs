@@ -32,7 +32,10 @@ namespace Pizzard.Player
                 Debug.LogWarning("[PlayerController] Added missing Rigidbody2D to player at runtime.");
             }
             // Ensure no gravity affects the top-down player
-            rb.gravityScale = 0f;
+            if (rb != null)
+            {
+                rb.gravityScale = 0f;
+            }
         }
 
         private void Update()
@@ -85,6 +88,8 @@ namespace Pizzard.Player
 
         private void ApplyMovement()
         {
+            if (rb == null) return;
+            
             float currentSpeed = isDashing ? moveSpeed * dashSpeedMultiplier : moveSpeed;
             rb.velocity = movementInput * currentSpeed;
         }

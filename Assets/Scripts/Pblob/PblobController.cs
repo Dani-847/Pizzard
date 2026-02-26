@@ -19,7 +19,6 @@ public class PblobController : MonoBehaviour
 
     [Header("Attack Patterns")]
     public PblobAttackPattern[] attackPatterns;
-    private int currentPatternIndex = 0;
 
     [Header("Timing Settings")]
     public float vulnerableWindowDuration = 3f;

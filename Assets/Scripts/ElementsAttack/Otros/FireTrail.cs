@@ -19,7 +19,6 @@ public class FireTrail : MonoBehaviour
 
     private CircleCollider2D areaCollider;
     private float remainingDuration;
-    private bool isInitialized = false;
 
     private void Awake()
     {
@@ -70,8 +69,6 @@ public class FireTrail : MonoBehaviour
         duration = trailDuration;
         radius = trailRadius;
         spiceEffectDuration = effectDuration;
-        
-        isInitialized = true;
 
         // Actualizar collider
         if (areaCollider != null)

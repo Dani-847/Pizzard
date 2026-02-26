@@ -26,7 +26,6 @@ public class MenuUI : MonoBehaviour
     public GameObject optionsUIPanel;
 
     [Header("Estado")]
-    private bool isPauseMenu = false;
     private GameFlowManager flowManager;
 
     void Start()
@@ -117,7 +116,6 @@ public class MenuUI : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
-        isPauseMenu = false;
         SetPauseButtonsVisible(false);
         SetMainMenuButtonsVisible(true);
     }
@@ -137,7 +135,6 @@ public class MenuUI : MonoBehaviour
     public void ShowPauseMenu(GameFlowManager manager)
     {
         flowManager = manager;
-        isPauseMenu = true;
         gameObject.SetActive(true);
         SetMainMenuButtonsVisible(false);
         SetPauseButtonsVisible(true);

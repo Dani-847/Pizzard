@@ -13,9 +13,7 @@ public class DelayedHealthBar : MonoBehaviour
     public float orangeBarSpeed = 1f;     // Velocidad de la barra naranja
     public float smoothTime = 0.3f;       // Suavizado del movimiento
     
-    private float currentHealth = 1f;
     private float targetHealth = 1f;
-    private float orangeBarTarget = 1f;
     private Coroutine orangeBarCoroutine;
     
     void Start()
@@ -23,9 +21,7 @@ public class DelayedHealthBar : MonoBehaviour
         // Inicializar ambas barras llenas
         redBar.fillAmount = 1f;
         orangeBar.fillAmount = 1f;
-        currentHealth = 1f;
         targetHealth = 1f;
-        orangeBarTarget = 1f;
     }
     
     public void SetHealth(float healthPercentage)
