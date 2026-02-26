@@ -30,7 +30,7 @@
 **Objective**: Implement persistent currency drops, Shop interface, and item logic. Link these to the dialog and game loop phases.
 
 ### Phase 5: Bosses Part 1 (P'blob & Hec'kiel)
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Implement the first two bosses: P'blob (mustache + simon-says) and Hec'kiel (elemental clone dragon), integrating them into the GameFlow.
 
 ### Phase 6: Bosses Part 2 & Polish (Oven & Niggel)
