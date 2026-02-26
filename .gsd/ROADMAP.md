@@ -22,7 +22,7 @@
 **Objective**: Build out the Main Menu, Settings panel, Dialog UI, and wire them into the `GameFlowManager`.
 
 ### Phase 3: Player Mechanics & Wand Combinations
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Implement player movement, taking damage, and the core combat system including Wand Tiers 1-3 and the Queso, Pepperoni, Piña combinations logic.
 
 ### Phase 4: Progression & Shop System
