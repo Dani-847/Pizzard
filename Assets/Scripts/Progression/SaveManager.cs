@@ -23,6 +23,9 @@ namespace Pizzard.Progression
 
         // 5. Unlocked Elements
         public List<ElementType> unlockedElements = new List<ElementType>();
+
+        // 6. Selected Wand
+        public int selectedWandTierEquipped = 1;
     }
 
     /// <summary>

@@ -20,6 +20,14 @@ public class PlayerEquip : MonoBehaviour
 
     public int CurrentWandTier { get; private set; } = 1;
 
+    void Start()
+    {
+        if (Pizzard.Progression.SaveManager.Instance != null)
+        {
+            LoadTierFromSave(Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier);
+        }
+    }
+
     public void EquipObject (EquipableObject newEquipableObject)
     {
         equipedObject = newEquipableObject;
@@ -70,5 +78,21 @@ public class PlayerEquip : MonoBehaviour
     {
         CurrentWandTier = Mathf.Clamp(savedTier, 1, 3);
         Debug.Log($"[PlayerEquip] Wand loaded at Tier {CurrentWandTier}");
+
+        if (Pizzard.Progression.SaveManager.Instance != null)
+        {
+            int selectedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.selectedWandTierEquipped;
+            var selector = FindObjectOfType<EquipSelectorUI>(true);
+            
+            if (selector != null && selector.availableEquipables != null)
+            {
+                var equip = selector.availableEquipables.Find(e => e.tier == selectedTier);
+                if (equip != null)
+                {
+                    EquipObject(equip);
+                    Debug.Log($"[PlayerEquip] Auto-equipped selected wand: {equip.displayName}");
+                }
+            }
+        }
     }
 }

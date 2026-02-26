@@ -124,7 +124,7 @@ public class ShopUI : MonoBehaviour
     }
 
     private int exitClicks = 0;
-    private bool hasPurchasedInRun1 = false;
+    public bool hasPurchasedInRun1 = false;
 
     /// <summary>
     /// Cierra la tienda y pasa al siguiente diálogo.

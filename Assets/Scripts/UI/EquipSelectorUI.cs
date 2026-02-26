@@ -39,14 +39,26 @@ public class EquipSelectorUI : MonoBehaviour
 
             btn.onClick.AddListener(() =>
             {
+                if (Pizzard.Progression.SaveManager.Instance != null)
+                {
+                    Pizzard.Progression.SaveManager.Instance.CurrentSave.selectedWandTierEquipped = equip.tier;
+                }
+
                 if (playerEquip != null)
                 {
                     playerEquip.EquipObject(equip);
                 }
                 else
                 {
-                    Debug.LogWarning("[EquipSelector] No PlayerEquip found! Wand selection bypassed for now.");
+                    Debug.Log("[EquipSelector] Wand saved to SaveManager. PlayerEquip not in scene yet to visually hold it.");
                 }
+                
+                var shopUI = FindObjectOfType<ShopUI>(true);
+                if (shopUI != null)
+                {
+                    shopUI.hasPurchasedInRun1 = true;
+                }
+                
                 gameObject.SetActive(false);
             });
         }
