@@ -22,10 +22,10 @@ namespace Pizzard.EditorTools
                 "Assets/FlowScenes/IntroDialog.unity",
                 "Assets/FlowScenes/Shop.unity",
                 "Assets/FlowScenes/PreBossDialog.unity",
-                "Assets/FlowScenes/BossArena_1.unity",
-                "Assets/FlowScenes/BossArena_2.unity",
-                "Assets/FlowScenes/BossArena_3.unity",
-                "Assets/FlowScenes/BossArena_4.unity",
+                "Assets/FlowScenes/BossArena_1.unity", // Found in FlowScenes
+                "Assets/FlowScenes/BossArena_2.unity", // Found in FlowScenes
+                "Assets/FlowScenes/BossArena_3.unity", // Found in FlowScenes
+                "Assets/FlowScenes/BossArena_4.unity", // Found in FlowScenes
                 "Assets/FlowScenes/PostBossDialog.unity",
                 "Assets/FlowScenes/Credits.unity"
             };

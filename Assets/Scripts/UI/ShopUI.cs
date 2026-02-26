@@ -38,7 +38,7 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnUpgradeMaxPotion()
     {
-        if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.SpendCurrency(1))
+        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
             if (healthPotionSystem != null)
@@ -55,13 +55,13 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnUpgradeElementalFatigue()
     {
-        if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.SpendCurrency(1))
+        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
             Debug.Log("[ShopUI] Improved Elemental Fatigue!");
-            if (Player.FatigueSystem.Instance != null)
+            if (FatigueSystem.Instance != null)
             {
-                Player.FatigueSystem.Instance.UpgradeMaxFatigue(20);
+                FatigueSystem.Instance.UpgradeMaxFatigue(20);
             }
         }
         else
@@ -75,7 +75,7 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnUpgradeWand()
     {
-        if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.SpendCurrency(1))
+        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
             if (playerEquip != null)
@@ -99,9 +99,9 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnShopExit()
     {
-        if (Progression.ProgressionManager.Instance != null && Progression.SaveManager.Instance != null)
+        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.SaveManager.Instance != null)
         {
-            if (Progression.SaveManager.Instance.CurrentSave.currentBossIndex == 1 && !hasPurchasedInRun1)
+            if (Pizzard.Progression.SaveManager.Instance.CurrentSave.currentBossIndex == 1 && !hasPurchasedInRun1)
             {
                 Debug.LogWarning("[ShopUI] Cannot exit! You must buy at least 1 upgrade (Wand) on your first run.");
                 return;

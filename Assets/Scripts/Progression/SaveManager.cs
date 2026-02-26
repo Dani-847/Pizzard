@@ -121,7 +121,7 @@ namespace Pizzard.Progression
                 ProgressionManager.Instance.SetCurrencyFromSave(CurrentSave.tokens);
             }
 
-            var playerEquip = FindObjectOfType<Player.PlayerEquip>();
+            var playerEquip = FindObjectOfType<PlayerEquip>();
             if (playerEquip != null)
             {
                 playerEquip.LoadTierFromSave(CurrentSave.currentWandTier);

@@ -52,9 +52,9 @@ public class PlayerEquip : MonoBehaviour
             CurrentWandTier++;
             Debug.Log($"[PlayerEquip] Wand upgraded to Tier {CurrentWandTier}!");
             
-            if (Progression.SaveManager.Instance != null)
+            if (Pizzard.Progression.SaveManager.Instance != null)
             {
-                Progression.SaveManager.Instance.CurrentSave.currentWandTier = CurrentWandTier;
+                Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier = CurrentWandTier;
             }
         }
         else
