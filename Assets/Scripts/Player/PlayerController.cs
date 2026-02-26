@@ -5,7 +5,6 @@ namespace Pizzard.Player
     /// <summary>
     /// Handles 2D movement and dash mechanics for the player using Rigidbody2D.
     /// </summary>
-    [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerController : MonoBehaviour
     {
         [Header("Movement Settings")]

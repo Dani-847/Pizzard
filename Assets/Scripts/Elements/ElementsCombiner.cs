@@ -100,7 +100,7 @@ public class ElementsCombiner : MonoBehaviour
 
         ElementType elementToAdd = playerEquip.equipedObject.elements[index];
         selectedElements.Add(elementToAdd);
-        elementsUI.UpdateUI(selectedElements);
+        if (elementsUI != null) elementsUI.UpdateUI(selectedElements);
 
         // Registrar combinación para 1, 2 o 3 elementos
         CheckAndRegisterCombination();
@@ -183,6 +183,6 @@ public class ElementsCombiner : MonoBehaviour
     public void ClearSelectedElements()
     {
         selectedElements.Clear();
-        elementsUI.ClearUI();
+        if (elementsUI != null) elementsUI.ClearUI();
     }
 }

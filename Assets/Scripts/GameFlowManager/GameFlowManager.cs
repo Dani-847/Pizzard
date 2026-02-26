@@ -100,9 +100,9 @@ namespace Pizzard.Core
                         break;
                     case GameState.BossFight:
                         // Enable HUD elements during boss fights
-                        Transform elementsUI = uiParent.Find("ElementsUI");
+                        Transform elementsUI = uiParent.Find("Elementos");
                         Transform bossUI = uiParent.Find("PblobUI"); // Boss proto name
-                        Transform playerHP = uiParent.Find("CharacterHPUI");
+                        Transform playerHP = uiParent.Find("HealthUI");
                         Transform potionUI = uiParent.Find("PotionUI");
                         
                         if (elementsUI) elementsUI.gameObject.SetActive(true);
