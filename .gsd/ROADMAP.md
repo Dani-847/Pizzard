@@ -14,11 +14,11 @@
 ## Phases
 
 ### Phase 1: Foundation & Refactoring
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Architecture setup. Move unused assets to `Archive`. Establish the `GameFlowManager` singleton and scene transition pipeline.
 
 ### Phase 2: Core UI & Main Menu
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Build out the Main Menu, Settings panel, Dialog UI, and wire them into the `GameFlowManager`.
 
 ### Phase 3: Player Mechanics & Wand Combinations
