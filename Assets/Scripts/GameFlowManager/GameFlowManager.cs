@@ -31,6 +31,12 @@ namespace Pizzard.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // Ensure ProgressionManager persists on the same core object or is instantiated
+            if (gameObject.GetComponent<Progression.ProgressionManager>() == null)
+            {
+                gameObject.AddComponent<Progression.ProgressionManager>();
+            }
         }
 
         private void Start()
