@@ -13,7 +13,7 @@ public class EquipSelectorUI : MonoBehaviour
 
     void OnEnable()
     {
-        playerEquip = FindObjectOfType<PlayerEquip>();
+        playerEquip = FindObjectOfType<PlayerEquip>(true);
         GenerateButtons();
     }
 
