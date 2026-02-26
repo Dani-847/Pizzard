@@ -47,7 +47,7 @@ public class CombinationsUI : MonoBehaviour
     {
         OcultarPanel();
         // Notificar a OptionsUI que se debe mostrar nuevamente
-        FindObjectOfType<OptionsUI>()?.Show();
+        FindObjectOfType<OptionsUI>(true)?.Show();
     }
 
     // Crear toda la lista de rectángulos de combinaciones

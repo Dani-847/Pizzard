@@ -26,7 +26,10 @@ public class EquipSelectorUI : MonoBehaviour
         {
             GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer);
             
-            bool isUnlocked = playerEquip != null && equip.tier <= playerEquip.CurrentWandTier;
+            int currentTier = playerEquip != null ? playerEquip.CurrentWandTier 
+                : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier : 1);
+
+            bool isUnlocked = equip.tier <= currentTier;
             Button btn = buttonGO.GetComponent<Button>();
             btn.interactable = isUnlocked;
 

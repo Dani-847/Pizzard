@@ -82,13 +82,20 @@ public class ShopUI : MonoBehaviour
         if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
-            if (playerEquip != null)
+            
+            if (Pizzard.Progression.SaveManager.Instance != null)
             {
-                playerEquip.UpgradeWandTier();
-                UpdateWandButtonUI();
+                int savedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier;
+                if (savedTier < 3)
+                {
+                    Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier = savedTier + 1;
+                }
             }
-            else
-                Debug.LogWarning("[ShopUI] PlayerEquip missing, cannot upgrade Wand!");
+
+            if (playerEquip != null)
+                playerEquip.UpgradeWandTier();
+                
+            UpdateWandButtonUI();
         }
         else
         {
@@ -100,7 +107,8 @@ public class ShopUI : MonoBehaviour
     {
         if (btnUpgradeWand == null) return;
         
-        int currentTier = playerEquip != null ? playerEquip.CurrentWandTier : 1;
+        int currentTier = playerEquip != null ? playerEquip.CurrentWandTier 
+            : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier : 1);
         
         if (currentTier >= 3)
         {
