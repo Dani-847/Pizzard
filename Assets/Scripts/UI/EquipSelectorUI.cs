@@ -29,7 +29,14 @@ public class EquipSelectorUI : MonoBehaviour
 
             buttonGO.GetComponent<Button>().onClick.AddListener(() =>
             {
-                playerEquip.EquipObject(equip);
+                if (playerEquip != null)
+                {
+                    playerEquip.EquipObject(equip);
+                }
+                else
+                {
+                    Debug.LogWarning("[EquipSelector] No PlayerEquip found! Wand selection bypassed for now.");
+                }
                 gameObject.SetActive(false);
             });
         }
