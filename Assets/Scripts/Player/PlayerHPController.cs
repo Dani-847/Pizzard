@@ -28,6 +28,9 @@ public class PlayerHPController : MonoBehaviour
     /// </summary>
     void Start()
     {
+        if (hpUI == null)
+            hpUI = FindObjectOfType<CharacterHPUI>(true);
+
         vidaActual = vidaMaxima;
         if (hpUI != null)
             hpUI.ActualizarUI(vidaActual);
