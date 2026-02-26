@@ -8,7 +8,8 @@ namespace Pizzard.Core
         IntroDialog,
         Shop,
         PreBossDialog,
-        BossFight
+        BossFight,
+        PostBossDialog
     }
 
     /// <summary>
@@ -90,6 +91,9 @@ namespace Pizzard.Core
                     case GameState.PreBossDialog:
                         if (ui.dialogUI != null) ui.dialogUI.ShowPreBossDialog(this);
                         break;
+                    case GameState.PostBossDialog:
+                        if (ui.dialogUI != null) ui.dialogUI.ShowPostBossDialog(this);
+                        break;
                     case GameState.Shop:
                         if (ui.tiendaUI != null) ui.tiendaUI.Show(this);
                         break;
@@ -125,6 +129,7 @@ namespace Pizzard.Core
                 GameState.Shop => "Shop",
                 GameState.PreBossDialog => "PreBossDialog",
                 GameState.BossFight => "BossArena_" + currentBossIndex,
+                GameState.PostBossDialog => "PostBossDialog",
                 _ => string.Empty
             };
         }
@@ -167,6 +172,16 @@ namespace Pizzard.Core
                     break;
                 case GameState.BossFight:
                     // Boss defeated
+                    // Reward tokens via ProgressionManager
+                    int tokensToReward = (currentBossIndex == 1) ? 1 : 2;
+                    if (Progression.ProgressionManager.Instance != null)
+                    {
+                        Progression.ProgressionManager.Instance.AddCurrency(tokensToReward);
+                    }
+                    
+                    ChangeState(GameState.PostBossDialog);
+                    break;
+                case GameState.PostBossDialog:
                     if (currentBossIndex < 4)
                     {
                         currentBossIndex++;
@@ -174,8 +189,10 @@ namespace Pizzard.Core
                     }
                     else
                     {
-                        // All bosses defeated, return to main menu or victory scene
-                        Debug.Log("[GameFlowManager] All bosses defeated!");
+                        // Win Condition: All bosses defeated.
+                        // Phase 9 requires Magic Pizza + Credits instead of jumping straight to Main Menu.
+                        Debug.Log("[GameFlowManager] All bosses defeated! Triggering Win Sequence.");
+                        // For now we load a generic "Credits" scene or go to Menu if it doesn't exist yet.
                         VolverAlMenu();
                     }
                     break;
