@@ -1,0 +1,132 @@
+Descripción (Steam): Hecha
+Descripción:
+El jugador va a iniciar en un tutorial en el que se le explicarán las mecánicas básicas del
+juego (moverse para esquivar y los elementos básicos sin combinar y en un futuro las
+combinaciones).
+Irá avanzando tras matar enemigos de una naturaleza algo extraña. Tras vencerlos, se
+abrirá una tienda para poder mejorar el personaje y cambiar algunos de sus atributos, como
+la varita, estadísticas y consumibles.
+Cuando derrote los suficientes enemigos nuestro protagonista se enfrentará al jefe final, tras
+ello podrá acceder a la pizza mágica.
+Habrá algún sistema que controle que el jugador no esté realizando la misma combinación
+de hechizos de forma consecutiva (por maná o enfriamiento de elementos individuales,
+etc…)
+El pizzard podrá elegir elementos y hacer combinaciones según el tier de la varita, es decir,
+varita t1 podrá elegir un elemento y hacer combinaciones de un elemento, la de t2, podrá
+elegir 2 elementos y hacer combinaciones de 2 elementos, así mismo, la t3, podrá elegir 3
+elementos y hacer combinaciones de 3 elementos, en los que la repetición y el orden son
+importantes.
+El personaje podrá recibir X golpes antes de morir.
+Combinaciones que podrá usar el personaje según la varita:
+Queso: devuelve un proyectil (como si fuera un parry)
+Pepperoni: Un proyectil que no hace daño, pero al impactar quema al enemigo
+Piña: Un proyectil que gracias a su bromelina el enemigo recibe directo de impacto
+Queso, Queso: un muro en el escenario que si lo pones debajo del enemigo, le hace daño
+y devuelve los proyectiles a su paso, tiene vida
+Queso, Pepperoni: despliega un área en el suelo que aplica quemado al contacto, cuanto
+más tiempo se quede el personaje, más daño recibirá
+Queso, Piña: un pilar que hace daño por tics en un área
+Pepperoni, Queso: un proyectil que aplica quemado y se queda pegado durante 2
+segundos en el enemigo, cuanto más tiempo esté pegado, más daño recibe
+Peperoni, Peperoni: tira un proyectil que deja un rastro en el suelo de fuego y aplica
+quemado en el impacto, hace daño por cada fuego que haya tocando al enemigo
+Peperoni, Piña: una catapulta que explota y aplica fuego
+Piña, Queso: un proyectil que hace daño y al impactar hace daño por tiempo, además de
+absorber los proyectiles que entran en contacto con este
+Piña, Peperoni: un mini tp hacia adelante que explota y hace daño cuando lo haces
+Piña, Piña: un proyectil que al impactar, explota en proyectiles más pequeños que también
+hacen daño
+pepperoni,pepperoni,pepperoni: tira un proyectil que se queda girando de forma estática
+durante 2 segundos y esparce fuego cada 0,2 segundos
+pepperoni,pepperoni,piña: tira un proyectil que se queda girando de forma estática
+durante 2 segundos y esparce proyectiles que aplican quemado cada 0,2 segundos
+pepperoni,pepperoni,queso: tira un proyectil que se queda girando de forma estática
+durante 2 segundos y esparce fuego cada 0,2 segundos, las áreas del quemado son más
+grandes
+pepperoni,piña,pepperoni: una catapulta que explota en un área muy grande y aplica
+fuego
+pepperoni,piña,piña: una catapulta que explota y aplica fuego, hace más daño
+pepperoni,piña,queso: una catapulta que explota y aplica fuego, absorbe todos los
+proyectiles
+pepperoni,queso,pepperoni: un proyectil que aplica el doble quemado y se queda pegado
+durante 2 segundos en el enemigo, cuanto más tiempo esté pegado, más daño recibe
+pepperoni,queso,piña: un proyectil que aplica quemado y se queda pegado durante 1
+segundo en el enemigo, cuanto más tiempo esté pegado, más daño recibe, al final se divide
+en proyectiles más pequeños que se quedan pegado durante 1 segundo
+pepperoni,queso,queso: un proyectil que aplica quemado y se queda pegado durante 4
+segundos en el enemigo, cuanto más tiempo esté pegado, más daño recibe
+piña,pepperoni,pepperoni: proyectiles duales que hacen daño a su paso y luego te
+teletransportas a dicha posición, haces una explosión más grande cuando llegas
+piña,pepperoni,piña: proyectiles duales que hacen daño a su paso y luego te
+teletransportas a dicha posición, haces una explosión cuando llegas
+piña,pepperoni,queso: proyectiles duales que hacen daño a su paso y luego te
+teletransportas a dicha posición, haces una explosión cuando llegas y devuelves los
+proyectiles afectados por la explosión
+piña,piña,pepperoni: un proyectil que al impactar explota en más proyectiles que aplican
+quemado
+piña,piña,piña: un proyectil que al impactar explota en más proyectiles que a su vez
+explota en más proyectiles
+piña,piña,queso: un proyectil que al impactar explota en más proyectiles que a su vez
+explota en más proyectiles que absorben los proyectiles con los que impacta
+piña,queso,pepperoni: un proyectil que absorbe los proyectiles y aplica tantas cargas de
+quemado como proyectiles haya absorbido
+piña,queso,piña: un proyectil que absorbe los proyectiles, el proyectil hace tanto daño
+como proyectiles haya absorbido
+piña,queso,queso: un proyectil que absorbe los proyectiles, el proyectil pasa a ser un cono
+queso,pepperoni,pepperoni: despliega un área en el suelo que aplica quemado al
+contacto, cuanto más tiempo se quede el personaje, más daño recibirá, aplica el doble de
+cargas de fuego
+queso,pepperoni,piña: despliega un área en el suelo que aplica quemado al contacto,
+cuanto más tiempo se quede el personaje, más daño recibirá y también recibirá daño por
+tiempo
+queso,pepperoni,queso: despliega un área más grande en el suelo que aplica quemado al
+contacto, cuanto más tiempo se quede el personaje, más daño recibirá
+queso,piña,pepperoni: un pilar que hace daño por tics y stackea quemado, más daño
+cuanto más quemado
+queso,piña,piña: un pilar que tiene un área más grande y hace más daño
+queso,piña,queso: un pilar que tiene más vida, ralentiza los proyectiles y hace daño
+queso,queso,pepperoni: un muro que devuelve proyectiles y les aplica quemado
+queso,queso,piña: un muro que devuelve proyectiles con más daño
+queso,queso,queso: agujero que absorbe los proyectiles y los devuelve directamente al
+enemigo con un x1.5 de daño
+Planteamiento de los bosses (susceptible al cambio)
+“Que Raberto te advierta de que un buen pelo puede ser malo” (Como pista de que el pelo
+pues es malo, a ser posible algo que rime porque me hace gracia)
+P’blob: (no recibe daño mientras se está haciendo la gymkana) slime, se hace más grande
+el bigote cuando se va reduciendo la vida, tienes que cortarle el bigote porque si no obtiene
+más daño, ataques más rápido, etc…
+Hay 3 habitaciones y cada habitación tiene X ataques, como un simón dice uno con bolas
+más rápidas o lentas, en cada fase que sea tán rápido que sea imposible de esquivar si no
+estás posicionado de antes, si cada patrón lo esquivas bien, entonces saldrá una porción de
+P’blob.
+Ataque 1: Tira bolas de pelo desde el bigote, algunas van más rápido y otras más lento
+Ataque 2: “Llena todo el escenario de pelo” lo que hace que te limite tu campo de
+movimiento a un círculo que se irá desplazando por el escenario, aparecerá con el beat
+correcto yhará acciones con el beat correcto también como moverse, etc… Habrán otros
+dos círculos más que aparecerán en cualquier otro momento de la canción excepto en el
+beat correcto (estos son los agujeros falsos), tendrás que seguir al del beat correcto y habrá
+alguna pista de cuales son de verdad o no, se irán dividiendo como el juego del trilero que
+esconde la bola en un vaso
+Ataque 3: Tendrás que atravesar una habitación fijándote en las losas del suelo, algunas
+tendrán pelo y estas te harán daño si las pisas
+Una vez pasadas todas las habitaciones, podrás llegar a P’blob y darle el golpe final
+Hec’kiel: un dragon con dos partes que según donde le ataques modificará su ataque
+dependiendo del elemento que reciba
+Ataque 1: Escoge 2 elementos random cada X tiempo y te ataca con él
+Ataque 2: Te refleja el ataque que has realizado
+Ataque 3: Escoge un elemento aleatorio con otro que le hayas tirado
+Fase 2: El dragón se divide en 2 partes y cada una realiza un ataque con un elemento
+Cuando las dos fases se separen, los ataques de elementos individuales se juntan y hacen
+el ataque combinado en el sitio que se realiza
+Horno (Pomodoro Paganini): Es un horno gigante de metal con su cara o lo que podría ser
+su cara (o bigote, no tiene pq tener cara, bigote es obligatorio) esculpido en hierro, tiene una
+boca muy grande en forma de rejilla como un horno de metal. Cuando ataca podria tener
+una indicacion de color para el “elemento” del ataque, y lanzar una pizza de x elemento que
+sea uno de los que tenga o pueda combinar el player, para poder pegarle a la pizza con el
+mismo elemento que la devolveria y seria la unica forma de hacerle daño
+- Hacerlo como si fuera un pong
+Niggel Worthington: Un británico (negro) enemigo de la cultura culinaria italiana y te roba
+elementos, te da un bufo a la vez que te quita un elemento o te priva de algo en general,
+tienes que hacer algo para potenciar el bufo y quedate con el debufo o quedarte con el bufo
+y quitarte el debufo
+- Sprites de los soldados verdes de toy story

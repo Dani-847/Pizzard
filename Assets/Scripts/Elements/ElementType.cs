@@ -8,5 +8,6 @@ public enum ElementType
 {
     queso,
     pepperoni,
-    piña
+    piña,
+    None
 }

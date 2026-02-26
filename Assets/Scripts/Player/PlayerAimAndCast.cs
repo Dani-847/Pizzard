@@ -85,6 +85,8 @@ public class PlayerAimAndCast : MonoBehaviour
         }
     }
 
+    public float baseFatigueCost = 15f;
+
     public void OnCastSpell(InputAction.CallbackContext context)
     {
         if (!context.performed)
@@ -105,6 +107,24 @@ public class PlayerAimAndCast : MonoBehaviour
             combiner.ClearSelectedElements();
             return;
         }
+
+        // --- FATIGUE CALCULATION ---
+        float cost = baseFatigueCost * elements.Count * combiner.spamCostMultiplier;
+        if (Pizzard.Core.FatigueSystem.Instance != null)
+        {
+            if (!Pizzard.Core.FatigueSystem.Instance.CanCast(cost))
+            {
+                Debug.LogWarning($"[Fatigue] Not enough fatigue! Need {cost}, Have {Pizzard.Core.FatigueSystem.Instance.CurrentFatigue}");
+                // Optional: Play a "fizzle" sound or UI shake here
+                combiner.ClearSelectedElements();
+                return;
+            }
+            // Consume it
+            Pizzard.Core.FatigueSystem.Instance.ConsumeFatigue(cost);
+        }
+
+        // Register the cast with multiplier system
+        combiner.RegisterCast(key);
 
         // 3) CASO ESPECIAL: escudo de queso móvil (solo "queso")
         if (key == "queso")

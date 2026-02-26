@@ -4,13 +4,6 @@ using UnityEngine;
 
 namespace Pizzard.Elements
 {
-    public enum ElementType
-    {
-        None,
-        Queso,
-        Pepperoni,
-        Pina
-    }
 
     /// <summary>
     /// Static utility that evaluates a list of queued elements and returns 

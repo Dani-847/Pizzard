@@ -1,6 +1,7 @@
 //PlayerHPController.cs
 
 using UnityEngine;
+using Pizzard.Core;
 
 /// <summary>
 /// Gestiona la lógica de la vida del personaje, comunica los cambios a la UI 

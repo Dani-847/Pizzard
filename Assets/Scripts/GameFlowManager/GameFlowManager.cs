@@ -9,7 +9,8 @@ namespace Pizzard.Core
         Shop,
         PreBossDialog,
         BossFight,
-        PostBossDialog
+        PostBossDialog,
+        WinSequence // New State for Magic Pizza / Credits
     }
 
     /// <summary>
@@ -109,6 +110,9 @@ namespace Pizzard.Core
                         if (playerHP) playerHP.gameObject.SetActive(true);
                         if (potionUI) potionUI.gameObject.SetActive(true);
                         break;
+                    case GameState.WinSequence:
+                        // We leave all UI hidden, the Credits scene will have its own Canvas
+                        break;
                 }
             }
 
@@ -130,6 +134,7 @@ namespace Pizzard.Core
                 GameState.PreBossDialog => "PreBossDialog",
                 GameState.BossFight => "BossArena_" + currentBossIndex,
                 GameState.PostBossDialog => "PostBossDialog",
+                GameState.WinSequence => "Credits",
                 _ => string.Empty
             };
         }
@@ -190,11 +195,12 @@ namespace Pizzard.Core
                     else
                     {
                         // Win Condition: All bosses defeated.
-                        // Phase 9 requires Magic Pizza + Credits instead of jumping straight to Main Menu.
                         Debug.Log("[GameFlowManager] All bosses defeated! Triggering Win Sequence.");
-                        // For now we load a generic "Credits" scene or go to Menu if it doesn't exist yet.
-                        VolverAlMenu();
+                        ChangeState(GameState.WinSequence);
                     }
+                    break;
+                case GameState.WinSequence:
+                    VolverAlMenu(); // Used when exiting Credits
                     break;
                 default:
                     Debug.LogWarning("[GameFlowManager] Cannot advance phase from " + CurrentState);

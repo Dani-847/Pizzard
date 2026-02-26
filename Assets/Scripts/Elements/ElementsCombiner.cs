@@ -55,6 +55,26 @@ public class ElementsCombiner : MonoBehaviour
             TrySelectElementAtIndex(2);
     }
 
+    private string lastCombinationCast = "";
+    private int sameCastCount = 0;
+    public float spamCostMultiplier = 1.0f;
+    private float spamResetTimer = 0f;
+    public float spamResetDelay = 3.0f; // Seconds before combo counter resets
+
+    private void Update()
+    {
+        if (spamResetTimer > 0)
+        {
+            spamResetTimer -= Time.deltaTime;
+            if (spamResetTimer <= 0)
+            {
+                sameCastCount = 0;
+                spamCostMultiplier = 1.0f;
+                lastCombinationCast = "";
+            }
+        }
+    }
+
     public void TrySelectElementAtIndex(int index)
     {
         if (playerEquip.equipedObject == null) {
@@ -65,8 +85,16 @@ public class ElementsCombiner : MonoBehaviour
             Debug.Log("El arma no tiene un elemento en la posicion: " + index);
             return;
         }
-        if (playerEquip.equipedObject.elements.Count <= selectedElements.Count) {
-            Debug.Log("Ya has seleccionado todos los elementos posibles");
+
+        // Apply Wand Tier Limit
+        // Tier 1 -> Max 1 element
+        // Tier 2 -> Max 2 elements
+        // Tier 3+ -> 3+ elements
+        int maxAllowed = playerEquip.CurrentWandTier;
+        if (maxAllowed > 3) maxAllowed = 3; // Hardcap at 3 for safety based on current 3-slot UI
+
+        if (selectedElements.Count >= maxAllowed || selectedElements.Count >= playerEquip.equipedObject.MaxElements) {
+            Debug.Log($"Wand Tier {playerEquip.CurrentWandTier}: Limits reached.");
             return;
         }
 
@@ -76,6 +104,25 @@ public class ElementsCombiner : MonoBehaviour
 
         // Registrar combinación para 1, 2 o 3 elementos
         CheckAndRegisterCombination();
+    }
+
+    /// <summary>
+    /// Call this when the spell is actually fired/cast to increment spam counters.
+    /// </summary>
+    public void RegisterCast(string combinationKey)
+    {
+        if (combinationKey == lastCombinationCast)
+        {
+            sameCastCount++;
+            spamCostMultiplier = 1.0f + (sameCastCount * 0.5f); // +50% cost per consecutive cast
+        }
+        else
+        {
+            sameCastCount = 0;
+            spamCostMultiplier = 1.0f;
+            lastCombinationCast = combinationKey;
+        }
+        spamResetTimer = spamResetDelay;
     }
 
     private void CheckAndRegisterCombination()

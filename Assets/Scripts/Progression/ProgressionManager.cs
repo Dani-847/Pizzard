@@ -22,6 +22,12 @@ namespace Pizzard.Progression
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            
+            // Attach SaveManager alongside this progression data script if missing
+            if (gameObject.GetComponent<SaveManager>() == null)
+            {
+                gameObject.AddComponent<SaveManager>();
+            }
         }
 
         /// <summary>
@@ -33,6 +39,8 @@ namespace Pizzard.Progression
             
             BossCurrency += amount;
             Debug.Log($"[ProgressionManager] Added {amount} Boss Currency. Total: {BossCurrency}");
+            
+            SaveManager.Instance?.SaveGame();
         }
 
         /// <summary>
@@ -48,9 +56,18 @@ namespace Pizzard.Progression
 
             BossCurrency -= amount;
             Debug.Log($"[ProgressionManager] Spent {amount} Boss Currency. Remaining: {BossCurrency}");
+            
+            SaveManager.Instance?.SaveGame();
             return true;
         }
 
-        // For future: Unlocked Wand Tiers or other persistent stats can go here.
+        /// <summary>
+        /// Called by SaveManager to overwrite the in-memory currency upon load.
+        /// </summary>
+        public void SetCurrencyFromSave(int savedTokens)
+        {
+            BossCurrency = savedTokens;
+            Debug.Log($"[ProgressionManager] Loaded {savedTokens} Boss Currency from JSON.");
+        }
     }
 }

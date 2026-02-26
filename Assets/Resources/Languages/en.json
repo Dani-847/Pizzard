@@ -1,11 +1,96 @@
 {
   "entries": [
-    { "key": "menu_play", "value": "Play" },
-    { "key": "menu_options", "value": "Options" },
-    { "key": "menu_exit", "value": "Exit" },
-    { "key": "options_language", "value": "Language" },
-    { "key": "options_volume", "value": "Volume" },
-    { "key": "options_combinations", "value": "Combinations" },
-    { "key": "options_accept", "value": "Accept" }
+    {
+      "key": "menu_play",
+      "value": "Play"
+    },
+    {
+      "key": "menu_options",
+      "value": "Options"
+    },
+    {
+      "key": "menu_exit",
+      "value": "Exit"
+    },
+    {
+      "key": "options_language",
+      "value": "Language"
+    },
+    {
+      "key": "options_volume",
+      "value": "Volume"
+    },
+    {
+      "key": "options_combinations",
+      "value": "Combinations"
+    },
+    {
+      "key": "options_accept",
+      "value": "Accept"
+    },
+    {
+      "key": "dialog_intro_1",
+      "value": "Raberto: Hey Bob! Wake up!"
+    },
+    {
+      "key": "dialog_intro_2",
+      "value": "Bob: What's going on? I was dreaming about extra cheese..."
+    },
+    {
+      "key": "dialog_intro_3",
+      "value": "Raberto: The kingdom is in danger! Someone stole the Sacred Pizza."
+    },
+    {
+      "key": "dialog_intro_4",
+      "value": "Bob: No way! Not the sacred crust!"
+    },
+    {
+      "key": "dialog_intro_5",
+      "value": "Raberto: Take these tokens, go to my shop, and prepare yourself."
+    },
+    {
+      "key": "dialog_preboss1_1",
+      "value": "Bob: That monster looks like raw dough..."
+    },
+    {
+      "key": "dialog_preboss1_2",
+      "value": "Raberto: Watch out! It loves to ram. Use your spells wisely and watch your fatigue!"
+    },
+    {
+      "key": "dialog_preboss2_1",
+      "value": "Bob: Ugh, this one smells like expired pepperoni."
+    },
+    {
+      "key": "dialog_preboss2_2",
+      "value": "Raberto: It keeps its distance. Get close when you have an opening!"
+    },
+    {
+      "key": "dialog_preboss3_1",
+      "value": "Bob: Why does it have pineapple? This is sacrilege!"
+    },
+    {
+      "key": "dialog_preboss3_2",
+      "value": "Raberto: Watch out for the acidic juice! Keep moving."
+    },
+    {
+      "key": "dialog_preboss4_1",
+      "value": "Bob: The Fast Food King himself!"
+    },
+    {
+      "key": "dialog_preboss4_2",
+      "value": "Raberto: This is the final battle Bob. Don't hold anything back!"
+    },
+    {
+      "key": "dialog_postboss_1",
+      "value": "Bob: Take that! One less slice to worry about."
+    },
+    {
+      "key": "dialog_postboss_2",
+      "value": "Raberto: Well done. Come by the shop to rest up and spend those tokens."
+    },
+    {
+      "key": "shop_warning_exit",
+      "value": "Raberto: Are you sure? You're going to face the boss without spending your tokens..."
+    }
   ]
 }

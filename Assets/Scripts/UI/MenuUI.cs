@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Pizzard.Core;
 
 /// <summary>
 /// Gestionar botones principales del menú (Jugar, Ajustes, Salir),

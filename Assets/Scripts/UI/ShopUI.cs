@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Pizzard.Core;
 
 /// <summary>
 /// Gestiona la interfaz de la tienda durante el flujo del juego.
@@ -33,29 +34,97 @@ public class ShopUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Mejora la capacidad máxima de pociones.
+    /// Mejora la capacidad máxima de pociones. Consumes 1 Token.
     /// </summary>
     public void OnBtnUpgradeMaxPotion()
     {
-        if (healthPotionSystem != null)
-            healthPotionSystem.MejorarCapacidad();
+        if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.SpendCurrency(1))
+        {
+            hasPurchasedInRun1 = true;
+            if (healthPotionSystem != null)
+                healthPotionSystem.MejorarCapacidad();
+        }
+        else
+        {
+            Debug.LogWarning("[ShopUI] No tokens to upgrade potion!");
+        }
     }
 
     /// <summary>
-    /// Mejora la fatiga elemental (pendiente de implementar).
+    /// Mejora la fatiga elemental. Consumes 1 Token.
     /// </summary>
     public void OnBtnUpgradeElementalFatigue()
     {
-        // TODO: Implementar mejora de fatiga elemental
+        if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.SpendCurrency(1))
+        {
+            hasPurchasedInRun1 = true;
+            Debug.Log("[ShopUI] Improved Elemental Fatigue!");
+            if (Player.FatigueSystem.Instance != null)
+            {
+                Player.FatigueSystem.Instance.UpgradeMaxFatigue(20);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[ShopUI] No tokens to upgrade fatigue!");
+        }
     }
 
     /// <summary>
+    /// Mejora el nivel de la varita (Tier). Consumes 1 Token.
+    /// </summary>
+    public void OnBtnUpgradeWand()
+    {
+        if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.SpendCurrency(1))
+        {
+            hasPurchasedInRun1 = true;
+            if (playerEquip != null)
+                playerEquip.UpgradeWandTier();
+            else
+                Debug.LogWarning("[ShopUI] PlayerEquip missing, cannot upgrade Wand!");
+        }
+        else
+        {
+            Debug.LogWarning("[ShopUI] No tokens to upgrade wand!");
+        }
+    }
+
+    private int exitClicks = 0;
+    private bool hasPurchasedInRun1 = false;
+
+    /// <summary>
     /// Cierra la tienda y pasa al siguiente diálogo.
+    /// Run 1: Blocks until hasPurchasedInRun1 is true.
+    /// Subsequent: Requires 2 clicks.
     /// </summary>
     public void OnBtnShopExit()
     {
-        Hide();
-        flowManager?.AvanzarFase();
+        if (Progression.ProgressionManager.Instance != null && Progression.SaveManager.Instance != null)
+        {
+            if (Progression.SaveManager.Instance.CurrentSave.currentBossIndex == 1 && !hasPurchasedInRun1)
+            {
+                Debug.LogWarning("[ShopUI] Cannot exit! You must buy at least 1 upgrade (Wand) on your first run.");
+                return;
+            }
+        }
+
+        exitClicks++;
+
+        if (exitClicks == 1)
+        {
+            Debug.Log("[ShopUI] Warning: Si sales ahora, te enfrentarás al boss sin terminar de comprar.\nClick again to Exit.");
+            var dialog = FindObjectOfType<DialogUI>();
+            if (dialog != null)
+            {
+                dialog.ShowShopWarningDialog();
+            }
+        }
+        else if (exitClicks >= 2)
+        {
+            exitClicks = 0;
+            Hide();
+            flowManager?.AvanzarFase();
+        }
     }
 
     /// <summary>

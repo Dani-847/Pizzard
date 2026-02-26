@@ -30,9 +30,9 @@ namespace Pizzard.Player
             if (queuedElements.Count >= currentWandTier) return;
 
             // Mapping 1, 2, 3 to Elements
-            if (Input.GetKeyDown(KeyCode.Alpha1)) QueueElement(ElementType.Queso);
-            else if (Input.GetKeyDown(KeyCode.Alpha2)) QueueElement(ElementType.Pepperoni);
-            else if (Input.GetKeyDown(KeyCode.Alpha3)) QueueElement(ElementType.Pina);
+            if (Input.GetKeyDown(KeyCode.Alpha1)) QueueElement(ElementType.queso);
+            else if (Input.GetKeyDown(KeyCode.Alpha2)) QueueElement(ElementType.pepperoni);
+            else if (Input.GetKeyDown(KeyCode.Alpha3)) QueueElement(ElementType.piña);
         }
 
         private void HandleCastInput()

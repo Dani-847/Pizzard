@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Pizzard.Core;
 
 /// <summary>
 /// Gestiona la interfaz de diálogos durante el flujo del juego.
@@ -38,11 +39,9 @@ public class DialogUI : MonoBehaviour
     [Tooltip("Prefijo para las claves de diálogo intro (ej: dialog_intro_1, dialog_intro_2)")]
     public string introDialogKeyPrefix = "dialog_intro_";
     [Tooltip("Prefijo para las claves de diálogo pre-boss")]
-    public string preBossDialogKeyPrefix = "dialog_preboss_";
+    public string preBossDialogKeyPrefix = "dialog_preboss"; // Append boss ID like dialog_preboss1_
     [Tooltip("Prefijo para las claves de diálogo post-boss")]
     public string postBossDialogKeyPrefix = "dialog_postboss_";
-    [Tooltip("Prefijo para las claves de diálogo pre-next-boss")]
-    public string preNextBossDialogKeyPrefix = "dialog_prenextboss_";
 
     private GameFlowManager flowManager;
     private string[] currentLines;
@@ -54,8 +53,6 @@ public class DialogUI : MonoBehaviour
         {
             continueButton.onClick.AddListener(OnContinueClicked);
         }
-        
-        Hide();
     }
 
     /// <summary>
@@ -63,10 +60,9 @@ public class DialogUI : MonoBehaviour
     /// </summary>
     public void Show()
     {
+        gameObject.SetActive(true);
         if (dialogPanel != null)
             dialogPanel.SetActive(true);
-        else
-            gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -98,7 +94,9 @@ public class DialogUI : MonoBehaviour
     public void ShowPreBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
-        StartDialogWithLocalization(preBossDialogKeyPrefix, preBossDialogLines);
+        // Dynamically get boss dialog string: dialog_preboss1_, dialog_preboss2_, etc
+        string dynamicKey = preBossDialogKeyPrefix + manager.currentBossIndex + "_";
+        StartDialogWithLocalization(dynamicKey, preBossDialogLines);
     }
 
     /// <summary>
@@ -112,13 +110,27 @@ public class DialogUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Inicia el diálogo antes de pasar al siguiente boss.
+    /// Muestra únicamente el texto de advertencia (al intentar salir de tienda pronto).
     /// </summary>
-    /// <param name="manager">GameFlowManager que recibirá la notificación al terminar.</param>
-    public void ShowPreNextBossDialog(GameFlowManager manager)
+    public void ShowShopWarningDialog()
     {
-        flowManager = manager;
-        StartDialogWithLocalization(preNextBossDialogKeyPrefix, preNextBossDialogLines);
+        if (LocalizationManager.Instance != null && !string.IsNullOrEmpty(LocalizationManager.Instance.GetText("shop_warning_exit")))
+        {
+            string loc = LocalizationManager.Instance.GetText("shop_warning_exit");
+            // Only show it if it exists and isn't a bracketed fallback
+            if(!loc.StartsWith("["))
+            {
+                dialogText.text = loc;
+                Show();
+                StartCoroutine(HideAfterWarning());
+            }
+        }
+    }
+
+    private IEnumerator HideAfterWarning()
+    {
+        yield return new WaitForSeconds(3.5f);
+        Hide();
     }
 
     /// <summary>

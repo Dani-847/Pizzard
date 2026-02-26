@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Pizzard.Core;
 
 /// <summary>
 /// Gestiona la pantalla de muerte: mostrar/ocultar y botones de acciones.

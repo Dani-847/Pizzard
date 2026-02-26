@@ -18,6 +18,8 @@ public class PlayerEquip : MonoBehaviour
 
     private GameObject currentVisual;
 
+    public int CurrentWandTier { get; private set; } = 1;
+
     public void EquipObject (EquipableObject newEquipableObject)
     {
         equipedObject = newEquipableObject;
@@ -33,6 +35,40 @@ public class PlayerEquip : MonoBehaviour
             currentVisual.transform.localRotation = Quaternion.identity;
         }
         
+        // Ensure UI and limits are respected after equip
         FindObjectOfType<ElementsCombiner>()?.ClearSelectedElements();
+    }
+
+    /// <summary>
+    /// Upgrades the wand tier (Max Tier 3).
+    /// Tier 1: 1 Element combinations
+    /// Tier 2: 2 Element combinations
+    /// Tier 3: 3+ Element combinations
+    /// </summary>
+    public void UpgradeWandTier()
+    {
+        if (CurrentWandTier < 3)
+        {
+            CurrentWandTier++;
+            Debug.Log($"[PlayerEquip] Wand upgraded to Tier {CurrentWandTier}!");
+            
+            if (Progression.SaveManager.Instance != null)
+            {
+                Progression.SaveManager.Instance.CurrentSave.currentWandTier = CurrentWandTier;
+            }
+        }
+        else
+        {
+            Debug.Log("[PlayerEquip] Wand is already at maximum tier!");
+        }
+    }
+
+    /// <summary>
+    /// Intialize the correct state from the Save file.
+    /// </summary>
+    public void LoadTierFromSave(int savedTier)
+    {
+        CurrentWandTier = Mathf.Clamp(savedTier, 1, 3);
+        Debug.Log($"[PlayerEquip] Wand loaded at Tier {CurrentWandTier}");
     }
 }

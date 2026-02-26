@@ -1,0 +1,227 @@
+Mecánicas de combate y combinación de elementos
+HU1.1 – Selección de elementos
+Como jugador, quiero seleccionar elementos mágicos desde un menú claro y visual, para
+preparar mis combinaciones durante el combate.
+HU1.2 – Combinación de elementos
+Como jugador, quiero poder combinar de 1 a 3 elementos según el grado de mi varita, para
+crear hechizos únicos con efectos variables.
+HU1.3 – Feedback visual y sonoro
+Como jugador, quiero recibir efectos visuales, sonoros y textuales cuando combine
+elementos, para entender fácilmente qué ha pasado y sentirme recompensado.
+HU1.4 – Limitación de repeticiones
+Como sistema, quiero que el jugador no abuse de una misma combinación, para fomentar la
+variedad.
+HU1.5 – Sistema de impacto y daño
+Como jugador, quiero que mis hechizos tengan efectos visibles en los enemigos (impacto,
+retroceso, quemadura, congelación…), para sentir la fuerza de mis combinaciones.
+Progresión y personalización
+HU2.1 – Tienda de Raberto
+Como jugador, quiero acceder a una tienda después de cada combate, para mejorar mi
+varita, estadísticas y comprar consumibles.
+HU2.2 – Mejora de varitas por tier
+Como jugador, quiero mejorar mi varita a distintos niveles, para desbloquear más capacidad
+de combinación.
+HU2.3 – Sistema de desbloqueos
+Como jugador, quiero desbloquear nuevos elementos y utensilios a medida que avanzo,
+para experimentar con más sinergias.
+HU2.4 – Control de progreso
+Como jugador, quiero ver mi progreso o logros, para motivarme a descubrir más
+combinaciones únicas.
+HU2.5 – Ajustes
+Como jugador, quiero poder personalizar los ajustes, para adaptar la experiencia de juego a
+mí.
+Controles y accesibilidad
+HU3.1 – Compatibilidad con mando y teclado
+Como jugador, quiero poder jugar tanto con teclado como con mando de Xbox, para usar el
+dispositivo con el que me sienta más cómodo.
+HU3.2 – Feedback de control
+Como jugador, quiero que el movimiento y los hechizos respondan rápido é intuitivamente,
+para sentir precisión durante la partida.
+Estructura y flujo del juego
+HU4.1 – Tutorial interactivo
+Como jugador, quiero tutoriales cortos e intuitivos, para aprender las mecánicas sin
+aburrirme.
+HU4.2 – Sistema de oleadas o niveles
+Como jugador, quiero avanzar por fases derrotando enemigos, para sentir progreso y
+desafío.
+HU4.3 – Jefes finales
+Como jugador, quiero enfrentarme a jefes con patrones únicos, para poner a prueba mis
+combinaciones y habilidades.
+HU4.4 – Final y recompensa
+Como jugador, quiero obtener la recompensa final (pizza mágica) al final de la partida, para
+sentir satisfacción y cierre narrativo.
+HU4.5 – Guardado
+Como sistema, quiero guardar la partida cuando la tienda se cierre y cuando se termina la
+pelea contra un jefe, para permitir al jugador descansar, buscar y darle tiempo a buscar
+nuevas combinaciones y mejoras. Además de poder modificar dicho archivo para obtener
+todos los recursos disponibles o viajar de forma rápida entre niveles.
+Estética, humor y narrativa
+HU5.1 – Narrativa liviana
+Como jugador, quiero que los diálogos con Bob y Raberto sean divertidos y con humor
+temático, para disfrutar de una experiencia ligera y memorable.
+HU5.2 – Estética de pizza y cocina mágica
+Como jugador, quiero que todo el entorno visual tenga coherencia con la temática
+pizza-magia, para sentir inmersión en el mundo de Pizzard.
+Satisfacción emocional y descubrimiento
+HU6.1 – Sensación de “eureka”
+Como jugador, quiero descubrir combinaciones nuevas de forma orgánica, para sentir que
+experimento y crear algo único.
+Guía de estilo / diseño visual
+Arquitectura de la información
+Diagrama (Sujeto a cambio):
+GameManager (Singleton)
+├─ uses → SaveSystem, UIManager, AudioManager, WaveManager, ShopManager,
+TutorialManager
+Player : MonoBehaviour, IDamageable
+├─ has → PlayerStats
+├─ has → Wand (equipped)
+├─ has → SpellCaster
+├─ has → Inventory (ElementSlots)
+├─ uses → InputActionsHandler, AnimationController
+└─ events → OnSpellCast, OnDamaged
+Wand (ScriptableObject / or Mono)
+├─ int tier (1..4)
+├─ int maxElements => tier
+└─ allowedCombinations rules
+Element : ScriptableObject
+├─ string id, Sprite icon, AudioClip sfx
+├─ enum ElementType {Queso, Pepperoni, Piña, ...}
+└─ effect parameters (dot, burn, absorb, etc.)
+SpellDefinition : ScriptableObject
+├─ List<Element> elementSequence
+├─ SpellBehaviour prefab (Projectile / Area / Wall)
+├─ float manaCost, cooldown, castTime
+└─ metadata (name, description, vfx, sfx)
+SpellInstance : MonoBehaviour (runtime)
+├─ applies SpellDefinition params
+├─ interacts with ProjectilePool
+├─ implements IProjectile or IAreaEffect
+Projectile : MonoBehaviour, IProjectile
+├─ Damage, Speed, Lifetime
+├─ onHit -> apply EffectComponents (Burn)
+└─ uses Pool
+EffectComponent (abstract)
+├─ Apply(target), OnTick, Duration
+└─ Concrete: BurnEffect, DOTEffect, AbsorbEffect, StunEffect
+CombinationEngine (static/service)
+├─ Generate SpellDefinition from element list + wand tier
+├─ Validate repetition limits (anti-abuse).
+SpellCaster (component on Player)
+├─ BuildSequence (UI / Input)
+├─ Call CombinationEngine -> SpellDefinition
+├─ checks cooldowns & mana & limits
+└─ raises OnSpellCast
+CooldownManager
+├─ tracks cooldowns por SpellDefinition / elements
+ElementSelectionUI : MonoBehaviour
+├─ shows element slots (keyboard + gamepad)
+├─ binds to InputActionsHandler
+└─ previews resulting SpellDefinition (name/icon)
+InputActionsHandler (uses Input System)
+├─ maps keyboard/mouse and gamepad to commands
+└─ exposes events: OnMove, OnCast, OnSelectElement
+EnemyBase : MonoBehaviour, IDamageable
+├─ Health, Armor, StatusEffects list
+├─ virtual TakeDamage, Die
+└─ child classes: Minion, RangedSoldier, BossBase
+BossBase : EnemyBase
+├─ StateMachine (phases)
+├─ custom attacks that reference player's element combos (Heck'kiel behavior)
+└─ uses PatternGenerator
+WaveManager
+├─ orchestrates waves and opens Shop after waves
+ShopManager (UI)
+├─ Shows upgrades: wand tier, health, damage, consumables. (según doc).
+└─ triggers SaveSystem on close
+SaveSystem
+├─ save/load PlayerStats, unlocked elements, wand tier, progress
+AudioManager, VFXManager
+└─ centraliza SFX y efectos para retroalimentación (feedback).
+PoolingSystem (generic)
+└─ ProjectilePool, VFXPool
+DialogsManager
+└─ controls diálogos con Bob y Raberto (narrativa, humor).
+UIManager
+└─ controla vistas: Inicio, Opciones, Combinaciones, Tienda, Escenario
+Habrá un total de cuatro vistas:
+Inicio:
+- Botón jugar: continuará el progreso guardado si ya se ha empezado.
+- Botón opciones: se abrirá la vista “opciones”.
+- Botón salir: saldrá del juego.
+Opciones:
+- Controlador de volumen.
+- Controlador de idioma.
+- Botón para acceder a las combinaciones.
+- Botón de aceptar: guardará los ajustes y saldrá de esta vista hacia el inicio.
+Combinaciones:
+- Lista de elemento final y su descripción
+Juego:
+En el juego habrá 3 vistas distintas en la cual el escenario abarca las peleas.
+- Tienda:
+- Botón para mejorar la varita: Mejorar el grado de la varita.
+- Botón para mejorar la vida.
+- Botón para mejorar el daño.
+- Cuadro para seleccionar los elementos.
+- Botón para salir de la tienda.
+- Escenario: Donde se desarrollarán las peleas
+- Diálogos: Donde los personajes interactúan entre sí.
+Mockups o prototipo de bajo nivel (wireframes)
+https://www.figma.com/design/BSyv1EbnCGR6Jr6Q1c9UnP/Mockup-Pizzard?n
+ode-id=41-241&t=Nujf7NLTv1icdnWX-1
+Planificación del desarrollo:
+Arte:
+Semana 1:hacer las animaciones del personaje principal, elementos base y
+habitaciones para tener una base, hacer enemigos como P’blob y npc como
+Rabberto, también hacer la vida de tu personaje y vida de p’blob
+Semana 2: ataque del queso, pepperoni y piña y diseño de ataque de p’blob:
+-Baldosas de pelo (si puedes 3 tipos: una con mucho, otra con medio y otra
+con poco pelo).
+-P’blob con bigote más grande (el base, el un poco más y el mucho).
+-Bolas de pelo rodando
+-Mar de pelos.
+-Pared de pelos.
+-Poción de vida al estilo suelo fisiológico.
+Semana 3: Diseñar assets para la interfaz y el juego de hechizos.
+Diseñar proyectiles o animaciones de bosses ya hechos atacando, empezar
+con las varitas.
+Semana 4: Diseñar assets para la interfaz y el juego de el resto de hechizos.
+Diseñar otro piso, assets para los pisos en forma de decoración para darle
+algo de vida y mejorar en los assets ya añadidos.
+Semana 5:Hacer las habitaciones de pblob y su bigote.
+Semana 6:Hacer más magias y combinaciones de estas.
+Semana 7:Más magia y empezar con Heck´kiel.
+Semana 8:Crear a Hec´kiel, su Habitación y ataques.
+Semana 9:Pomodoro Paganini, su proyectil de pizza y habitación.
+Semana 10:Terminar el último piso (el palacio).
+Semana 11:Niggel worthingtong en silla de ruedas, soldado verde mele,
+soldado verde a distancia, tanque verde.
+Semana 12:Terminar de hacer todas las magias y añadir detalles como al ser
+golpeado y más cosas para dar feedback al jugador.
+Semana 13 : pulir más detalles.
+Programación:
+Semana 1: Movimiento, sistema de UI de elementos y combinaciones de
+elementos, elementos base.
+Semana 2: UI tienda, UI vida, UI menú principal, UI ajustes sin elementos;
+Sistema de tienda, vida + pociones de vida + quitar daño, menú principal,
+ajustes sin elementos. Más dummies (si tenemos tiempo de sobra tipo 2
+tardes).
+Semana 3: UI diálogos, sistema de diálogos, terminar partida, hacer el loop
+inicio -> diálogo -> tienda -> diálogo -> boss -> diálogo -> tienda -> diálogo ->
+boss -> … (Probar a meter el diseño de p’blob)
+Semana 4: 20 combinaciones de ataques (dejarlo todo con placeholders y
+cuando Darío lo tenga listo sustituirlo)
+Semana 5: Resto de combinaciones de ataques
+Semana 6: Sistema de guardado (automático después de cada boss),
+instancias de los bosses (sólo las escenas), efectos de sonido al recibir daño,
+diálogos y canciones de los bosses.
+Semana 7: Diseñar patrón de ataques de P’blob(placeholders).
+Semana 8: Diseñar patrón de ataques de Hec’kiel(placeholders).
+Semana 9: Diseñar patrón de ataques de Pomodoro(placeholders).
+Semana 10: Diseñar patrón de ataques de Niggel(placeholders).
+Semana 11: Sistema de registro de combinaciones de elementos, todos los
+diálogos, sistema de cooldown de hechizos.
+Semana 12: Todo el tutorial.
+SUBIR A ITCH.IO
+Semana 13: Pulir.
+*Nota:* Estaría chulo hacer unos créditos tras o durante la recogida de la
+pizza con música, agradecimientos a testers, etc…

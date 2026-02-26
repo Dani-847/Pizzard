@@ -89,5 +89,9 @@ public class UIManager : MonoBehaviour
             dialogUI.Hide();
         if (deathUI != null)
             deathUI.OcultarPantallaMuerte();
+        
+        // Hide child objects that aren't managed by these specific classes (e.g. HUD, Boss UI)
+        // by disabling their specific scripts or canvases if we had references.
+        // A safer trick for the prototype: we just specifically toggle the target UIs in GameFlowManager.
     }
 }
