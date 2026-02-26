@@ -34,5 +34,5 @@
 **Objective**: Implement the first two bosses: P'blob (mustache + simon-says) and Hec'kiel (elemental clone dragon), integrating them into the GameFlow.
 
 ### Phase 6: Bosses Part 2 & Polish (Oven & Niggel)
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Implement the remaining bosses: Pomodoro Paganini (pong deflection) and Niggel Worthington (buff/debuff thievery). Final balancing and bug fixes.
