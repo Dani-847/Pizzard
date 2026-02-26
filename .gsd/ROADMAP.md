@@ -26,7 +26,7 @@
 **Objective**: Implement player movement, taking damage, and the core combat system including Wand Tiers 1-3 and the Queso, Pepperoni, Piña combinations logic.
 
 ### Phase 4: Progression & Shop System
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Implement persistent currency drops, Shop interface, and item logic. Link these to the dialog and game loop phases.
 
 ### Phase 5: Bosses Part 1 (P'blob & Hec'kiel)
