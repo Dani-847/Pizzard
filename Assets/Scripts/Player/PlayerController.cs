@@ -1,160 +1,87 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
 
-/// <summary>
-/// Controlador del jugador que gestiona el movimiento y la entrada.
-/// </summary>
-public class PlayerController : MonoBehaviour
+namespace Pizzard.Player
 {
-    [Header("Movement Settings")]
-    public float speed = 5f;
-
-    [Header("Collision Settings")]
-    public LayerMask wallLayerMask = 1;
-    public float collisionCheckDistance = 0.1f;
-
-    private CharacterController controller;
-    private Vector3 moveInput;
-    private Tilemap wallTilemap;
-    private bool inputEnabled = true;
-
-    public MenuUI menuUI;
-    public OptionsUI optionsUI;
-
-    void Awake()
-    {
-        controller = GetComponent<CharacterController>();
-        
-        // Buscar el tilemap de paredes automáticamente
-        wallTilemap = FindObjectOfType<Tilemap>();
-        if (wallTilemap == null)
-        {
-            Debug.LogError("❌ No se encontró Tilemap en la escena");
-        }
-
-        // Configurar la layer mask para paredes
-        wallLayerMask = LayerMask.GetMask("Wall");
-    }
-
-    void Update()
-    {
-        // Verificar si el input está habilitado
-        if (!inputEnabled)
-        {
-            return;
-        }
-
-        // Verificar si hay menús abiertos
-        if ((menuUI != null && menuUI.gameObject.activeSelf) || 
-            (optionsUI != null && optionsUI.gameObject.activeSelf))
-        {
-            return;
-        }
-
-        Vector3 inputDir = new Vector3(moveInput.x, moveInput.y, 0);
-
-        if (inputDir.sqrMagnitude > 0.01f)
-        {
-            // Verificar colisiones antes de mover
-            Vector3 moveDirection = inputDir * speed * Time.deltaTime;
-            
-            if (!WillCollideWithWall(moveDirection))
-            {
-                controller.Move(moveDirection);
-            }
-            else
-            {
-                // Intentar mover solo en X o solo en Y
-                Vector3 moveX = new Vector3(moveDirection.x, 0, 0);
-                Vector3 moveY = new Vector3(0, moveDirection.y, 0);
-                
-                if (!WillCollideWithWall(moveX))
-                {
-                    controller.Move(moveX);
-                }
-                if (!WillCollideWithWall(moveY))
-                {
-                    controller.Move(moveY);
-                }
-            }
-        }
-    }
-
-    private bool WillCollideWithWall(Vector3 movement)
-    {
-        if (wallTilemap == null) return false;
-
-        // Calcular posición futura
-        Vector3 futurePosition = transform.position + movement;
-        
-        // Convertir a posición de celda en el tilemap
-        Vector3Int cellPosition = wallTilemap.WorldToCell(futurePosition);
-        
-        // Verificar si hay un tile de pared en esa posición
-        if (wallTilemap.HasTile(cellPosition))
-        {
-            return true;
-        }
-
-        // Verificación adicional con raycast (opcional)
-        float checkDistance = controller.radius + collisionCheckDistance;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, movement.normalized, checkDistance, wallLayerMask);
-        
-        return hit.collider != null;
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-    }
-
-    public void OnPause(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-
-        if (menuUI != null && menuUI.gameObject.activeSelf) return;
-
-        if (UIManager.Instance != null && UIManager.Instance.optionsUI != null)
-        {
-            if (UIManager.Instance.optionsUI.gameObject.activeSelf)
-                UIManager.Instance.CloseOptions();
-            else
-                UIManager.Instance.OpenOptions(UIContext.BossFight);
-        }
-    }
-
     /// <summary>
-    /// Habilita o deshabilita el input del jugador.
-    /// Usado por GameFlowManager para controlar cuándo el jugador puede moverse.
+    /// Handles 2D movement and dash mechanics for the player using Rigidbody2D.
     /// </summary>
-    /// <param name="enabled">True para habilitar, false para deshabilitar.</param>
-    public void EnableInput(bool enabled)
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class PlayerController : MonoBehaviour
     {
-        inputEnabled = enabled;
+        [Header("Movement Settings")]
+        [SerializeField] private float moveSpeed = 5f;
         
-        // Resetear el input cuando se deshabilita
-        if (!enabled)
-        {
-            moveInput = Vector3.zero;
-        }
-    }
+        [Header("Dash Settings")]
+        [SerializeField] private float dashSpeedMultiplier = 3f;
+        [SerializeField] private float dashDuration = 0.2f;
+        [SerializeField] private float dashCooldown = 1f;
 
-    // Para debugging visual
-    void OnDrawGizmosSelected()
-    {
-        if (controller != null)
+        private Rigidbody2D rb;
+        private Vector2 movementInput;
+        
+        private bool isDashing = false;
+        private float dashTimeRemaining;
+        private float dashCooldownRemaining;
+
+        private void Awake()
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, controller.radius);
-            
-            if (Application.isPlaying && moveInput.sqrMagnitude > 0.01f)
+            rb = GetComponent<Rigidbody2D>();
+            // Ensure no gravity affects the top-down player
+            rb.gravityScale = 0f;
+        }
+
+        private void Update()
+        {
+            HandleInput();
+            HandleDashTimers();
+        }
+
+        private void FixedUpdate()
+        {
+            ApplyMovement();
+        }
+
+        private void HandleInput()
+        {
+            // Gather standard movement
+            float moveX = Input.GetAxisRaw("Horizontal");
+            float moveY = Input.GetAxisRaw("Vertical");
+            movementInput = new Vector2(moveX, moveY).normalized;
+
+            // Gather dash input (e.g. Spacebar)
+            if (Input.GetKeyDown(KeyCode.Space) && !isDashing && dashCooldownRemaining <= 0f && movementInput != Vector2.zero)
             {
-                Gizmos.color = Color.green;
-                Gizmos.DrawRay(transform.position, moveInput.normalized * (controller.radius + collisionCheckDistance));
+                StartDash();
             }
+        }
+
+        private void HandleDashTimers()
+        {
+            if (isDashing)
+            {
+                dashTimeRemaining -= Time.deltaTime;
+                if (dashTimeRemaining <= 0)
+                {
+                    isDashing = false;
+                    dashCooldownRemaining = dashCooldown;
+                }
+            }
+            else if (dashCooldownRemaining > 0)
+            {
+                dashCooldownRemaining -= Time.deltaTime;
+            }
+        }
+
+        private void StartDash()
+        {
+            isDashing = true;
+            dashTimeRemaining = dashDuration;
+        }
+
+        private void ApplyMovement()
+        {
+            float currentSpeed = isDashing ? moveSpeed * dashSpeedMultiplier : moveSpeed;
+            rb.linearVelocity = movementInput * currentSpeed;
         }
     }
 }
