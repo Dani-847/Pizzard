@@ -41,6 +41,7 @@ namespace Pizzard.Core
 
         /// <summary>
         /// Transitions the game to a new state and triggers corresponding initialization logic.
+        /// Load the mapped scene correctly.
         /// </summary>
         public void ChangeState(GameState newState)
         {
@@ -49,7 +50,24 @@ namespace Pizzard.Core
             Debug.Log($"[GameFlowManager] State Transition: {CurrentState} -> {newState}");
             CurrentState = newState;
 
-            // Optional: In the future, emit an event here so UI and other systems can react automatically.
+            string targetScene = GetSceneForState(newState);
+            if (!string.IsNullOrEmpty(targetScene))
+            {
+                SceneLoader.LoadScene(targetScene);
+            }
+        }
+
+        private string GetSceneForState(GameState state)
+        {
+            return state switch
+            {
+                GameState.MainMenu => "MainMenu",
+                GameState.IntroDialog => "IntroDialog",
+                GameState.Shop => "Shop",
+                GameState.PreBossDialog => "PreBossDialog",
+                GameState.BossFight => "BossArena",
+                _ => string.Empty
+            };
         }
     }
 }
