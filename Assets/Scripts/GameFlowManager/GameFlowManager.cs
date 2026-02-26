@@ -20,6 +20,7 @@ namespace Pizzard.Core
         public static GameFlowManager Instance { get; private set; }
 
         public GameState CurrentState { get; private set; }
+        private bool isInitialized = false;
 
         private void Awake()
         {
@@ -51,17 +52,69 @@ namespace Pizzard.Core
         /// </summary>
         public void ChangeState(GameState newState)
         {
-            if (CurrentState == newState) return;
+            if (isInitialized && CurrentState == newState) return;
+            isInitialized = true;
 
             Debug.Log($"[GameFlowManager] State Transition: {CurrentState} -> {newState}");
             CurrentState = newState;
 
             string targetScene = GetSceneForState(newState);
+
+            // Toggle specific UI canvases by name based on the current state.
+            // Our single UI prefab has all components active. We find them and disable/enable.
+            UIManager ui = UIManager.Instance;
+            if (ui != null)
+            {
+                // Deactivate everything
+                ui.HideAllUIs();
+                Transform uiParent = ui.transform;
+                // Specific HUDs we need to control by name (assuming name based on prototype)
+                foreach(Transform child in uiParent)
+                {
+                    // By default disable all raw canvases
+                    if(child != uiParent)
+                    {
+                        child.gameObject.SetActive(false);
+                    }
+                }
+
+                // Enable exactly what is needed for the phase
+                switch (newState)
+                {
+                    case GameState.MainMenu:
+                        if (ui.menuUI != null) ui.menuUI.Show();
+                        break;
+                    case GameState.IntroDialog:
+                        if (ui.dialogUI != null) ui.dialogUI.ShowIntroDialog(this);
+                        break;
+                    case GameState.PreBossDialog:
+                        if (ui.dialogUI != null) ui.dialogUI.ShowPreBossDialog(this);
+                        break;
+                    case GameState.Shop:
+                        if (ui.tiendaUI != null) ui.tiendaUI.Show(this);
+                        break;
+                    case GameState.BossFight:
+                        // Enable HUD elements during boss fights
+                        Transform elementsUI = uiParent.Find("ElementsUI");
+                        Transform bossUI = uiParent.Find("PblobUI"); // Boss proto name
+                        Transform playerHP = uiParent.Find("CharacterHPUI");
+                        Transform potionUI = uiParent.Find("PotionUI");
+                        
+                        if (elementsUI) elementsUI.gameObject.SetActive(true);
+                        if (bossUI) bossUI.gameObject.SetActive(true);
+                        if (playerHP) playerHP.gameObject.SetActive(true);
+                        if (potionUI) potionUI.gameObject.SetActive(true);
+                        break;
+                }
+            }
+
             if (!string.IsNullOrEmpty(targetScene))
             {
                 SceneLoader.LoadScene(targetScene);
             }
         }
+
+        public int currentBossIndex { get; private set; } = 1;
 
         private string GetSceneForState(GameState state)
         {
@@ -71,9 +124,78 @@ namespace Pizzard.Core
                 GameState.IntroDialog => "IntroDialog",
                 GameState.Shop => "Shop",
                 GameState.PreBossDialog => "PreBossDialog",
-                GameState.BossFight => "BossArena",
+                GameState.BossFight => "BossArena_" + currentBossIndex,
                 _ => string.Empty
             };
+        }
+
+        public void IniciarJuego()
+        {
+            currentBossIndex = 1;
+            ChangeState(GameState.IntroDialog);
+        }
+
+        public void VolverAlMenu()
+        {
+            Time.timeScale = 1f;
+            ChangeState(GameState.MainMenu);
+        }
+
+        public void ReanudarJuego()
+        {
+            Time.timeScale = 1f;
+        }
+
+        public void ReiniciarBossFight()
+        {
+            Time.timeScale = 1f;
+            ChangeState(GameState.BossFight);
+        }
+
+        public void AvanzarFase()
+        {
+            switch (CurrentState)
+            {
+                case GameState.IntroDialog:
+                    ChangeState(GameState.Shop);
+                    break;
+                case GameState.Shop:
+                    ChangeState(GameState.PreBossDialog);
+                    break;
+                case GameState.PreBossDialog:
+                    ChangeState(GameState.BossFight);
+                    break;
+                case GameState.BossFight:
+                    // Boss defeated
+                    if (currentBossIndex < 4)
+                    {
+                        currentBossIndex++;
+                        ChangeState(GameState.Shop);
+                    }
+                    else
+                    {
+                        // All bosses defeated, return to main menu or victory scene
+                        Debug.Log("[GameFlowManager] All bosses defeated!");
+                        VolverAlMenu();
+                    }
+                    break;
+                default:
+                    Debug.LogWarning("[GameFlowManager] Cannot advance phase from " + CurrentState);
+                    break;
+            }
+        }
+
+        public void OnPlayerDeath()
+        {
+            var deathUI = FindObjectOfType<DeathUI>(true);
+            if (deathUI != null)
+            {
+                deathUI.MostrarPantallaMuerte();
+            }
+            else
+            {
+                VolverAlMenu();
+            }
         }
     }
 }

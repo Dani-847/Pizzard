@@ -62,8 +62,6 @@ public class OptionsUI : MonoBehaviour
         {
             combinationsUIPanel.OcultarPanel();
         }
-
-        Hide();
     }
 
     // ----------------------------
@@ -132,7 +130,10 @@ public class OptionsUI : MonoBehaviour
     public void OnClickCombinations()
     {
         if (combinationsUIPanel != null)
+        {
             combinationsUIPanel.MostrarPanel();
+            Hide(); // Hide OptionsUI to prevent overlap
+        }
     }
 
     private void GuardarYAceptar()
