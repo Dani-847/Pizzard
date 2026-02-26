@@ -13,31 +13,24 @@ public class PblobUI : MonoBehaviour
     private PblobController boss;
     private float maxHealth;
     
-    void Start()
+    void OnEnable()
     {
         boss = FindObjectOfType<PblobController>();
         if (boss != null)
         {
             maxHealth = boss.maxHealth;
             
-            // Suscribirse al evento de cambio de salud (con verificación de null)
             if (boss.OnHealthChanged != null)
             {
                 boss.OnHealthChanged.AddListener(UpdateHealthBar);
             }
             
-            // Inicializar con salud completa
             UpdateHealthBar(1f);
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ PblobUI: PblobController no encontrado en la escena");
         }
     }
     
-    void OnDestroy()
+    void OnDisable()
     {
-        // Desuscribirse del evento al destruirse para evitar memory leaks
         if (boss != null && boss.OnHealthChanged != null)
         {
             boss.OnHealthChanged.RemoveListener(UpdateHealthBar);

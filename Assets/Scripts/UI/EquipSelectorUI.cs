@@ -11,7 +11,7 @@ public class EquipSelectorUI : MonoBehaviour
 
     public List<EquipableObject> availableEquipables;
 
-    void Start()
+    void OnEnable()
     {
         playerEquip = FindObjectOfType<PlayerEquip>();
         GenerateButtons();
@@ -25,9 +25,16 @@ public class EquipSelectorUI : MonoBehaviour
         foreach (var equip in availableEquipables)
         {
             GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer);
-            buttonGO.GetComponentInChildren<Text>().text = equip.displayName;
+            
+            bool isUnlocked = playerEquip != null && equip.tier <= playerEquip.CurrentWandTier;
+            Button btn = buttonGO.GetComponent<Button>();
+            btn.interactable = isUnlocked;
 
-            buttonGO.GetComponent<Button>().onClick.AddListener(() =>
+            string labelText = equip.displayName;
+            if (!isUnlocked) labelText += " (Locked)";
+            buttonGO.GetComponentInChildren<Text>().text = labelText;
+
+            btn.onClick.AddListener(() =>
             {
                 if (playerEquip != null)
                 {

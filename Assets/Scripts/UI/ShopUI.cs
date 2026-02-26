@@ -14,6 +14,8 @@ public class ShopUI : MonoBehaviour
     public Button btnUpgradeMaxPotion;
     public Button btnUpgradeElementalFatigue;
     public Button btnShopExit;
+    public Button btnUpgradeWand;
+    public TMPro.TextMeshProUGUI txtUpgradeWand;
     
     [Header("Referencias auxiliares")]
     public HealthPotionSystem healthPotionSystem;
@@ -31,6 +33,8 @@ public class ShopUI : MonoBehaviour
             btnUpgradeMaxPotion.onClick.AddListener(OnBtnUpgradeMaxPotion);
         if (btnUpgradeElementalFatigue != null)
             btnUpgradeElementalFatigue.onClick.AddListener(OnBtnUpgradeElementalFatigue);
+        if (btnUpgradeWand != null)
+            btnUpgradeWand.onClick.AddListener(OnBtnUpgradeWand);
     }
 
     /// <summary>
@@ -79,13 +83,35 @@ public class ShopUI : MonoBehaviour
         {
             hasPurchasedInRun1 = true;
             if (playerEquip != null)
+            {
                 playerEquip.UpgradeWandTier();
+                UpdateWandButtonUI();
+            }
             else
                 Debug.LogWarning("[ShopUI] PlayerEquip missing, cannot upgrade Wand!");
         }
         else
         {
             Debug.LogWarning("[ShopUI] No tokens to upgrade wand!");
+        }
+    }
+
+    private void UpdateWandButtonUI()
+    {
+        if (btnUpgradeWand == null) return;
+        
+        int currentTier = playerEquip != null ? playerEquip.CurrentWandTier : 1;
+        
+        if (currentTier >= 3)
+        {
+            btnUpgradeWand.interactable = false;
+            if (txtUpgradeWand != null) txtUpgradeWand.text = "Max Wand Level";
+        }
+        else
+        {
+            btnUpgradeWand.interactable = true;
+            string nextWandName = currentTier == 1 ? "Tier 2 Wand" : "Tier 3 Wand";
+            if (txtUpgradeWand != null) txtUpgradeWand.text = $"Buy next wand:\n\"{nextWandName}\"";
         }
     }
 
@@ -160,6 +186,8 @@ public class ShopUI : MonoBehaviour
         }
         if (equipSelectorUI != null)
             equipSelectorUI.gameObject.SetActive(true);
+            
+        UpdateWandButtonUI();
     }
     
     /// <summary>
