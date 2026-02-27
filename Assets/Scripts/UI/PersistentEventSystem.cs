@@ -21,4 +21,27 @@ public class PersistentEventSystem : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+    void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        EventSystem[] systems = FindObjectsOfType<EventSystem>();
+        foreach (var sys in systems)
+        {
+            if (sys.gameObject != this.gameObject)
+            {
+                Destroy(sys.gameObject);
+                Debug.Log("[PersistentEventSystem] Destroyed duplicate EventSystem from newly loaded scene.");
+            }
+        }
+    }
 }

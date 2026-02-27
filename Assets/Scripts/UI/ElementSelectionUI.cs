@@ -9,11 +9,26 @@ public class ElementSelectionUI : MonoBehaviour
     public GameObject buttonPrefab;
 
     private PlayerEquip currentEquip;
+    private EquipableObject currentWand;
+    private int maxAllowedTier;
+
     private Dictionary<ElementType, Button> elementButtons = new Dictionary<ElementType, Button>();
 
     public void OpenSelection(PlayerEquip equip)
     {
         currentEquip = equip;
+        currentWand = equip.equipedObject;
+        maxAllowedTier = equip.CurrentWandTier;
+        GenerateButtons();
+        gameObject.SetActive(true);
+        RefreshVisuals();
+    }
+
+    public void OpenSelectionWithoutPlayer(EquipableObject wand, int maxTier)
+    {
+        currentEquip = null;
+        currentWand = wand;
+        maxAllowedTier = maxTier;
         GenerateButtons();
         gameObject.SetActive(true);
         RefreshVisuals();
@@ -57,11 +72,13 @@ public class ElementSelectionUI : MonoBehaviour
 
     void ResetWeaponElements()
     {
-        if (currentEquip == null || currentEquip.equipedObject == null) return;
+        if (currentWand == null) return;
 
-        currentEquip.equipedObject.elements.Clear();
-        // Also clear PlayerEquip's duplicate list which dictates the Combiner
-        currentEquip.elementsToShow.Clear(); 
+        currentWand.elements.Clear();
+        if (currentEquip != null)
+        {
+            currentEquip.elementsToShow.Clear(); 
+        }
 
         Debug.Log("[Shop] Element choices reset.");
         RefreshVisuals();
@@ -69,10 +86,10 @@ public class ElementSelectionUI : MonoBehaviour
 
     void TryAddElementToWeapon(ElementType element)
     {
-        if (currentEquip == null || currentEquip.equipedObject == null) return;
+        if (currentWand == null) return;
 
-        var weapon = currentEquip.equipedObject;
-        int maxAllowed = currentEquip.CurrentWandTier; // Tier 1 = 1 element, Tier 2 = 2 elements...
+        var weapon = currentWand;
+        int maxAllowed = maxAllowedTier; // Tier 1 = 1 element, Tier 2 = 2 elements...
 
         if (weapon.elements.Contains(element))
         {
@@ -87,7 +104,7 @@ public class ElementSelectionUI : MonoBehaviour
         }
 
         weapon.elements.Add(element);
-        currentEquip.elementsToShow.Add(element); // Sync to Combiner
+        if (currentEquip != null) currentEquip.elementsToShow.Add(element); // Sync to Combiner
         Debug.Log($"[Shop] Added Element: {element}. ({weapon.elements.Count}/{maxAllowed})");
         
         RefreshVisuals();
@@ -95,8 +112,8 @@ public class ElementSelectionUI : MonoBehaviour
 
     void RefreshVisuals()
     {
-        if (currentEquip == null || currentEquip.equipedObject == null) return;
-        var selectedElements = currentEquip.equipedObject.elements;
+        if (currentWand == null) return;
+        var selectedElements = currentWand.elements;
 
         foreach (var kvp in elementButtons)
         {

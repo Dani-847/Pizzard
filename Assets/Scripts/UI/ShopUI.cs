@@ -207,9 +207,25 @@ public class ShopUI : MonoBehaviour
         {
             elementSelectionUI.gameObject.SetActive(true);
             if (playerEquip != null)
+            {
                 elementSelectionUI.OpenSelection(playerEquip);
+            }
+            else if (Pizzard.Progression.SaveManager.Instance != null && equipSelectorUI != null)
+            {
+                int savedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.selectedWandTierEquipped;
+                EquipableObject targetWand = equipSelectorUI.availableEquipables.Find(e => e.tier == savedTier);
+                int maxTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier;
+                
+                if (targetWand != null)
+                {
+                    elementSelectionUI.OpenSelectionWithoutPlayer(targetWand, maxTier);
+                    Debug.Log("[ShopUI] Opened Element Selection using Save Data.");
+                }
+            }
             else
+            {
                 Debug.LogWarning("[ShopUI] PlayerEquip is missing, cannot open ElementSelection properly!");
+            }
         }
         else
         {
