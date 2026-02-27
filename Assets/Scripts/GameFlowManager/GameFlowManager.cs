@@ -178,6 +178,18 @@ namespace Pizzard.Core
             ChangeState(GameState.BossFight);
         }
 
+        public void VolverATiendaTrasMuerte()
+        {
+            Time.timeScale = 1f;
+            ChangeState(GameState.Shop);
+            
+            var dialog = FindObjectOfType<DialogUI>(true);
+            if (dialog != null)
+            {
+                dialog.ShowDeathShopDialog(this);
+            }
+        }
+
         public void AvanzarFase()
         {
             switch (CurrentState)

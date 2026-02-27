@@ -46,6 +46,7 @@ public class DialogUI : MonoBehaviour
     private GameFlowManager flowManager;
     private string[] currentLines;
     private int currentLineIndex;
+    private bool advancePhaseOnEnd = true;
 
     void Start()
     {
@@ -84,6 +85,7 @@ public class DialogUI : MonoBehaviour
     public void ShowIntroDialog(GameFlowManager manager)
     {
         flowManager = manager;
+        advancePhaseOnEnd = true;
         StartDialogWithLocalization(introDialogKeyPrefix, introDialogLines);
     }
 
@@ -94,6 +96,7 @@ public class DialogUI : MonoBehaviour
     public void ShowPreBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
+        advancePhaseOnEnd = true;
         // Dynamically get boss dialog string: dialog_preboss1_, dialog_preboss2_, etc
         string dynamicKey = preBossDialogKeyPrefix + manager.currentBossIndex + "_";
         StartDialogWithLocalization(dynamicKey, preBossDialogLines);
@@ -106,7 +109,19 @@ public class DialogUI : MonoBehaviour
     public void ShowPostBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
+        advancePhaseOnEnd = true;
         StartDialogWithLocalization(postBossDialogKeyPrefix, postBossDialogLines);
+    }
+
+    [Header("Diálogo de Muerte (Tienda)")]
+    public string[] deathShopDialogLines = { "Ah, you perished. I scraped you off the floor.", "Take a moment to prepare before you try again." };
+    public string deathShopDialogKeyPrefix = "dialog_deathshop_";
+
+    public void ShowDeathShopDialog(GameFlowManager manager)
+    {
+        flowManager = manager;
+        advancePhaseOnEnd = false;
+        StartDialogWithLocalization(deathShopDialogKeyPrefix, deathShopDialogLines);
     }
 
     /// <summary>
@@ -214,7 +229,10 @@ public class DialogUI : MonoBehaviour
         {
             // Diálogo terminado
             Hide();
-            flowManager?.AvanzarFase();
+            if (advancePhaseOnEnd)
+            {
+                flowManager?.AvanzarFase();
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ public class CameraFollow : MonoBehaviour
     public float smoothSpeed = 5f;
 
     [Header("Deadzone (Free movement area)")]
-    public Vector2 deadzoneSize = new Vector2(3f, 3f);
+    public Vector2 deadzoneSize = new Vector2(0f, 0f);
 
     [Header("Zoom")]
     public bool enableDynamicZoom = true;

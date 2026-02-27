@@ -67,7 +67,7 @@ public class DeathUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Botón de reintentar: reinicia el combate del boss actual.
+    /// Botón de reintentar: devuelve al jugador a la tienda del boss actual.
     /// </summary>
     private void OnClickReintentar()
     {
@@ -75,7 +75,7 @@ public class DeathUI : MonoBehaviour
         
         if (GameFlowManager.Instance != null)
         {
-            GameFlowManager.Instance.ReiniciarBossFight();
+            GameFlowManager.Instance.VolverATiendaTrasMuerte();
         }
         else
         {

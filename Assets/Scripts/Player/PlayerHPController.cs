@@ -22,6 +22,8 @@ public class PlayerHPController : MonoBehaviour
     public DeathUI deathUI;
     [Tooltip("Sistema de pociones vinculado al jugador")]
     public HealthPotionSystem potionSystem;
+    [Tooltip("SpriteRenderer del jugador para efectos de daño")]
+    public SpriteRenderer playerSprite;
 
     /// <summary>
     /// Inicializa vidaActual y actualiza la UI.
@@ -30,6 +32,9 @@ public class PlayerHPController : MonoBehaviour
     {
         if (hpUI == null)
             hpUI = FindObjectOfType<CharacterHPUI>(true);
+
+        if (playerSprite == null)
+            playerSprite = GetComponentInChildren<SpriteRenderer>();
 
         vidaActual = vidaMaxima;
         if (hpUI != null)
@@ -63,12 +68,27 @@ public class PlayerHPController : MonoBehaviour
         vidaActual = Mathf.Max(vidaActual, 0);
         
         invulnerabilityTimer = invulnerabilityDuration;
+        StartCoroutine(DamageFlashRoutine());
 
         if (hpUI != null)
             hpUI.ActualizarUI(vidaActual);
 
         if (vidaActual <= 0)
             OnDeath();
+    }
+
+    private System.Collections.IEnumerator DamageFlashRoutine()
+    {
+        if (playerSprite == null) yield break;
+        Color originalColor = Color.white;
+        float elapsed = 0f;
+        while (elapsed < invulnerabilityDuration)
+        {
+            playerSprite.color = (Mathf.FloorToInt(elapsed * 10f) % 2 == 0) ? Color.yellow : originalColor;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        playerSprite.color = originalColor;
     }
 
     /// <summary>

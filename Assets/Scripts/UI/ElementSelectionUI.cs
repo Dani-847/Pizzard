@@ -19,6 +19,15 @@ public class ElementSelectionUI : MonoBehaviour
         currentEquip = equip;
         currentWand = equip.equipedObject;
         maxAllowedTier = equip.CurrentWandTier;
+
+        if (currentWand == null)
+        {
+            Debug.Log("[Shop] No wand equipped, cannot select elements.");
+            ClearButtons();
+            gameObject.SetActive(false);
+            return;
+        }
+
         GenerateButtons();
         gameObject.SetActive(true);
         RefreshVisuals();
@@ -29,6 +38,15 @@ public class ElementSelectionUI : MonoBehaviour
         currentEquip = null;
         currentWand = wand;
         maxAllowedTier = maxTier;
+
+        if (currentWand == null)
+        {
+            Debug.Log("[Shop] No wand provided, cannot select elements.");
+            ClearButtons();
+            gameObject.SetActive(false);
+            return;
+        }
+
         GenerateButtons();
         gameObject.SetActive(true);
         RefreshVisuals();
