@@ -458,6 +458,11 @@ public class PblobController : MonoBehaviour
         battleActive = false;
         StopAllPatterns();
         OnBossDefeated?.Invoke();
+        
+        if (Pizzard.Core.GameFlowManager.Instance != null)
+        {
+            Pizzard.Core.GameFlowManager.Instance.AvanzarFase();
+        }
     }
 
     // DEBUG - Métodos para testing

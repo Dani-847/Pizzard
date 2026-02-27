@@ -199,8 +199,8 @@ public class ShopUI : MonoBehaviour
     private void InitializeShopUI()
     {
         // Fallbacks in case Inspector references are lost
-        if (elementSelectionUI == null) elementSelectionUI = GetComponentInChildren<ElementSelectionUI>(true);
-        if (equipSelectorUI == null) equipSelectorUI = GetComponentInChildren<EquipSelectorUI>(true);
+        if (elementSelectionUI == null) elementSelectionUI = FindObjectOfType<ElementSelectionUI>(true);
+        if (equipSelectorUI == null) equipSelectorUI = FindObjectOfType<EquipSelectorUI>(true);
         if (playerEquip == null) playerEquip = FindObjectOfType<PlayerEquip>(true);
 
         if (elementSelectionUI != null)
