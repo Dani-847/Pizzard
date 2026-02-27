@@ -54,5 +54,14 @@
 **Objective**: Clean scene architectures via MCP, implement Cinemachine Camera for wide-room views, add Pblob Boss drift AI with phase knockbacks, and build the Shop Element Selection menu mechanic.
 
 ### Phase 11: Critical Loop & UI Fixes
-**Status**: 🔄 In Progress
+**Status**: ✅ Complete
 **Objective**: Restore full playability by addressing the broken health bar UI, stuck camera boundaries, missing Shop element selection buttons, and the broken progression loop post-boss defeat.
+
+### Phase 12: Shop Progression & Layout Rework
+**Status**: ✅ Complete
+**Objective**: Reconstruct the Shop UI, progressive Wand unlocking logic, Element selection flow, and integrate Token/Fatigue UI tracking as per original design.
+
+### Phase 13: Mana System — Combat Integration
+**Status**: ✅ Complete (code) | Awaiting visual verify checkpoint
+**Objective**: Wire the Mana system (renamed from Fatigue) into combat with per-spell costs, cast gating, and visual feedback. Hardcoded cost dictionary for easy balancing.
+**Progress**: Plan 13.1 — 1/2 tasks complete. Wave 1 (code) done. Wave 2 (visual verify) is a human-verify checkpoint.

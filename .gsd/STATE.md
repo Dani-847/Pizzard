@@ -1,23 +1,16 @@
 ## CURRENT STATE
 
-- **Position**: Phase 11.3 (Follow-up Bug Squash 2)
-- **Task**: Execution
-- **Status**: Progressing through Phase 11.3 list
+- **Position**: Phase 13 - Mana System — Combat Integration
+- **Task**: Completed Plan 13.1 (Wave 1 code changes). Wave 2 (Visual Verification) is a checkpoint:human-verify — requires Play mode confirmation.
+- **Status**: Plan 13.1 task 1 complete. Awaiting human verify checkpoint for visual mana bar confirmation.
 
 ## Last Session Summary
-Phase 11.2 executed successfully but user found edge cases.
+Phase 13 Plan 1 task 1 executed successfully. Renamed FatigueSystem to ManaSystem across all scripts. Added per-spell SpellCosts dictionary. PlayerAimAndCast now uses ManaSystem.GetSpellCost() for per-combo cost lookup. 0 remaining FatigueSystem/FatigueUI references in Assets/Scripts/. Commit: 2500b79.
 
 ## Next Steps
-1. Stop element selection without wand
-2. Return to Shop on Death
-3. Center camera in BossArena
-4. Add yellow damage flash
-5. Fix CanvasScaler universally
-6. Verify Element Fatigue
-
-## Next Steps
-1. Proceed to Phase 6 (Bosses Part 2 & Polish)
-Phase 4 executed successfully. 2 plans, 4 tasks completed.
+1. Execute Phase 12 Step 1: Implement Token Tracker and Fatigue UI merging.
+2. Execute Phase 12 Step 2: Implement strict progressive wand unlocking.
+3. Execute Phase 12 Step 3: Implement immediate element selection after Wand 1 purchase.
 
 ## Next Steps
 1. Proceed to Phase 5 (Bosses Part 1)
