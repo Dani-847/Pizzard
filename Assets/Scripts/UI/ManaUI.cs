@@ -23,9 +23,17 @@ namespace Pizzard.UI
         
         private void Start()
         {
-            // Force a visible color on the fill bar
+            if (manaFillBar == null)
+                manaFillBar = GetComponent<Image>();
+
             if (manaFillBar != null)
             {
+                // Force the Image into Filled/Vertical/Bottom mode at runtime
+                // in case the prefab settings didn't persist
+                manaFillBar.type = Image.Type.Filled;
+                manaFillBar.fillMethod = Image.FillMethod.Vertical;
+                manaFillBar.fillOrigin = (int)Image.OriginVertical.Bottom;
+                manaFillBar.fillAmount = 1f;
                 manaFillBar.color = ManaColor;
             }
         }
@@ -36,8 +44,7 @@ namespace Pizzard.UI
             {
                 float current = ManaSystem.Instance.CurrentMana;
                 float max = ManaSystem.Instance.MaxMana;
-                
-                // Protect division by 0
+
                 if (max > 0)
                 {
                     manaFillBar.fillAmount = current / max;
