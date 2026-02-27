@@ -12,7 +12,7 @@ public class ShopUI : MonoBehaviour
 {
     [Header("Botones")]
     public Button btnUpgradeMaxPotion;
-    public Button btnUpgradeElementalFatigue;
+    public Button btnUpgradeMana;
     public Button btnShopExit;
     public Button btnUpgradeWand;
     public TMPro.TextMeshProUGUI txtUpgradeWand;
@@ -31,8 +31,8 @@ public class ShopUI : MonoBehaviour
             btnShopExit.onClick.AddListener(OnBtnShopExit);
         if (btnUpgradeMaxPotion != null)
             btnUpgradeMaxPotion.onClick.AddListener(OnBtnUpgradeMaxPotion);
-        if (btnUpgradeElementalFatigue != null)
-            btnUpgradeElementalFatigue.onClick.AddListener(OnBtnUpgradeElementalFatigue);
+        if (btnUpgradeMana != null)
+            btnUpgradeMana.onClick.AddListener(OnBtnUpgradeMana);
         if (btnUpgradeWand != null)
             btnUpgradeWand.onClick.AddListener(OnBtnUpgradeWand);
     }
@@ -56,23 +56,23 @@ public class ShopUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Mejora la fatiga elemental. Consumes 1 Token.
+    /// Upgrades max mana (×1.5). Costs 1 Token.
     /// </summary>
-    public void OnBtnUpgradeElementalFatigue()
+    public void OnBtnUpgradeMana()
     {
         if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
             RefreshTokens();
-            Debug.Log("[ShopUI] Improved Elemental Fatigue!");
-            if (FatigueSystem.Instance != null)
+            Debug.Log("[ShopUI] Improved Mana!");
+            if (ManaSystem.Instance != null)
             {
-                FatigueSystem.Instance.UpgradeMaxFatigue(20);
+                ManaSystem.Instance.UpgradeMaxMana(20);
             }
         }
         else
         {
-            Debug.LogWarning("[ShopUI] No tokens to upgrade fatigue!");
+            Debug.LogWarning("[ShopUI] No tokens to upgrade mana!");
         }
     }
 
@@ -88,10 +88,10 @@ public class ShopUI : MonoBehaviour
             
             if (Pizzard.Progression.SaveManager.Instance != null)
             {
-                int savedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier;
+                int savedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier;
                 if (savedTier < 3)
                 {
-                    Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier = savedTier + 1;
+                    Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier = savedTier + 1;
                 }
             }
 
@@ -99,6 +99,20 @@ public class ShopUI : MonoBehaviour
                 playerEquip.UpgradeWandTier();
                 
             UpdateWandButtonUI();
+            
+            // --- WAVE 2: IMMEDIATE REACTIVE REFRESH ---
+            int newTier = Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 1;
+            if (elementSelectionUI != null)
+            {
+                elementSelectionUI.RefreshFromWandTier(newTier);
+            }
+            if (equipSelectorUI != null && equipSelectorUI.gameObject.activeInHierarchy)
+            {
+                equipSelectorUI.GenerateButtons();
+            }
+            
+            // Refresh exit button (Shop 1 hard-lock may now be releasable)
+            RefreshExitButton();
         }
         else
         {
@@ -111,7 +125,7 @@ public class ShopUI : MonoBehaviour
         if (btnUpgradeWand == null) return;
         
         int currentTier = playerEquip != null ? playerEquip.CurrentWandTier 
-            : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier : 1);
+            : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 1);
         
         int tokens = Pizzard.Progression.ProgressionManager.Instance != null ? Pizzard.Progression.ProgressionManager.Instance.BossCurrency : 0;
 
@@ -145,13 +159,13 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnShopExit()
     {
-        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.SaveManager.Instance != null)
+        // --- WAVE 2: SHOP 1 HARD-LOCK (FRONTEND) ---
+        if (Pizzard.Progression.SaveManager.Instance != null &&
+            Pizzard.Progression.SaveManager.Instance.CurrentSave.bossIndex == 1 &&
+            Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier == 0)
         {
-            if (Pizzard.Progression.SaveManager.Instance.CurrentSave.currentBossIndex == 1 && !hasPurchasedInRun1)
-            {
-                Debug.LogWarning("[ShopUI] Cannot exit! You must buy at least 1 upgrade (Wand) on your first run.");
-                return;
-            }
+            Debug.Log("[ShopUI] FRONTEND BLOCK: Cannot exit Shop 1 without a wand.");
+            return;
         }
 
         exitClicks++;
@@ -198,45 +212,65 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     private void InitializeShopUI()
     {
+        // Reset exit warning counter on every shop open
+        exitClicks = 0;
+        
         // Fallbacks in case Inspector references are lost
         if (elementSelectionUI == null) elementSelectionUI = FindObjectOfType<ElementSelectionUI>(true);
         if (equipSelectorUI == null) equipSelectorUI = FindObjectOfType<EquipSelectorUI>(true);
         if (playerEquip == null) playerEquip = FindObjectOfType<PlayerEquip>(true);
+        
+        // --- Auto-create token counter if not wired in Inspector ---
+        if (txtTokenCount == null)
+        {
+            GameObject tokenGO = new GameObject("TokenCounter");
+            tokenGO.transform.SetParent(transform, false);
+            
+            RectTransform rt = tokenGO.AddComponent<RectTransform>();
+            rt.anchorMin = new Vector2(1, 1);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.pivot = new Vector2(1, 1);
+            rt.anchoredPosition = new Vector2(-20, -20);
+            rt.sizeDelta = new Vector2(200, 50);
+            
+            txtTokenCount = tokenGO.AddComponent<TMPro.TextMeshProUGUI>();
+            txtTokenCount.fontSize = 28;
+            txtTokenCount.alignment = TMPro.TextAlignmentOptions.Right;
+            txtTokenCount.color = Color.white;
+            txtTokenCount.text = "Tokens: 0";
+            Debug.Log("[ShopUI] Auto-created TokenCounter text (top-right).");
+        }
 
+        int currentWandTier = Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 0;
+
+        // --- WAVE 2: ALWAYS show element selection UI, reactive to wandTier ---
         if (elementSelectionUI != null)
         {
             elementSelectionUI.gameObject.SetActive(true);
-            if (playerEquip != null)
+            if (playerEquip != null && playerEquip.equipedObject != null)
             {
                 elementSelectionUI.OpenSelection(playerEquip);
             }
-            else if (Pizzard.Progression.SaveManager.Instance != null && equipSelectorUI != null)
+            else if (equipSelectorUI != null && equipSelectorUI.availableEquipables != null)
             {
-                int savedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.selectedWandTierEquipped;
-                EquipableObject targetWand = equipSelectorUI.availableEquipables.Find(e => e.tier == savedTier);
-                int maxTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier;
+                // Find the wand matching the current tier, or the first wand as fallback
+                EquipableObject targetWand = equipSelectorUI.availableEquipables.Find(e => e.tier == currentWandTier);
+                if (targetWand == null && equipSelectorUI.availableEquipables.Count > 0)
+                    targetWand = equipSelectorUI.availableEquipables[0];
                 
                 if (targetWand != null)
                 {
-                    elementSelectionUI.OpenSelectionWithoutPlayer(targetWand, maxTier);
-                    Debug.Log("[ShopUI] Opened Element Selection using Save Data.");
+                    elementSelectionUI.OpenSelectionWithoutPlayer(targetWand, currentWandTier);
                 }
             }
-            else
-            {
-                Debug.LogWarning("[ShopUI] PlayerEquip is missing, cannot open ElementSelection properly!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("[ShopUI] ElementSelectionUI is missing from the Shop UI hierarchy!");
         }
 
         if (equipSelectorUI != null)
             equipSelectorUI.gameObject.SetActive(true);
             
         UpdateWandButtonUI();
-        RefreshTokens(); // ✅ NUEVO: Mostrar saldo inicial
+        RefreshTokens();
+        RefreshExitButton();
     }
 
     public void RefreshTokens()
@@ -249,9 +283,21 @@ public class ShopUI : MonoBehaviour
             
             // Visual feedback on the buttons based on token availability
             if (btnUpgradeMaxPotion != null) btnUpgradeMaxPotion.interactable = (tokens > 0);
-            if (btnUpgradeElementalFatigue != null) btnUpgradeElementalFatigue.interactable = (tokens > 0);
+            if (btnUpgradeMana != null) btnUpgradeMana.interactable = (tokens > 0);
 
             UpdateWandButtonUI();
+            RefreshExitButton();
+        }
+    }
+    
+    public void RefreshExitButton()
+    {
+        if (btnShopExit != null && Pizzard.Progression.SaveManager.Instance != null)
+        {
+            bool isShop1Locked = Pizzard.Progression.SaveManager.Instance.CurrentSave.bossIndex == 1 && 
+                                 Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier == 0;
+            
+            btnShopExit.interactable = !isShop1Locked;
         }
     }
     
@@ -260,6 +306,13 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void Hide()
     {
+        // --- WAVE 3: AUTO-SAVE on shop close ---
+        if (Pizzard.Progression.SaveManager.Instance != null)
+        {
+            Pizzard.Progression.SaveManager.Instance.SaveGame();
+            Debug.Log("[ShopUI] Auto-saved on shop close.");
+        }
+        
         gameObject.SetActive(false);
         if (elementSelectionUI != null)
             elementSelectionUI.gameObject.SetActive(false);

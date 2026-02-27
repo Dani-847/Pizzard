@@ -5,12 +5,12 @@ namespace Pizzard.Core
     public enum GameState
     {
         MainMenu,
-        IntroDialog,
+        Dialogue,
         Shop,
-        PreBossDialog,
-        BossFight,
-        PostBossDialog,
-        WinSequence // New State for Magic Pizza / Credits
+        PreBossDialogue,
+        Combat,
+        PostBossDialogue,
+        Credits
     }
 
     /// <summary>
@@ -40,6 +40,13 @@ namespace Pizzard.Core
             {
                 gameObject.AddComponent<Progression.ProgressionManager>();
             }
+            
+            // Ensure ManaSystem persists — mana bar depends on this singleton
+            if (ManaSystem.Instance == null && gameObject.GetComponent<ManaSystem>() == null)
+            {
+                gameObject.AddComponent<ManaSystem>();
+                Debug.Log("[GameFlowManager] Auto-created ManaSystem singleton.");
+            }
         }
 
         private void Start()
@@ -53,12 +60,14 @@ namespace Pizzard.Core
                 {
                     currentBossIndex = index;
                 }
-                ChangeState(GameState.BossFight);
+                ChangeState(GameState.Combat);
             }
             else
             {
                 ChangeState(GameState.MainMenu);
             }
+
+            // Token logic moved to IniciarJuego and LoadGame handling
         }
 
         /// <summary>
@@ -67,10 +76,31 @@ namespace Pizzard.Core
         /// </summary>
         public void ChangeState(GameState newState)
         {
-            if (isInitialized && CurrentState == newState) return;
-            isInitialized = true;
+            if (CurrentState == newState) return;
 
-            Debug.Log($"[GameFlowManager] State Transition: {CurrentState} -> {newState}");
+            // --- STRICT TRANSITION GUARDS ---
+            // Game Loop: MainMenu -> Dialogue -> Shop -> PreBossDialogue -> Combat -> PostBossDialogue -> Shop/Credits
+            if (CurrentState != GameState.MainMenu) // MainMenu can go anywhere on load
+            {
+                bool valid = true;
+                switch (CurrentState)
+                {
+                    case GameState.Dialogue: valid = (newState == GameState.Shop); break;
+                    case GameState.Shop: valid = (newState == GameState.PreBossDialogue || newState == GameState.Combat); break; // Fallback to combat if dialogue missing
+                    case GameState.PreBossDialogue: valid = (newState == GameState.Combat); break;
+                    case GameState.Combat: valid = (newState == GameState.PostBossDialogue || newState == GameState.Shop); break; // Fallback to shop if dialogue missing
+                    case GameState.PostBossDialogue: valid = (newState == GameState.Shop || newState == GameState.Credits); break;
+                    default: valid = false; break; // Block transitions from unhandled states
+                }
+                if (!valid)
+                {
+                    Debug.LogError($"[GameFlowManager] INVALID TRANSITION ATTEMPT: {CurrentState} -> {newState}. Blocked.");
+                    return;
+                }
+            }
+            // --------------------------------
+
+            Debug.Log($"[GameFlowManager] Changing state: {CurrentState} -> {newState}");
             CurrentState = newState;
 
             string targetScene = GetSceneForState(newState);
@@ -99,31 +129,33 @@ namespace Pizzard.Core
                     case GameState.MainMenu:
                         if (ui.menuUI != null) ui.menuUI.Show();
                         break;
-                    case GameState.IntroDialog:
-                        if (ui.dialogUI != null) ui.dialogUI.ShowIntroDialog(this);
+                    case GameState.Dialogue:
+                        if (ui.dialogUI != null) ui.dialogUI.ShowIntroDialog(this); // Fallback for now
                         break;
-                    case GameState.PreBossDialog:
+                    case GameState.PreBossDialogue:
                         if (ui.dialogUI != null) ui.dialogUI.ShowPreBossDialog(this);
                         break;
-                    case GameState.PostBossDialog:
+                    case GameState.PostBossDialogue:
                         if (ui.dialogUI != null) ui.dialogUI.ShowPostBossDialog(this);
                         break;
                     case GameState.Shop:
                         if (ui.tiendaUI != null) ui.tiendaUI.Show(this);
                         break;
-                    case GameState.BossFight:
+                    case GameState.Combat:
                         // Enable HUD elements during boss fights
                         Transform elementsUI = uiParent.Find("Elementos");
                         Transform bossUI = uiParent.Find("PblobUI"); // Boss proto name
                         Transform playerHP = uiParent.Find("HealthUI");
                         Transform potionUI = uiParent.Find("PotionUI");
+                        Transform manaUI = uiParent.Find("ManaUI");
                         
                         if (elementsUI) elementsUI.gameObject.SetActive(true);
                         if (bossUI) bossUI.gameObject.SetActive(true);
                         if (playerHP) playerHP.gameObject.SetActive(true);
                         if (potionUI) potionUI.gameObject.SetActive(true);
+                        if (manaUI) manaUI.gameObject.SetActive(true);
                         break;
-                    case GameState.WinSequence:
+                    case GameState.Credits:
                         // We leave all UI hidden, the Credits scene will have its own Canvas
                         break;
                 }
@@ -145,20 +177,57 @@ namespace Pizzard.Core
             return state switch
             {
                 GameState.MainMenu => "MainMenu",
-                GameState.IntroDialog => "IntroDialog",
+                GameState.Dialogue => "IntroDialog", // Placeholder for actual new Dialogue logic
                 GameState.Shop => "Shop",
-                GameState.PreBossDialog => "PreBossDialog",
-                GameState.BossFight => "BossArena_" + currentBossIndex,
-                GameState.PostBossDialog => "PostBossDialog",
-                GameState.WinSequence => "Credits",
+                GameState.PreBossDialogue => "PreBossDialog",
+                GameState.Combat => "BossArena_" + currentBossIndex,
+                GameState.PostBossDialogue => "PostBossDialog",
+                GameState.Credits => "Credits",
                 _ => string.Empty
             };
         }
 
         public void IniciarJuego()
         {
+            if (Progression.SaveManager.Instance != null)
+            {
+                Progression.SaveManager.Instance.ResetSave();
+                
+                // Clear active combinations
+                var combiner = FindObjectOfType<ElementsCombiner>(true);
+                if (combiner != null)
+                {
+                    combiner.ClearSelectedElements();
+                }
+
+                // Reset all selected elements from wands
+                var equipSelector = FindObjectOfType<EquipSelectorUI>(true);
+                if (equipSelector != null && equipSelector.availableEquipables != null)
+                {
+                    foreach(var wand in equipSelector.availableEquipables)
+                    {
+                        if (wand != null && wand.elements != null)
+                        {
+                            wand.elements.Clear();
+                        }
+                    }
+                }
+            }
+
             currentBossIndex = 1;
-            ChangeState(GameState.IntroDialog);
+
+            if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.BossCurrency == 0)
+            {
+                Progression.ProgressionManager.Instance.AddCurrency(1);
+                Debug.Log("[GameFlowManager] Granted 1 starting token for Shop 1 mandatory purchase.");
+                
+                if (Progression.SaveManager.Instance != null)
+                {
+                    Progression.SaveManager.Instance.SaveGame();
+                }
+            }
+
+            ChangeState(GameState.Dialogue);
         }
 
         public void VolverAlMenu()
@@ -175,7 +244,7 @@ namespace Pizzard.Core
         public void ReiniciarBossFight()
         {
             Time.timeScale = 1f;
-            ChangeState(GameState.BossFight);
+            ChangeState(GameState.Combat);
         }
 
         public void VolverATiendaTrasMuerte()
@@ -194,16 +263,22 @@ namespace Pizzard.Core
         {
             switch (CurrentState)
             {
-                case GameState.IntroDialog:
+                case GameState.Dialogue:
                     ChangeState(GameState.Shop);
                     break;
                 case GameState.Shop:
-                    ChangeState(GameState.PreBossDialog);
+                    // --- WAVE 2: SHOP 1 HARD-LOCK ---
+                    if (currentBossIndex == 1 && Progression.SaveManager.Instance != null && Progression.SaveManager.Instance.CurrentSave.wandTier == 0)
+                    {
+                        Debug.LogWarning("[GameFlowManager] BACKEND BLOCK: Shop 1 is HARD-LOCKED until wandTier >= 1.");
+                        return;
+                    }
+                    ChangeState(GameState.PreBossDialogue);
                     break;
-                case GameState.PreBossDialog:
-                    ChangeState(GameState.BossFight);
+                case GameState.PreBossDialogue:
+                    ChangeState(GameState.Combat);
                     break;
-                case GameState.BossFight:
+                case GameState.Combat:
                     // Boss defeated
                     // Reward tokens via ProgressionManager
                     int tokensToReward = (currentBossIndex == 1) ? 1 : 2;
@@ -212,9 +287,16 @@ namespace Pizzard.Core
                         Progression.ProgressionManager.Instance.AddCurrency(tokensToReward);
                     }
                     
-                    ChangeState(GameState.PostBossDialog);
+                    // --- WAVE 3: AUTO-SAVE on boss defeat ---
+                    if (Progression.SaveManager.Instance != null)
+                    {
+                        Progression.SaveManager.Instance.SaveGame();
+                        Debug.Log("[GameFlowManager] Auto-saved after boss defeat.");
+                    }
+                    
+                    ChangeState(GameState.PostBossDialogue);
                     break;
-                case GameState.PostBossDialog:
+                case GameState.PostBossDialogue:
                     if (currentBossIndex < 4)
                     {
                         currentBossIndex++;
@@ -224,10 +306,10 @@ namespace Pizzard.Core
                     {
                         // Win Condition: All bosses defeated.
                         Debug.Log("[GameFlowManager] All bosses defeated! Triggering Win Sequence.");
-                        ChangeState(GameState.WinSequence);
+                        ChangeState(GameState.Credits);
                     }
                     break;
-                case GameState.WinSequence:
+                case GameState.Credits:
                     VolverAlMenu(); // Used when exiting Credits
                     break;
                 default:

@@ -8,24 +8,12 @@ namespace Pizzard.Progression
     [Serializable]
     public class SaveData
     {
-        // 1. Tokens System
         public int tokens = 0;
-
-        // 2. Wand Upgrades
-        public int currentWandTier = 1;
-
-        // 3. Elemental Fatigue
-        public int maxFatigue = 100;
-        public int currentFatigue = 100;
-
-        // 4. Progession
-        public int currentBossIndex = 1;
-
-        // 5. Unlocked Elements
-        public List<ElementType> unlockedElements = new List<ElementType>();
-
-        // 6. Selected Wand
-        public int selectedWandTierEquipped = 1;
+        public int wandTier = 0;
+        public int potionCount = 0;
+        public float manaMax = 100f;
+        public int bossIndex = 1;
+        public string languageSetting = "en";
     }
 
     /// <summary>
@@ -54,6 +42,14 @@ namespace Pizzard.Progression
             savePath = Application.persistentDataPath + "/pizzard_save.json";
             
             LoadGame();
+        }
+
+        public void ResetSave()
+        {
+            Debug.Log("[SaveManager] Resetting save data for a new run.");
+            CurrentSave = new SaveData();
+            SaveGame();
+            ApplySaveDataToGame();
         }
 
         public void SaveGame()
@@ -105,7 +101,7 @@ namespace Pizzard.Progression
             // Gather state from GameFlowManager and ProgressionManager
             if (GameFlowManager.Instance != null)
             {
-                CurrentSave.currentBossIndex = GameFlowManager.Instance.currentBossIndex;
+                CurrentSave.bossIndex = GameFlowManager.Instance.currentBossIndex;
             }
             
             if (ProgressionManager.Instance != null)
@@ -124,10 +120,16 @@ namespace Pizzard.Progression
                 ProgressionManager.Instance.SetCurrencyFromSave(CurrentSave.tokens);
             }
 
-            var playerEquip = FindObjectOfType<PlayerEquip>();
+            var playerEquip = FindObjectOfType<PlayerEquip>(true);
             if (playerEquip != null)
             {
-                playerEquip.LoadTierFromSave(CurrentSave.currentWandTier);
+                playerEquip.LoadTierFromSave(CurrentSave.wandTier);
+            }
+            
+            var mana = FindObjectOfType<ManaSystem>(true);
+            if (mana != null)
+            {
+                mana.LoadMaxManaFromSave(CurrentSave.manaMax);
             }
         }
     }

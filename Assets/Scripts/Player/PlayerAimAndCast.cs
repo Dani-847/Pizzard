@@ -22,6 +22,10 @@ public class PlayerAimAndCast : MonoBehaviour
     {
         if (bodyToRotate == null)
             return;
+            
+        if (Pizzard.Core.GameFlowManager.Instance != null && 
+            Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+            return;
 
         if (isGamepad)
         {
@@ -58,6 +62,10 @@ public class PlayerAimAndCast : MonoBehaviour
 
     public void OnLookDirection(InputAction.CallbackContext context)
     {
+        if (Pizzard.Core.GameFlowManager.Instance != null && 
+            Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+            return;
+
         lookInput = context.ReadValue<Vector2>();
         isGamepad = context.control.device is Gamepad;
     }
@@ -85,11 +93,15 @@ public class PlayerAimAndCast : MonoBehaviour
         }
     }
 
-    public float baseFatigueCost = 15f;
+
 
     public void OnCastSpell(InputAction.CallbackContext context)
     {
         if (!context.performed)
+            return;
+
+        if (Pizzard.Core.GameFlowManager.Instance != null && 
+            Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
             return;
 
         var elements = combiner.GetSelectedElements();
@@ -108,19 +120,19 @@ public class PlayerAimAndCast : MonoBehaviour
             return;
         }
 
-        // --- FATIGUE CALCULATION ---
-        float cost = baseFatigueCost * elements.Count * combiner.spamCostMultiplier;
-        if (Pizzard.Core.FatigueSystem.Instance != null)
+        // --- MANA COST CHECK (per-spell costs from dictionary) ---
+        float cost = Pizzard.Core.ManaSystem.GetSpellCost(key);
+        if (Pizzard.Core.ManaSystem.Instance != null)
         {
-            if (!Pizzard.Core.FatigueSystem.Instance.CanCast(cost))
+            if (!Pizzard.Core.ManaSystem.Instance.CanCast(cost))
             {
-                Debug.LogWarning($"[Fatigue] Not enough fatigue! Need {cost}, Have {Pizzard.Core.FatigueSystem.Instance.CurrentFatigue}");
+                Debug.LogWarning($"[ManaSystem] Not enough mana! Need {cost}, Have {Pizzard.Core.ManaSystem.Instance.CurrentMana}");
                 // Optional: Play a "fizzle" sound or UI shake here
                 combiner.ClearSelectedElements();
                 return;
             }
             // Consume it
-            Pizzard.Core.FatigueSystem.Instance.ConsumeFatigue(cost);
+            Pizzard.Core.ManaSystem.Instance.ConsumeMana(cost);
         }
 
         // Register the cast with multiplier system

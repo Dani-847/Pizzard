@@ -1,4 +1,5 @@
 using UnityEngine;
+using Pizzard.Core;
 
 /// <summary>
 /// Gestiona los contextos y todas las UI del juego.
@@ -31,6 +32,70 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    void Start()
+    {
+        // --- Fix for UI overlap on startup ---
+        // GameFlowManager.Start() may have already called ChangeState before 
+        // UIManager.Instance was set (Awake order race), leaving all panels visible.
+        // Force a re-apply of the current state's visibility.
+        if (GameFlowManager.Instance != null)
+        {
+            ForceApplyUIForState(GameFlowManager.Instance.CurrentState);
+        }
+        else
+        {
+            // Fallback: hide everything except menu
+            HideAllUIs();
+            foreach (Transform child in transform)
+            {
+                child.gameObject.SetActive(false);
+            }
+            if (menuUI != null) menuUI.Show();
+        }
+    }
+
+    /// <summary>
+    /// Forcefully applies the UI visibility for a given GameState.
+    /// Called from Start() to fix the race condition, and can be called externally.
+    /// </summary>
+    public void ForceApplyUIForState(GameState state)
+    {
+        HideAllUIs();
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+
+        switch (state)
+        {
+            case GameState.MainMenu:
+                if (menuUI != null) menuUI.Show();
+                break;
+            case GameState.Shop:
+                if (tiendaUI != null) tiendaUI.Show();
+                break;
+            case GameState.Dialogue:
+                if (dialogUI != null) dialogUI.gameObject.SetActive(true);
+                break;
+            case GameState.Combat:
+                // Enable HUD elements
+                Transform elementsUI = transform.Find("Elementos");
+                Transform bossUI = transform.Find("PblobUI");
+                Transform playerHP = transform.Find("HealthUI");
+                Transform potionUI = transform.Find("PotionUI");
+                Transform manaUI = transform.Find("ManaUI");
+                
+                if (elementsUI) elementsUI.gameObject.SetActive(true);
+                if (bossUI) bossUI.gameObject.SetActive(true);
+                if (playerHP) playerHP.gameObject.SetActive(true);
+                if (potionUI) potionUI.gameObject.SetActive(true);
+                if (manaUI) manaUI.gameObject.SetActive(true);
+                break;
+        }
+        
+        Debug.Log($"[UIManager] ForceApplyUIForState: {state}");
     }
 
     /// <summary>
