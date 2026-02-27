@@ -22,9 +22,19 @@ public class PlayerEquip : MonoBehaviour
 
     void Start()
     {
-        if (Pizzard.Progression.SaveManager.Instance != null)
+        if (Pizzard.Progression.SaveManager.Instance != null && Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier > 0)
         {
             LoadTierFromSave(Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier);
+        }
+
+        if (equipedObject == null)
+        {
+            var selector = FindObjectOfType<EquipSelectorUI>(true);
+            if (selector != null && selector.availableEquipables != null && selector.availableEquipables.Count > 0)
+            {
+                EquipObject(selector.availableEquipables[0]);
+                Debug.Log("[PlayerEquip] Auto-equipped default wand for testing context.");
+            }
         }
     }
 

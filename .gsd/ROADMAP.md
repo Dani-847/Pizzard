@@ -36,3 +36,23 @@
 ### Phase 6: Bosses Part 2 & Polish (Oven & Niggel)
 **Status**: ✅ Complete
 **Objective**: Implement the remaining bosses: Pomodoro Paganini (pong deflection) and Niggel Worthington (buff/debuff thievery). Final balancing and bug fixes.
+
+### Phase 7: Boss State Standardization
+**Status**: ✅ Complete
+**Objective**: Fix boss loading context and GameFlowManager edge cases.
+
+### Phase 8: Main Menu & UI Cleanup
+**Status**: ✅ Complete
+**Objective**: Clean up settings and intro dialogue sequences.
+
+### Phase 9: Boss Debugging
+**Status**: ✅ Complete
+**Objective**: Fix player input freezing, missing physics rigidbodies, invisible UI bars, and timescale pauses upon boss encounter.
+
+### Phase 10: Codebase Refactor, Architecture Standardization & Polish
+**Status**: ✅ Complete
+**Objective**: Clean scene architectures via MCP, implement Cinemachine Camera for wide-room views, add Pblob Boss drift AI with phase knockbacks, and build the Shop Element Selection menu mechanic.
+
+### Phase 11: Critical Loop & UI Fixes
+**Status**: 🔄 In Progress
+**Objective**: Restore full playability by addressing the broken health bar UI, stuck camera boundaries, missing Shop element selection buttons, and the broken progression loop post-boss defeat.

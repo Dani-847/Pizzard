@@ -45,6 +45,7 @@ public class ShopUI : MonoBehaviour
         if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
+            RefreshTokens();
             if (healthPotionSystem != null)
                 healthPotionSystem.MejorarCapacidad();
         }
@@ -62,6 +63,7 @@ public class ShopUI : MonoBehaviour
         if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
+            RefreshTokens();
             Debug.Log("[ShopUI] Improved Elemental Fatigue!");
             if (FatigueSystem.Instance != null)
             {
@@ -82,6 +84,7 @@ public class ShopUI : MonoBehaviour
         if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
         {
             hasPurchasedInRun1 = true;
+            RefreshTokens();
             
             if (Pizzard.Progression.SaveManager.Instance != null)
             {
@@ -110,6 +113,8 @@ public class ShopUI : MonoBehaviour
         int currentTier = playerEquip != null ? playerEquip.CurrentWandTier 
             : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier : 1);
         
+        int tokens = Pizzard.Progression.ProgressionManager.Instance != null ? Pizzard.Progression.ProgressionManager.Instance.BossCurrency : 0;
+
         if (currentTier >= 3)
         {
             btnUpgradeWand.interactable = false;
@@ -117,11 +122,18 @@ public class ShopUI : MonoBehaviour
         }
         else
         {
-            btnUpgradeWand.interactable = true;
+            btnUpgradeWand.interactable = (tokens > 0);
             string nextWandName = currentTier == 1 ? "Tier 2 Wand" : "Tier 3 Wand";
-            if (txtUpgradeWand != null) txtUpgradeWand.text = $"Buy next wand:\n\"{nextWandName}\"";
+            if (txtUpgradeWand != null) 
+            {
+                txtUpgradeWand.text = $"Buy next wand:\n\"{nextWandName}\"";
+                txtUpgradeWand.color = (tokens > 0) ? Color.white : new Color(1f, 0.5f, 0.5f); // Reddish if can't buy
+            }
         }
     }
+
+    [Header("UI General")]
+    public TMPro.TextMeshProUGUI txtTokenCount; // ✅ NUEVO: Mostrar tokens actuales
 
     private int exitClicks = 0;
     public bool hasPurchasedInRun1 = false;
@@ -186,16 +198,45 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     private void InitializeShopUI()
     {
+        // Fallbacks in case Inspector references are lost
+        if (elementSelectionUI == null) elementSelectionUI = GetComponentInChildren<ElementSelectionUI>(true);
+        if (equipSelectorUI == null) equipSelectorUI = GetComponentInChildren<EquipSelectorUI>(true);
+        if (playerEquip == null) playerEquip = FindObjectOfType<PlayerEquip>(true);
+
         if (elementSelectionUI != null)
         {
             elementSelectionUI.gameObject.SetActive(true);
             if (playerEquip != null)
                 elementSelectionUI.OpenSelection(playerEquip);
+            else
+                Debug.LogWarning("[ShopUI] PlayerEquip is missing, cannot open ElementSelection properly!");
         }
+        else
+        {
+            Debug.LogWarning("[ShopUI] ElementSelectionUI is missing from the Shop UI hierarchy!");
+        }
+
         if (equipSelectorUI != null)
             equipSelectorUI.gameObject.SetActive(true);
             
         UpdateWandButtonUI();
+        RefreshTokens(); // ✅ NUEVO: Mostrar saldo inicial
+    }
+
+    public void RefreshTokens()
+    {
+        if (txtTokenCount != null && Pizzard.Progression.ProgressionManager.Instance != null)
+        {
+            int tokens = Pizzard.Progression.ProgressionManager.Instance.BossCurrency;
+            txtTokenCount.text = $"Tokens: {tokens}";
+            txtTokenCount.color = tokens > 0 ? Color.white : new Color(1f, 0.4f, 0.4f); // Red if zero tokens
+            
+            // Visual feedback on the buttons based on token availability
+            if (btnUpgradeMaxPotion != null) btnUpgradeMaxPotion.interactable = (tokens > 0);
+            if (btnUpgradeElementalFatigue != null) btnUpgradeElementalFatigue.interactable = (tokens > 0);
+
+            UpdateWandButtonUI();
+        }
     }
     
     /// <summary>

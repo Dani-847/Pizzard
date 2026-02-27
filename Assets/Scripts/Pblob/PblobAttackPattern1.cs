@@ -173,7 +173,21 @@ public class PblobAttackPattern1 : PblobAttackPattern
                     }
                 }
 
-                Vector3 direction = (player.transform.position - point.position).normalized;
+                // ✅ NUEVO: Predictive Aiming (Disparo Predictivo) para hacer la pelea más competitiva
+                Vector3 targetPos = player.transform.position;
+                Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+                if (playerRb != null && playerRb.velocity.magnitude > 0.1f)
+                {
+                    // Prever dónde estará el jugador basándose en su velocidad, distancia y velocidad del proyectil
+                    float distance = Vector3.Distance(point.position, targetPos);
+                    float timeToHit = distance / selectedSpeed;
+                    
+                    // factor 0.7f para que no sea *demasiado* perfecto e injusto
+                    targetPos += (Vector3)playerRb.velocity * (timeToHit * 0.7f); 
+                }
+
+                Vector3 direction = (targetPos - point.position).normalized;
+                
                 Rigidbody2D rb = hairball.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {

@@ -29,4 +29,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/FlowScenes/BossArena_4.unity
     guid: 72c669dd570b2c44e985dc970660f379
+  - enabled: 1
+    path: Assets/FlowScenes/PostBossDialog.unity
+    guid: 91ad46e2b1e4e4740b4d52ea1b4f947c
+  - enabled: 1
+    path: Assets/FlowScenes/Credits.unity
+    guid: e7316c5643ea2704a978ea87b8dc3a17
   m_configObjects: {}

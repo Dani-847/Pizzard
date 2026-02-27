@@ -45,7 +45,20 @@ namespace Pizzard.Core
         private void Start()
         {
             // Default initialization state
-            ChangeState(GameState.MainMenu);
+            string activeSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (activeSceneName.StartsWith("BossArena"))
+            {
+                string[] parts = activeSceneName.Split('_');
+                if (parts.Length > 1 && int.TryParse(parts[1], out int index))
+                {
+                    currentBossIndex = index;
+                }
+                ChangeState(GameState.BossFight);
+            }
+            else
+            {
+                ChangeState(GameState.MainMenu);
+            }
         }
 
         /// <summary>
@@ -115,6 +128,9 @@ namespace Pizzard.Core
                         break;
                 }
             }
+
+            // Force unpause when transitioning states
+            Time.timeScale = 1f;
 
             if (!string.IsNullOrEmpty(targetScene))
             {

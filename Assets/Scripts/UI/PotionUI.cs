@@ -18,8 +18,13 @@ public class PotionUI : MonoBehaviour
 
     private void Update()
     {
-        if (healthPotionSystem == null || potionText == null)
-            return;
+        if (healthPotionSystem == null)
+        {
+            healthPotionSystem = FindObjectOfType<HealthPotionSystem>();
+            if (healthPotionSystem == null) return;
+        }
+
+        if (potionText == null) return;
 
         int currentPotions = healthPotionSystem.GetPocionesActuales();
         potionText.text = currentPotions.ToString();

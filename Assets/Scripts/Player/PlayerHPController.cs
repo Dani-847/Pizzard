@@ -38,19 +38,32 @@ public class PlayerHPController : MonoBehaviour
             potionSystem.playerHP = this;
     }
 
+    private float invulnerabilityTimer = 0f;
+    private float invulnerabilityDuration = 1.0f; // 1 second of i-frames
+
+    private void Update()
+    {
+        if (invulnerabilityTimer > 0f)
+        {
+            invulnerabilityTimer -= Time.deltaTime;
+        }
+    }
+
     /// <summary>
     /// Resta vida según la cantidad de daño (normalmente 1 = medio corazón).
     /// Actualiza la UI. Si llega a 0, llama a OnDeath().
     /// </summary>
     public void RecibirDaño(int cantidad)
     {
-        if (EstaMuerto()) return;
+        if (EstaMuerto() || invulnerabilityTimer > 0f) return;
 
         Debug.Log($"❤️ Vida antes del daño: {vidaActual}");
         vidaActual -= cantidad;
         Debug.Log($"❤️ Vida después del daño: {vidaActual}");
         vidaActual = Mathf.Max(vidaActual, 0);
         
+        invulnerabilityTimer = invulnerabilityDuration;
+
         if (hpUI != null)
             hpUI.ActualizarUI(vidaActual);
 

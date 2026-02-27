@@ -24,11 +24,24 @@ namespace Pizzard.Player
 
         private void Awake()
         {
+            // Aggressively remove 3D CharacterController that fights 2D physics and freezes movement
+            var charController = GetComponent<UnityEngine.CharacterController>();
+            if (charController != null)
+            {
+                DestroyImmediate(charController);
+            }
+
             rb = GetComponent<Rigidbody2D>();
             if (rb == null)
             {
-                rb = gameObject.AddComponent<Rigidbody2D>();
-                Debug.LogWarning("[PlayerController] Added missing Rigidbody2D to player at runtime.");
+                try 
+                {
+                    rb = gameObject.AddComponent<Rigidbody2D>();
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning($"[PlayerController] Suppressed Unity internal exception when adding Rigidbody2D: {e.Message}");
+                }
             }
             // Ensure no gravity affects the top-down player
             if (rb != null)
@@ -50,15 +63,31 @@ namespace Pizzard.Player
 
         private void HandleInput()
         {
-            // Gather standard movement
-            float moveX = Input.GetAxisRaw("Horizontal");
-            float moveY = Input.GetAxisRaw("Vertical");
-            movementInput = new Vector2(moveX, moveY).normalized;
-
-            // Gather dash input (e.g. Spacebar)
-            if (Input.GetKeyDown(KeyCode.Space) && !isDashing && dashCooldownRemaining <= 0f && movementInput != Vector2.zero)
+            // Use New Input System Keyboard fallback directly since older Input.GetAxis is disabled.
+            if (UnityEngine.InputSystem.Keyboard.current != null)
             {
-                StartDash();
+                float moveX = 0f;
+                float moveY = 0f;
+                if (UnityEngine.InputSystem.Keyboard.current.wKey.isPressed) moveY += 1f;
+                if (UnityEngine.InputSystem.Keyboard.current.sKey.isPressed) moveY -= 1f;
+                if (UnityEngine.InputSystem.Keyboard.current.dKey.isPressed) moveX += 1f;
+                if (UnityEngine.InputSystem.Keyboard.current.aKey.isPressed) moveX -= 1f;
+                
+                movementInput = new Vector2(moveX, moveY).normalized;
+
+                if (UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame && !isDashing && dashCooldownRemaining <= 0f && movementInput != Vector2.zero)
+                {
+                    StartDash();
+                }
+            }
+        }
+
+        // Support for Unity Events from PlayerInput component
+        public void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        {
+            if (context.performed || context.canceled)
+            {
+                movementInput = context.ReadValue<Vector2>().normalized;
             }
         }
 

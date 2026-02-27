@@ -49,6 +49,8 @@ public class PblobController : MonoBehaviour
     private PblobRhythmManager rhythmManager;
     private Coroutine battleCoroutine;
 
+    private Transform playerTransform;
+
     private void Awake()
     {
         // Inicializar valores en Awake para que estén listos antes de que otros scripts los necesiten
@@ -58,6 +60,9 @@ public class PblobController : MonoBehaviour
 
     private void Start()
     {
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        if (p != null) playerTransform = p.transform;
+
         // Buscar RhythmManager solo si no está asignado manualmente
         if (rhythmManager == null)
         {
@@ -172,7 +177,8 @@ public class PblobController : MonoBehaviour
             Debug.Log("💡 VENTANA VULNERABLE - Ataca ahora!");
             Debug.Log($"💥 Daño permitido en esta fase: {maxHealth * 0.1f - damageInCurrentPhase}");
 
-            yield return new WaitForSeconds(vulnerableWindowDuration);
+            // Boss scurries around while vulnerable to make it harder to hit!
+            yield return StartCoroutine(WanderRoutine());
 
             CheckPhaseProgress();
 
@@ -186,6 +192,51 @@ public class PblobController : MonoBehaviour
         if (currentPhase > maxPhases)
         {
             UnlockPhase2();
+        }
+    }
+
+    private IEnumerator WanderRoutine()
+    {
+        float wanderTime = vulnerableWindowDuration;
+        Vector3 startPos = transform.position;
+        while(wanderTime > 0)
+        {
+            Vector3 randomDir = Random.insideUnitCircle.normalized;
+            // Evita que se salga demasiado lejos de su centro de spawn
+            Vector3 targetPos = startPos + randomDir * 4f; 
+            float moveDuration = Random.Range(0.5f, 1.5f);
+            float elapsed = 0f;
+            Vector3 currentStart = transform.position;
+
+            while(elapsed < moveDuration && wanderTime > 0)
+            {
+                transform.position = Vector3.Lerp(currentStart, targetPos, elapsed / moveDuration);
+                elapsed += Time.deltaTime;
+                wanderTime -= Time.deltaTime;
+                yield return null;
+            }
+        }
+    }
+
+    private IEnumerator KnockbackRoutine()
+    {
+        if (playerTransform == null) yield break;
+        
+        Vector3 dir = (transform.position - playerTransform.position).normalized;
+        Vector3 targetPos = transform.position + dir * 5f; // Retroceso dramático de 5 unidades
+        
+        float elapsed = 0f;
+        float duration = 0.4f; // Rapido!
+        Vector3 startPos = transform.position;
+
+        while(elapsed < duration) 
+        {
+            // Usando SmoothStep para hacer el knockback más visceral
+            float t = elapsed / duration;
+            t = t * t * (3f - 2f * t);
+            transform.position = Vector3.Lerp(startPos, targetPos, t);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
     }
 
@@ -267,6 +318,9 @@ public class PblobController : MonoBehaviour
         Debug.Log($"✅ Fase {currentPhase} completada! Vida: {currentHealth}/{maxHealth}");
         OnPhaseCompleted?.Invoke();
 
+        // Efecto visual dramático al completar una fase
+        StartCoroutine(KnockbackRoutine());
+
         currentHealth = phaseHealthThresholds[currentPhase];
         OnHealthChanged?.Invoke(currentHealth / maxHealth);
 
@@ -325,6 +379,14 @@ public class PblobController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (!battleActive)
+        {
+            Debug.Log("✂️ Boss hit for the first time! Removing hair layer and starting battle!");
+            StartBossBattle();
+            // Optional: You could subtract the first hit damage here too, or let it just trigger the start.
+            // Let's count the damage since it feels better for the player.
+        }
+
         if (!isVulnerable)
         {
             Debug.Log("❌ Boss no vulnerable - daño ignorado");
@@ -457,18 +519,16 @@ public class PblobController : MonoBehaviour
     {
         if (debugMode)
         {
-            float phaseProgress = currentPhase <= maxPhases ? 
-                (maxHealth * 0.1f * currentPhase - (maxHealth - currentHealth)) / (maxHealth * 0.1f) : 1f;
-            
-            GUI.Box(new Rect(10, 10, 320, 200), "DEBUG BOSS");
-            GUI.Label(new Rect(20, 40, 300, 20), $"Vida: {currentHealth}/{maxHealth}");
-            GUI.Label(new Rect(20, 60, 300, 20), $"Fase: {currentPhase}/4");
-            GUI.Label(new Rect(20, 80, 300, 20), $"Fase 2: {(phase2Unlocked ? "DESBLOQUEADA" : "BLOQUEADA")}");
-            GUI.Label(new Rect(20, 100, 300, 20), $"Objetivo Fase: {phaseHealthThresholds[currentPhase]}");
-            GUI.Label(new Rect(20, 120, 300, 20), $"Daño en Fase: {damageInCurrentPhase}/{maxHealth * 0.1f}");
-            GUI.Label(new Rect(20, 140, 300, 20), $"Progreso: {phaseProgress * 100:F1}%");
-            GUI.Label(new Rect(20, 160, 300, 20), $"Estado: {(isVulnerable ? "VULNERABLE" : "INVULNERABLE")}");
-            GUI.Label(new Rect(20, 180, 300, 20), "T=Daño(100) | V=Vulnerabilidad | 2=Fase2");
+            GUI.Box(new Rect(10, 10, 160, 90), "DEBUG BOSS");
+            if (GUI.Button(new Rect(20, 40, 130, 30), "KILL BOSS"))
+            {
+                currentHealth = 0;
+                Defeat();
+            }
+            if (!battleActive && GUI.Button(new Rect(20, 80, 130, 30), "START BOSS"))
+            {
+                StartBossBattle();
+            }
         }
     }
 }

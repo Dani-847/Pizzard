@@ -57,8 +57,6 @@ public class DeathUI : MonoBehaviour
     /// </summary>
     public void OcultarPantallaMuerte()
     {
-        if (!_estaActiva) return;
-
         _estaActiva = false;
 
         if (pantallaMuerte != null)
