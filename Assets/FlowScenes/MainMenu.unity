@@ -378,6 +378,18 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5274132009207628972, guid: eebcf59ba1ecac74bbddc52ded54ab4f, type: 3}
+      propertyPath: corazonLleno
+      value: 
+      objectReference: {fileID: 21300000, guid: f93b978d95cf1a648b8bfaee2e586a78, type: 3}
+    - target: {fileID: 5274132009207628972, guid: eebcf59ba1ecac74bbddc52ded54ab4f, type: 3}
+      propertyPath: corazonVacio
+      value: 
+      objectReference: {fileID: 21300000, guid: c0920ff917ba4d24c97b1a1808ec89ce, type: 3}
+    - target: {fileID: 5274132009207628972, guid: eebcf59ba1ecac74bbddc52ded54ab4f, type: 3}
+      propertyPath: medioCorazon
+      value: 
+      objectReference: {fileID: 21300000, guid: b38dc5f626e8fba49bb5dce0d3f9e80a, type: 3}
     - target: {fileID: 5731909580180009287, guid: eebcf59ba1ecac74bbddc52ded54ab4f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
