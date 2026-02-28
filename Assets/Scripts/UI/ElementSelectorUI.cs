@@ -33,7 +33,11 @@ public class ElementSelectorUI : MonoBehaviour
         foreach (ElementType element in System.Enum.GetValues(typeof(ElementType)))
         {
             GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer);
-            buttonGO.GetComponentInChildren<Text>().text = element.ToString();
+            string elementKey = "element_" + element.ToString().ToLower();
+            string displayText = LocalizationManager.Instance != null
+                ? LocalizationManager.Instance.GetText(elementKey)
+                : element.ToString();
+            buttonGO.GetComponentInChildren<Text>().text = displayText;
 
             buttonGO.GetComponent<Button>().onClick.AddListener(() =>
             {
@@ -42,7 +46,9 @@ public class ElementSelectorUI : MonoBehaviour
         }
 
         GameObject resetButtonGO = Instantiate(buttonPrefab, buttonContainer);
-        resetButtonGO.GetComponentInChildren<Text>().text = "Reset";
+        resetButtonGO.GetComponentInChildren<Text>().text = LocalizationManager.Instance != null
+            ? LocalizationManager.Instance.GetText("shop_reset")
+            : "Reset";
         resetButtonGO.GetComponent<Button>().onClick.AddListener(() =>
         {
             ResetWeaponElements();
@@ -90,4 +96,17 @@ public class ElementSelectorUI : MonoBehaviour
         foreach (Transform child in buttonContainer)
             Destroy(child.gameObject);
     }
+
+    private void OnEnable()
+    {
+        if (LocalizationManager.Instance != null)
+            LocalizationManager.Instance.OnLanguageChanged += GenerateButtons;
+    }
+
+    private void OnDisable()
+    {
+        if (LocalizationManager.Instance != null)
+            LocalizationManager.Instance.OnLanguageChanged -= GenerateButtons;
+    }
+}
 }

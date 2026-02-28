@@ -63,7 +63,11 @@ public class ElementSelectionUI : MonoBehaviour
             if (element == ElementType.None) continue;
 
             GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer);
-            buttonGO.GetComponentInChildren<Text>().text = element.ToString();
+            string elementKey = "element_" + element.ToString().ToLower();
+            string displayText = LocalizationManager.Instance != null
+                ? LocalizationManager.Instance.GetText(elementKey)
+                : element.ToString();
+            buttonGO.GetComponentInChildren<Text>().text = displayText;
             
             Button btn = buttonGO.GetComponent<Button>();
             btn.onClick.AddListener(() =>
@@ -76,7 +80,9 @@ public class ElementSelectionUI : MonoBehaviour
 
         // Deselect / Reset button
         resetButtonGO = Instantiate(buttonPrefab, buttonContainer);
-        resetButtonGO.GetComponentInChildren<Text>().text = "Deselect All";
+        resetButtonGO.GetComponentInChildren<Text>().text = LocalizationManager.Instance != null
+       ? LocalizationManager.Instance.GetText("shop_deselect_all")
+       : "Deselect All";
         resetButtonGO.GetComponent<Button>().onClick.AddListener(() =>
         {
             ResetWeaponElements();
@@ -176,5 +182,27 @@ public class ElementSelectionUI : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    private void OnEnable()
+    {
+        if (LocalizationManager.Instance != null)
+        {
+            LocalizationManager.Instance.OnLanguageChanged += HandleLanguageChange;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (LocalizationManager.Instance != null)
+        {
+            LocalizationManager.Instance.OnLanguageChanged -= HandleLanguageChange;
+        }
+    }
+
+    private void HandleLanguageChange()
+    {
+        GenerateButtons();
+        RefreshVisuals();
     }
 }

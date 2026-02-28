@@ -132,15 +132,24 @@ public class ShopUI : MonoBehaviour
         if (currentTier >= 3)
         {
             btnUpgradeWand.interactable = false;
-            if (txtUpgradeWand != null) txtUpgradeWand.text = "Max Wand Level";
+            if (txtUpgradeWand != null) txtUpgradeWand.text = LocalizationManager.Instance != null
+       ? LocalizationManager.Instance.GetText("shop_wand_max_level")
+       : "Max Wand Level";
         }
         else
         {
             btnUpgradeWand.interactable = (tokens > 0);
             string nextWandName = currentTier == 1 ? "Tier 2 Wand" : "Tier 3 Wand";
-            if (txtUpgradeWand != null) 
+            if (txtUpgradeWand != null)
             {
-                txtUpgradeWand.text = $"Buy next wand:\n\"{nextWandName}\"";
+                int nextTier = currentTier + 1;
+                string wandName = LocalizationManager.Instance != null
+                    ? LocalizationManager.Instance.GetText("shop_wand_tier_" + nextTier)
+                    : nextWandName;
+                string buyFmt = LocalizationManager.Instance != null
+                    ? LocalizationManager.Instance.GetText("shop_wand_buy")
+                    : "Buy next wand:\n\"{0}\"";
+                txtUpgradeWand.text = string.Format(buyFmt, wandName);
                 txtUpgradeWand.color = (tokens > 0) ? Color.white : new Color(1f, 0.5f, 0.5f); // Reddish if can't buy
             }
         }
@@ -237,7 +246,8 @@ public class ShopUI : MonoBehaviour
             txtTokenCount.fontSize = 28;
             txtTokenCount.alignment = TMPro.TextAlignmentOptions.Right;
             txtTokenCount.color = Color.white;
-            txtTokenCount.text = "Tokens: 0";
+            string tokenFmt = LocalizationManager.Instance != null ? LocalizationManager.Instance.GetText("shop_token_count") : "Tokens: {0}";
+            txtTokenCount.text = string.Format(tokenFmt, 0);
             Debug.Log("[ShopUI] Auto-created TokenCounter text (top-right).");
         }
 
@@ -278,9 +288,10 @@ public class ShopUI : MonoBehaviour
         if (txtTokenCount != null && Pizzard.Progression.ProgressionManager.Instance != null)
         {
             int tokens = Pizzard.Progression.ProgressionManager.Instance.BossCurrency;
-            txtTokenCount.text = $"Tokens: {tokens}";
+            string tokenFmt = LocalizationManager.Instance != null ? LocalizationManager.Instance.GetText("shop_token_count") : "Tokens: {0}";
+            txtTokenCount.text = string.Format(tokenFmt, tokens);
             txtTokenCount.color = tokens > 0 ? Color.white : new Color(1f, 0.4f, 0.4f); // Red if zero tokens
-            
+
             // Visual feedback on the buttons based on token availability
             if (btnUpgradeMaxPotion != null) btnUpgradeMaxPotion.interactable = (tokens > 0);
             if (btnUpgradeMana != null) btnUpgradeMana.interactable = (tokens > 0);
@@ -312,11 +323,29 @@ public class ShopUI : MonoBehaviour
             Pizzard.Progression.SaveManager.Instance.SaveGame();
             Debug.Log("[ShopUI] Auto-saved on shop close.");
         }
-        
+
         gameObject.SetActive(false);
         if (elementSelectionUI != null)
             elementSelectionUI.gameObject.SetActive(false);
         if (equipSelectorUI != null)
             equipSelectorUI.gameObject.SetActive(false);
-    } 
+    }
+
+    private void OnEnable()
+    {
+        if (LocalizationManager.Instance != null)
+            LocalizationManager.Instance.OnLanguageChanged += RefreshLocalized;
+    }
+
+    private void OnDisable()
+    {
+        if (LocalizationManager.Instance != null)
+            LocalizationManager.Instance.OnLanguageChanged -= RefreshLocalized;
+    }
+
+    private void RefreshLocalized()
+    {
+        RefreshTokens();
+        UpdateWandButtonUI();
+    }
 }
