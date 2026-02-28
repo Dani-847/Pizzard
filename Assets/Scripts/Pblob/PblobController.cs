@@ -604,4 +604,34 @@ public class PblobController : MonoBehaviour
         }
     }
 
+    // --- GUI (debug overlay) ---
+    void OnGUI()
+    {
+        if (debugMode)
+        {
+            GUI.Box(new Rect(10, 10, 250, 140), "BOSS 1 STATE");
+
+            float hp = (currentHealth / maxHealth) * 100f;
+            GUI.Label(new Rect(20, 35, 230, 20), $"HP: {hp:F0}% ({currentHealth:F0}/{maxHealth})");
+
+            string vulnText = isVulnerable ? "<color=green>VULNERABLE</color>" : "<color=red>INVULNERABLE</color>";
+            GUI.Label(new Rect(20, 55, 230, 20), $"Status: {vulnText}");
+
+            GUI.Label(new Rect(20, 75, 230, 20), $"State: {currentState}");
+
+            if (currentState == PblobState.Phase2)
+            {
+                GUI.Label(new Rect(20, 95, 230, 20), $"<color=yellow>Phase 2 Timer: {phase2MstTimer:F1}s</color>");
+            }
+
+            if (GUI.Button(new Rect(20, 115, 100, 25), "KILL"))
+            {
+                ForceTakeDamage(currentHealth);
+            }
+            if (GUI.Button(new Rect(130, 115, 100, 25), "NEXT PHASE"))
+            {
+                ForceNextPhase();
+            }
+        }
+    }
 }
