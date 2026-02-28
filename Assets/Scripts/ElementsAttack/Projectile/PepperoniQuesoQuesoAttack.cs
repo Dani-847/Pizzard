@@ -4,13 +4,13 @@ using UnityEngine;
 public class PepperoniQuesoQuesoAttack : CharacterProjectile
 {
     [Header("Stick & Burn Settings")]
-    public float stickDuration = 4f;
-    public int burnStacksOnStick = 1;
-    public float burnDuration = 4f;
-    public float tickInterval = 0.25f;
+    public float stickDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoQueso.StickDuration;
+    public int burnStacksOnStick = Pizzard.Core.GameBalance.Spells.PepperoniQuesoQueso.BurnStacksOnStick;
+    public float burnDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoQueso.BurnDuration;
+    public float tickInterval = Pizzard.Core.GameBalance.Spells.PepperoniQuesoQueso.TickInterval;
 
     [Header("Damage Scaling")]
-    public float damageScaleMax = 1f; // adicional máximo (1 => hasta 2x)
+    public float damageScaleMax = Pizzard.Core.GameBalance.Spells.PepperoniQuesoQueso.DamageScaleMax; // adicional máximo (1 => hasta 2x)
 
     protected bool isStuck = false;
     protected float stuckElapsed = 0f;
@@ -41,7 +41,7 @@ public class PepperoniQuesoQuesoAttack : CharacterProjectile
             PblobController boss = other.GetComponent<PblobController>();
             StatusEffectSystem status = other.GetComponent<StatusEffectSystem>();
 
-            if (boss != null && boss.IsVulnerable())
+            if (boss != null)
             {
                 isStuck = true;
                 attachedBoss = boss;
@@ -76,7 +76,7 @@ public class PepperoniQuesoQuesoAttack : CharacterProjectile
         {
             yield return new WaitForSeconds(tickInterval);
 
-            if (attachedBoss == null || !attachedBoss.IsVulnerable())
+            if (attachedBoss == null)
                 break;
 
             stuckElapsed += tickInterval;

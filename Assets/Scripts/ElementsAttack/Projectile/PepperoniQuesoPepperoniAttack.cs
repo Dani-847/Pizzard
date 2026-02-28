@@ -4,15 +4,15 @@ using UnityEngine;
 public class PepperoniQuesoPepperoniAttack : CharacterProjectile
 {
     [Header("Stick & Burn Settings")]
-    public float stickDuration = 2f;
-    public int burnStacksOnStick = 4;
-    public float burnDuration = 4f;
-    public float tickInterval = 0.5f; // cada cuánto aplica daño mientras está pegado
+    public float stickDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPepperoni.StickDuration;
+    public int burnStacksOnStick = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPepperoni.BurnStacksOnStick;
+    public float burnDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPepperoni.BurnDuration;
+    public float tickInterval = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPepperoni.TickInterval; // cada cuánto aplica daño mientras está pegado
 
     [Header("Damage Scaling")]
     // El daño base viene de `damage` (heredado). El daño aplicado en cada tick será:
     // damage * (1 + elapsed/stickDuration) — llega hasta 2x al final.
-    public float damageScaleMax = 1f; // multiplicador adicional máximo (1 => hasta 2x)
+    public float damageScaleMax = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPepperoni.DamageScaleMax; // multiplicador adicional máximo (1 => hasta 2x)
 
     protected bool isStuck = false;
     protected float stuckElapsed = 0f;
@@ -48,7 +48,7 @@ public class PepperoniQuesoPepperoniAttack : CharacterProjectile
             PblobController boss = other.GetComponent<PblobController>();
             StatusEffectSystem status = other.GetComponent<StatusEffectSystem>();
 
-            if (boss != null && boss.IsVulnerable())
+            if (boss != null)
             {
                 // Marcar pegado
                 isStuck = true;
@@ -88,7 +88,7 @@ public class PepperoniQuesoPepperoniAttack : CharacterProjectile
         {
             yield return new WaitForSeconds(tickInterval);
 
-            if (attachedBoss == null || !attachedBoss.IsVulnerable())
+            if (attachedBoss == null)
                 break;
 
             stuckElapsed += tickInterval;

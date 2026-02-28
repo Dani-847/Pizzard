@@ -5,20 +5,20 @@ using System.Collections.Generic;
 public class PineappleCheeseProjectile : CharacterProjectile
 {
     [Header("Absorption Settings")]
-    public float absorptionRadius = 2f;
-    public int maxAbsorbedProjectiles = 10;
+    public float absorptionRadius = Pizzard.Core.GameBalance.Spells.PineappleCheese.AbsorptionRadius;
+    public int maxAbsorbedProjectiles = Pizzard.Core.GameBalance.Spells.PineappleCheese.MaxAbsorbedProjectiles;
     
     [Header("Growth Settings")]
     public bool enableGrowth = true;
-    public float growthPerProjectile = 0.05f;
-    public float maxGrowthMultiplier = 1.5f;
+    public float growthPerProjectile = Pizzard.Core.GameBalance.Spells.PineappleCheese.GrowthPerProjectile;
+    public float maxGrowthMultiplier = Pizzard.Core.GameBalance.Spells.PineappleCheese.MaxGrowthMultiplier;
 
     [Header("Impact Damage Settings")]
-    public float impactDamage = 15f;
-    public float damageOverTime = 5f;
-    public float damageTickInterval = 0.5f;
-    public float damageDuration = 3f;
-    public float impactRadius = 2.5f;
+    public float impactDamage = Pizzard.Core.GameBalance.Spells.PineappleCheese.ImpactDamage;
+    public float damageOverTime = Pizzard.Core.GameBalance.Spells.PineappleCheese.DamageOverTime;
+    public float damageTickInterval = Pizzard.Core.GameBalance.Spells.PineappleCheese.DamageTickInterval;
+    public float damageDuration = Pizzard.Core.GameBalance.Spells.PineappleCheese.DamageDuration;
+    public float impactRadius = Pizzard.Core.GameBalance.Spells.PineappleCheese.ImpactRadius;
 
     [Header("Visual Effects")]
     public GameObject absorptionEffect;
@@ -154,7 +154,7 @@ public class PineappleCheeseProjectile : CharacterProjectile
                 float totalDamage = impactDamage + absorbedProjectiles.Count * 2f;
 
                 var boss = c.GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                if (boss != null)
                     boss.TakeDamage(totalDamage);
 
                 Rigidbody2D r = c.GetComponent<Rigidbody2D>();
@@ -182,7 +182,7 @@ public class PineappleCheeseProjectile : CharacterProjectile
                     float tickDamage = damageOverTime + absorbedProjectiles.Count * 0.5f;
 
                     var boss = c.GetComponent<PblobController>();
-                    if (boss != null && boss.IsVulnerable())
+                    if (boss != null)
                         boss.TakeDamage(tickDamage);
                 }
             }

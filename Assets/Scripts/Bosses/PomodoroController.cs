@@ -11,7 +11,7 @@ namespace Pizzard.Bosses
     public class PomodoroController : BossBase
     {
         [Header("Pomodoro Settings")]
-        [SerializeField] private float attackInterval = 4f;
+        [SerializeField] private float attackInterval = Core.GameBalance.Bosses.Pomodoro.AttackInterval;
 
         protected override void Awake()
         {

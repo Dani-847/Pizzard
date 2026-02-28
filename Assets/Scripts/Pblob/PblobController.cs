@@ -6,13 +6,13 @@ using UnityEngine.Events;
 public class PblobController : MonoBehaviour
 {
     [Header("Health")]
-    public float maxHealth = 1000f;
+    public float maxHealth = Pizzard.Core.GameBalance.Bosses.Pblob.MaxHP;
     private float currentHealth;
     private bool isVulnerable = true;
 
     [Header("Phase Management")]
     public int currentPhase = 1;
-    public int maxPhases = 3;
+    public int maxPhases = Pizzard.Core.GameBalance.Bosses.Pblob.MaxPhases;
     private bool battleActive = false;
     private float[] phaseHealthThresholds;
     private float damageInCurrentPhase;
@@ -21,8 +21,8 @@ public class PblobController : MonoBehaviour
     public PblobAttackPattern[] attackPatterns;
 
     [Header("Timing Settings")]
-    public float vulnerableWindowDuration = 3f;
-    public float patternDuration = 10.5f;
+    public float vulnerableWindowDuration = Pizzard.Core.GameBalance.Bosses.Pblob.VulnerableWindowDuration;
+    public float patternDuration = Pizzard.Core.GameBalance.Bosses.Pblob.PatternDuration;
 
     [Header("Phase 2 Transition")]
     public GameObject phase2Door; // ✅ NUEVO: Referencia a la puerta de fase 2
@@ -85,7 +85,7 @@ public class PblobController : MonoBehaviour
         phaseHealthThresholds = new float[maxPhases + 1];
         for (int i = 0; i <= maxPhases; i++)
         {
-            phaseHealthThresholds[i] = maxHealth * (1f - (i * 0.1f));
+            phaseHealthThresholds[i] = maxHealth * (1f - (i * Pizzard.Core.GameBalance.Bosses.Pblob.PhaseHPPercent));
         }
         damageInCurrentPhase = 0f;
     }
@@ -203,7 +203,7 @@ public class PblobController : MonoBehaviour
         {
             Vector3 randomDir = Random.insideUnitCircle.normalized;
             // Evita que se salga demasiado lejos de su centro de spawn
-            Vector3 targetPos = startPos + randomDir * 4f; 
+            Vector3 targetPos = startPos + randomDir * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius;
             float moveDuration = Random.Range(0.5f, 1.5f);
             float elapsed = 0f;
             Vector3 currentStart = transform.position;
@@ -223,10 +223,10 @@ public class PblobController : MonoBehaviour
         if (playerTransform == null) yield break;
         
         Vector3 dir = (transform.position - playerTransform.position).normalized;
-        Vector3 targetPos = transform.position + dir * 5f; // Retroceso dramático de 5 unidades
-        
+        Vector3 targetPos = transform.position + dir * Pizzard.Core.GameBalance.Bosses.Pblob.KnockbackDistance;
+
         float elapsed = 0f;
-        float duration = 0.4f; // Rapido!
+        float duration = Pizzard.Core.GameBalance.Bosses.Pblob.KnockbackDuration;
         Vector3 startPos = transform.position;
 
         while(elapsed < duration) 
@@ -519,18 +519,30 @@ public class PblobController : MonoBehaviour
         Debug.Log("🔄 Boss reiniciado");
     }
 
-    // Para debug visual en pantalla
+    // DEBUG - Visual debug panel in game view
     void OnGUI()
     {
         if (debugMode)
         {
-            GUI.Box(new Rect(10, 10, 160, 90), "DEBUG BOSS");
-            if (GUI.Button(new Rect(20, 40, 130, 30), "KILL BOSS"))
+            GUI.Box(new Rect(10, 10, 200, 140), "DEBUG BOSS");
+            
+            // Show health %
+            float hp = (currentHealth / maxHealth) * 100f;
+            GUI.Label(new Rect(20, 35, 180, 20), $"HP: {hp:F0}% ({currentHealth:F0}/{maxHealth})");
+            
+            // Show vulnerability status with color
+            string vulnText = isVulnerable ? "VULNERABLE ✅" : "INVULNERABLE 🛡️";
+            GUI.Label(new Rect(20, 55, 180, 20), vulnText);
+            
+            // Show phase
+            GUI.Label(new Rect(20, 75, 180, 20), $"Phase: {currentPhase} | Battle: {(battleActive ? "ON" : "OFF")}");
+            
+            if (GUI.Button(new Rect(20, 100, 170, 25), "KILL BOSS"))
             {
                 currentHealth = 0;
                 Defeat();
             }
-            if (!battleActive && GUI.Button(new Rect(20, 80, 130, 30), "START BOSS"))
+            if (!battleActive && GUI.Button(new Rect(20, 130, 170, 25), "START BOSS"))
             {
                 StartBossBattle();
             }

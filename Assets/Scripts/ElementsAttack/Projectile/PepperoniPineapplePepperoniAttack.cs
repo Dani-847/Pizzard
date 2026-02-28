@@ -4,21 +4,21 @@ using System.Collections;
 public class PepperoniPineapplePepperoniAttack : CharacterProjectile
 {
     [Header("Catapult Settings")]
-    public float explosionRadius = 4f;
-    public float explosionDamage = 35f;
-    public float explosionForce = 25f;
-    public float fuseTime = 1f; // Duración total de la catapulta (1f)
+    public float explosionRadius = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.ExplosionRadius;
+    public float explosionDamage = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.ExplosionDamage;
+    public float explosionForce = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.ExplosionForce;
+    public float fuseTime = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.FuseTime; // Duración total de la catapulta (1f)
 
     [Header("Scale Animation")]
-    public float minScale = 0.8f;
-    public float maxScale = 1.2f;
+    public float minScale = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.MinScale;
+    public float maxScale = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.MaxScale;
 
     [Header("Fire Trail Effect")]
     public GameObject fireTrailPrefab;
-    public float fireTrailRadius = 1.5f;
-    public float fireTrailDuration = 4f;
-    public int fireTrailSpiceCharges = 2;
-    public float fireTrailSpiceDuration = 4f;
+    public float fireTrailRadius = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.FireTrailRadius;
+    public float fireTrailDuration = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.FireTrailDuration;
+    public int fireTrailSpiceCharges = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.FireTrailSpiceCharges;
+    public float fireTrailSpiceDuration = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePepperoni.FireTrailSpiceDuration;
     public bool leaveFireTrail = true; // Control para crear o no el firetrail
 
     [Header("Visual Effects")]
@@ -126,7 +126,7 @@ public class PepperoniPineapplePepperoniAttack : CharacterProjectile
             if (collider.CompareTag("Boss"))
             {
                 PblobController boss = collider.GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                if (boss != null)
                 {
                     float distance = Vector2.Distance(transform.position, collider.transform.position);
                     float dmgMult = 1f - (distance / explosionRadius);

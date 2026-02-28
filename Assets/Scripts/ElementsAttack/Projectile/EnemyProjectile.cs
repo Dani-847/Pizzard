@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class EnemyProjectile : MonoBehaviour
 {
-    public float speed = 10f;
-    public float lifetime = 3f;
+    public float speed = Pizzard.Core.GameBalance.Spells.Enemy.Speed;
+    public float lifetime = Pizzard.Core.GameBalance.Spells.Enemy.Lifetime;
     protected Rigidbody2D rb;
-    public float damage = 1f;
+    public float damage = Pizzard.Core.GameBalance.Spells.Enemy.Damage;
 
     protected virtual void Start()
     {

@@ -5,17 +5,17 @@ using UnityEngine;
 public class CheesePepperoniWall : MonoBehaviour
 {
     [Header("Wall Settings")]
-    public float wallDuration = 4f;
-    public float knockbackForce = 3f;
+    public float wallDuration = Pizzard.Core.GameBalance.Spells.CheesePepperoniWall.WallDuration;
+    public float knockbackForce = Pizzard.Core.GameBalance.Spells.CheesePepperoniWall.KnockbackForce;
 
     [Header("Projectile Reflection")]
-    public float reflectionSpeedMultiplier = 1.2f;
-    public float reflectionCooldown = 0.3f;
+    public float reflectionSpeedMultiplier = Pizzard.Core.GameBalance.Spells.CheesePepperoniWall.ReflectionSpeedMultiplier;
+    public float reflectionCooldown = Pizzard.Core.GameBalance.Spells.CheesePepperoniWall.ReflectionCooldown;
 
     [Header("Pepperoni Burn Effect")]
     public StatusType burnStatusEffect = StatusType.picante;
-    public float burnEffectDuration = 7f;
-    public int burnInitialStacks = 2;
+    public float burnEffectDuration = Pizzard.Core.GameBalance.Spells.CheesePepperoniWall.BurnEffectDuration;
+    public int burnInitialStacks = Pizzard.Core.GameBalance.Spells.CheesePepperoniWall.BurnInitialStacks;
 
     public static CheesePepperoniWall CurrentActiveWall { get; private set; }
 

@@ -5,11 +5,11 @@ public class PepperoniPepperoniPineappleAttack : CharacterProjectile
 {
     [Header("Spawner Settings")]
     public GameObject pepperoniAttackPrefab; // Prefab de PepperoniAttack
-    public float initialMoveTime = 0.1f;
-    public float stickDuration = 2f;
-    public float spawnInterval = 0.2f;
-    public float rotationSpeed = 360f; // grados por segundo mientras está fijo
-    public float spawnedProjectileSpeed = 8f; // velocidad para los PepperoniAttack instanciados
+    public float initialMoveTime = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPineapple.InitialMoveTime;
+    public float stickDuration = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPineapple.StickDuration;
+    public float spawnInterval = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPineapple.SpawnInterval;
+    public float rotationSpeed = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPineapple.RotationSpeed; // grados por segundo mientras está fijo
+    public float spawnedProjectileSpeed = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPineapple.SpawnedProjectileSpeed; // velocidad para los PepperoniAttack instanciados
 
     private bool isStuck = false;
 

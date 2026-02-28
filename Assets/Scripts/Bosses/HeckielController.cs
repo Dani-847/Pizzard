@@ -11,7 +11,7 @@ namespace Pizzard.Bosses
     public class HeckielController : BossBase
     {
         [Header("Hec'kiel Settings")]
-        [SerializeField] private float attackInterval = 3f;
+        [SerializeField] private float attackInterval = Core.GameBalance.Bosses.Heckiel.AttackInterval;
 
         private ElementType lastReceivedElement = ElementType.None;
         private bool isPhaseTwo = false;
@@ -42,7 +42,7 @@ namespace Pizzard.Bosses
             base.TakeDamage(damage);
 
             // Check for phase transition
-            if (!isPhaseTwo && currentHealth <= (maxHealth / 2))
+            if (!isPhaseTwo && currentHealth <= (maxHealth * Core.GameBalance.Bosses.Heckiel.Phase2ThresholdPercent))
             {
                 EnterPhaseTwo();
             }

@@ -6,12 +6,12 @@ public class piña_piñaAttack : CharacterProjectile
 {
     [Header("Subproyectiles")]
     public GameObject smallProjectilePrefab;
-    public float smallProjectileSpeed = 7f;
-    public float smallProjectileDamageMultiplier = 0.5f;
-    public float smallProjectileLifetime = 1f;
+    public float smallProjectileSpeed = Pizzard.Core.GameBalance.Spells.PinaPina.SmallProjectileSpeed;
+    public float smallProjectileDamageMultiplier = Pizzard.Core.GameBalance.Spells.PinaPina.SmallProjectileDamageMultiplier;
+    public float smallProjectileLifetime = Pizzard.Core.GameBalance.Spells.PinaPina.SmallProjectileLifetime;
     
     [Header("Spawn Settings")]
-    public float spawnOffset = 0.5f;
+    public float spawnOffset = Pizzard.Core.GameBalance.Spells.PinaPina.SpawnOffset;
     
     private bool hasSpawned = false;
 

@@ -3,10 +3,10 @@ using UnityEngine;
 public class PepperoniPineappleQuesoAttack : PepperoniPineapplePepperoniAttack
 {
     [Header("Ajustes Queso")]
-    public float extraFireRadiusMultiplier = 2f;      // fuego más grande
-    public float extraFireDurationMultiplier = 1.3f;
-    public float burnDurationIfIgnited = 5f;         // duración del efecto picante si el proyectil estaba en fuego
-    public int burnStacksIfIgnited = 3;              // stacks aplicados si estaba en fuego
+    public float extraFireRadiusMultiplier = Pizzard.Core.GameBalance.Spells.PepperoniPineappleQueso.ExtraFireRadiusMultiplier;      // fuego más grande
+    public float extraFireDurationMultiplier = Pizzard.Core.GameBalance.Spells.PepperoniPineappleQueso.ExtraFireDurationMultiplier;
+    public float burnDurationIfIgnited = Pizzard.Core.GameBalance.Spells.PepperoniPineappleQueso.BurnDurationIfIgnited;         // duración del efecto picante si el proyectil estaba en fuego
+    public int burnStacksIfIgnited = Pizzard.Core.GameBalance.Spells.PepperoniPineappleQueso.BurnStacksIfIgnited;              // stacks aplicados si estaba en fuego
 
     protected bool isIgnited = false;
 
@@ -49,7 +49,7 @@ public class PepperoniPineappleQuesoAttack : PepperoniPineapplePepperoniAttack
             if (collider.CompareTag("Boss"))
             {
                 PblobController boss = collider.GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                if (boss != null)
                 {
                     float distance = Vector2.Distance(transform.position, collider.transform.position);
                     float dmgMult = 1f - (distance / explosionRadius);

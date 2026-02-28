@@ -5,10 +5,10 @@ public class PepperoniProjectile : CharacterProjectile
 {
     [Header("Pepperoni Settings")]
     public GameObject direTrailPrefab;
-    public float initialMoveTime = 0.1f;
-    public float stickDuration = 2f;          // tiempo que se queda en el sitio
-    public float spawnInterval = 0.2f;        // cada 0.2s dispara un diretrail
-    public float spawnAreaRadius = 2f;        // radio del área donde aparecerán los diretrails
+    public float initialMoveTime = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPepperoni.InitialMoveTime;
+    public float stickDuration = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPepperoni.StickDuration;          // tiempo que se queda en el sitio
+    public float spawnInterval = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPepperoni.SpawnInterval;        // cada 0.2s dispara un diretrail
+    public float spawnAreaRadius = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniPepperoni.SpawnAreaRadius;        // radio del área donde aparecerán los diretrails
 
     protected override void Start()
     {

@@ -3,8 +3,8 @@ using UnityEngine;
 public class PepperoniPineapplePineappleAttack : PepperoniPineapplePepperoniAttack
 {
     [Header("Ajustes especiales PiñaPiña")]
-    public float extraRadiusMultiplier = 1.6f;
-    public float extraDamageMultiplier = 1.5f;
+    public float extraRadiusMultiplier = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePineapple.ExtraRadiusMultiplier;
+    public float extraDamageMultiplier = Pizzard.Core.GameBalance.Spells.PepperoniPineapplePineapple.ExtraDamageMultiplier;
 
     protected override void Start()
     {

@@ -12,13 +12,17 @@ namespace Pizzard.Bosses
     {
         [Header("Boss Stats")]
         [SerializeField] protected int maxHealth = 100;
-        [SerializeField] protected int bossCurrencyReward = 150;
+        [SerializeField] protected int bossCurrencyReward = Core.GameBalance.Currency.BossKillReward;
         
         [Header("Events")]
         public UnityEvent OnBossDefeated;
 
         protected int currentHealth;
         protected bool isDead = false;
+
+        // Public read-only accessors for UI polling
+        public int MaxHealthPublic => maxHealth;
+        public int CurrentHealthPublic => currentHealth;
 
         protected virtual void Awake()
         {

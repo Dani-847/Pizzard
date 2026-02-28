@@ -236,7 +236,7 @@ public class PlayerAimAndCast : MonoBehaviour
 
         // Calcular posición de spawn
         Vector3 aimDir = GetCurrentAimDirection();
-        float shieldDistance = 2f;
+        float shieldDistance = Pizzard.Core.GameBalance.Casting.StaticShieldDistance;
         Vector3 spawnPosition = transform.position + (aimDir.normalized * shieldDistance);
 
         // Instanciar escudo estático
@@ -279,7 +279,7 @@ public class PlayerAimAndCast : MonoBehaviour
 
         // Calcular posición de spawn
         Vector3 aimDir = GetCurrentAimDirection();
-        float wallDistance = 2.5f;
+        float wallDistance = Pizzard.Core.GameBalance.Casting.WallDistance;
         Vector3 spawnPosition = transform.position + (aimDir.normalized * wallDistance);
 
         // Instanciar muro
@@ -339,7 +339,7 @@ public class PlayerAimAndCast : MonoBehaviour
         Vector3 direction = (target - castPoint.position).normalized;
 
         // Distancia mínima
-        float minDistance = 2f;
+        float minDistance = Pizzard.Core.GameBalance.Casting.CatapultMinDistance;
         float distance = Vector3.Distance(castPoint.position, target);
         if (distance < minDistance)
         {

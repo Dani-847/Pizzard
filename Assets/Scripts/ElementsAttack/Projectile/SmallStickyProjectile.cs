@@ -10,10 +10,10 @@ public class SmallStickyProjectile : CharacterProjectile
     protected Coroutine stickRoutine = null;
 
     // Estos valores se inicializan mediante InitializeAttached
-    protected float localStickDuration = 1f;
-    protected float localTickInterval = 0.25f;
-    protected int localBurnStacks = 1;
-    protected float localBurnDuration = 3f;
+    protected float localStickDuration = Pizzard.Core.GameBalance.Spells.SmallSticky.StickDuration;
+    protected float localTickInterval = Pizzard.Core.GameBalance.Spells.SmallSticky.TickInterval;
+    protected int localBurnStacks = Pizzard.Core.GameBalance.Spells.SmallSticky.BurnStacks;
+    protected float localBurnDuration = Pizzard.Core.GameBalance.Spells.SmallSticky.BurnDuration;
 
     protected override void Start()
     {
@@ -66,7 +66,7 @@ public class SmallStickyProjectile : CharacterProjectile
         {
             yield return new WaitForSeconds(localTickInterval);
 
-            if (attachedBoss == null || !attachedBoss.IsVulnerable())
+            if (attachedBoss == null)
                 break;
 
             stuckElapsed += localTickInterval;
@@ -117,7 +117,7 @@ public class SmallStickyProjectile : CharacterProjectile
             PblobController boss = other.GetComponent<PblobController>();
             StatusEffectSystem status = other.GetComponent<StatusEffectSystem>();
 
-            if (boss != null && boss.IsVulnerable())
+            if (boss != null)
             {
                 // Si choca al boss, comportarse igual que InitializeAttached
                 InitializeAttached(boss, status, damage, localStickDuration, localBurnStacks, localBurnDuration, localTickInterval);

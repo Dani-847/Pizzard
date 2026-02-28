@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Pizzard.Progression;
 
@@ -13,55 +12,21 @@ namespace Pizzard.Core
     {
         public static ManaSystem Instance { get; private set; }
 
-        public float MaxMana { get; private set; } = 100f;
-        public float CurrentMana { get; private set; } = 100f;
+        public float MaxMana { get; private set; } = GameBalance.Mana.MaxMana;
+        public float CurrentMana { get; private set; } = GameBalance.Mana.MaxMana;
 
         [Header("Settings")]
-        public float baseRecoveryRate = 5f; // Mana recovered per second
-        public float recoveryDelayAfterCast = 1.5f; // Seconds to wait before recovering after a cast
+        public float baseRecoveryRate = GameBalance.Mana.BaseRecoveryRate;
+        public float recoveryDelayAfterCast = GameBalance.Mana.RecoveryDelayAfterCast;
 
         private float timeSinceLastCast = 0f;
 
-        // ==============================
-        // HARDCODED SPELL MANA COSTS
-        // Edit these values to balance the game.
-        // ==============================
-        public static readonly Dictionary<string, float> SpellCosts = new Dictionary<string, float>
-        {
-            // Tier 1 — Single element (cheap)
-            { "queso", 10f },
-            { "pepperoni", 12f },
-            { "piña", 11f },
-
-            // Tier 2 — Two elements (moderate, order matters)
-            { "queso|pepperoni", 20f },
-            { "queso|piña", 18f },
-            { "pepperoni|queso", 22f },
-            { "pepperoni|piña", 20f },
-            { "piña|queso", 19f },
-            { "piña|pepperoni", 21f },
-
-            // Tier 3 — Three elements (expensive, order matters)
-            // Default fallback: 30f for any combo not listed
-            { "queso|pepperoni|piña", 30f },
-            { "queso|piña|pepperoni", 28f },
-            { "pepperoni|queso|piña", 32f },
-            { "pepperoni|piña|queso", 30f },
-            { "piña|queso|pepperoni", 29f },
-            { "piña|pepperoni|queso", 31f },
-            { "pepperoni|pepperoni|pepperoni", 35f },
-            { "queso|queso|piña", 25f },
-            { "queso|queso|queso", 28f },
-            { "piña|piña|piña", 30f },
-        };
-
         /// <summary>
-        /// Look up the mana cost for a given combo key.
-        /// Returns 30f as default if the combo isn't in the dictionary.
+        /// Look up the mana cost for a given combo key via GameBalance.
         /// </summary>
         public static float GetSpellCost(string comboKey)
         {
-            return SpellCosts.TryGetValue(comboKey, out float cost) ? cost : 30f;
+            return GameBalance.Mana.GetSpellCost(comboKey);
         }
 
         private void Awake()
@@ -117,7 +82,7 @@ namespace Pizzard.Core
         {
             // Upgrading preserves the percentage of mana remaining
             float oldMax = MaxMana;
-            MaxMana = oldMax * 1.5f;
+            MaxMana = oldMax * GameBalance.Mana.UpgradeMultiplier;
             CurrentMana = (CurrentMana / oldMax) * MaxMana;
             
             if (SaveManager.Instance != null)

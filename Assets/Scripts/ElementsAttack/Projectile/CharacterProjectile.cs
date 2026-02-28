@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CharacterProjectile : MonoBehaviour
 {
-    public float speed = 10f;
-    public float lifetime = 3f;
+    public float speed = Pizzard.Core.GameBalance.Spells.Base.Speed;
+    public float lifetime = Pizzard.Core.GameBalance.Spells.Base.Lifetime;
     protected Rigidbody2D rb;
-    public float damage = 10f;
+    public float damage = Pizzard.Core.GameBalance.Spells.Base.Damage;
     protected Vector2 direction; // Añadimos esto
 
     protected virtual void Start()
@@ -54,8 +54,10 @@ public class CharacterProjectile : MonoBehaviour
         if (other.CompareTag("Boss"))
         {
             PblobController boss = other.GetComponent<PblobController>();
-            if (boss != null && boss.IsVulnerable())
+            if (boss != null)
             {
+                // Always call TakeDamage — it handles vulnerability checks internally
+                // and logs "Boss no vulnerable" when blocked
                 boss.TakeDamage(damage);
                 Debug.Log($"@{GetType().Name} golpe al boss: {damage} de daño");
             }

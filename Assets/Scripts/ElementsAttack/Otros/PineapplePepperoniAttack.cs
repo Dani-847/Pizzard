@@ -4,16 +4,16 @@ using System.Collections;
 public class PineapplePepperoniAttack : MonoBehaviour
 {
     [Header("Teleport Settings")]
-    public float teleportDistance = 5f;
-    public float teleportDelay = 0.2f;
+    public float teleportDistance = Pizzard.Core.GameBalance.Spells.PineapplePepperoni.TeleportDistance;
+    public float teleportDelay = Pizzard.Core.GameBalance.Spells.PineapplePepperoni.TeleportDelay;
     public LayerMask obstacleLayers;
-    public float playerRadius = 0.5f; // Radio aproximado del jugador
+    public float playerRadius = Pizzard.Core.GameBalance.Spells.PineapplePepperoni.PlayerRadius; // Radio aproximado del jugador
 
     [Header("Explosion Settings")]
-    public float explosionRadius = 3f;
-    public float explosionDamage = 20f;
-    public float explosionForce = 10f;
-    public float explosionDelay = 0.1f;
+    public float explosionRadius = Pizzard.Core.GameBalance.Spells.PineapplePepperoni.ExplosionRadius;
+    public float explosionDamage = Pizzard.Core.GameBalance.Spells.PineapplePepperoni.ExplosionDamage;
+    public float explosionForce = Pizzard.Core.GameBalance.Spells.PineapplePepperoni.ExplosionForce;
+    public float explosionDelay = Pizzard.Core.GameBalance.Spells.PineapplePepperoni.ExplosionDelay;
 
     [Header("Visual Effects")]
     public GameObject teleportEffect;
@@ -190,7 +190,7 @@ public class PineapplePepperoniAttack : MonoBehaviour
             {
                 // Aplicar daño
                 PblobController boss = collider.GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                if (boss != null)
                 {
                     boss.TakeDamage(explosionDamage);
                 }

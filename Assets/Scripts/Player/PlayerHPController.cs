@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using Pizzard.Core;
+using static Pizzard.Core.GameBalance;
 
 /// <summary>
 /// Gestiona la lógica de la vida del personaje, comunica los cambios a la UI 
@@ -11,7 +12,7 @@ public class PlayerHPController : MonoBehaviour
 {
     [Header("Configuración de vida")]
     [Tooltip("6 medios corazones = 3 corazones completos")]
-    public int vidaMaxima = 6;
+    public int vidaMaxima = GameBalance.Player.MaxHP;
     [Tooltip("Valor actual de vida del personaje (0 a 6)")]
     public int vidaActual;
     
@@ -44,7 +45,7 @@ public class PlayerHPController : MonoBehaviour
     }
 
     private float invulnerabilityTimer = 0f;
-    private float invulnerabilityDuration = 1.0f; // 1 second of i-frames
+    private float invulnerabilityDuration = GameBalance.Player.InvulnerabilityDuration;
 
     private void Update()
     {

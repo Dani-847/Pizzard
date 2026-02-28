@@ -4,11 +4,11 @@ using System.Collections;
 public class FireTrail : MonoBehaviour
 {
     [Header("Trail Settings")]
-    public int spiceChargesPerTick = 2;
-    public float damageInterval = 0.3f;
-    public float duration = 3f;
-    public float radius = 1.5f; // Radio aumentado para mejor cobertura
-    public float spiceEffectDuration = 5f;
+    public int spiceChargesPerTick = Pizzard.Core.GameBalance.FireTrail.SpiceChargesPerTick;
+    public float damageInterval = Pizzard.Core.GameBalance.FireTrail.DamageInterval;
+    public float duration = Pizzard.Core.GameBalance.FireTrail.Duration;
+    public float radius = Pizzard.Core.GameBalance.FireTrail.Radius; // Radio aumentado para mejor cobertura
+    public float spiceEffectDuration = Pizzard.Core.GameBalance.FireTrail.SpiceEffectDuration;
 
     [Header("Visual")]
     public ParticleSystem fireParticles;

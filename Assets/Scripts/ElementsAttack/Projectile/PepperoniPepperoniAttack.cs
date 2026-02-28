@@ -4,15 +4,15 @@ using System.Collections;
 public class PepperoniPepperoniAttack : CharacterProjectile
 {
     [Header("Spice Settings")]
-    public int initialSpiceCharges = 4;
-    public int trailSpiceCharges = 2;
-    public float trailDamageInterval = 0.2f;
-    public float trailDuration = 3f;
-    public float trailRadius = 2f;
-    public float spiceEffectDuration = 5f;
+    public int initialSpiceCharges = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.InitialSpiceCharges;
+    public int trailSpiceCharges = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.TrailSpiceCharges;
+    public float trailDamageInterval = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.TrailDamageInterval;
+    public float trailDuration = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.TrailDuration;
+    public float trailRadius = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.TrailRadius;
+    public float spiceEffectDuration = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.SpiceEffectDuration;
 
     [Header("Trail Settings")]
-    public float trailSpawnInterval = 0.1f; // Cada cuánto spawnear una estela
+    public float trailSpawnInterval = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.TrailSpawnInterval; // Cada cuánto spawnear una estela
     public GameObject fireTrailEffect;
 
     [Header("Visual Effects")]
@@ -21,7 +21,7 @@ public class PepperoniPepperoniAttack : CharacterProjectile
     private bool hasImpacted = false;
     private float trailTimer = 0f;
     private Vector3 lastTrailPosition;
-    private float minDistanceBetweenTrails = 0.5f; // Distancia mínima entre estelas
+    private float minDistanceBetweenTrails = Pizzard.Core.GameBalance.Spells.PepperoniPepperoni.MinDistanceBetweenTrails; // Distancia mínima entre estelas
 
     protected override void Start()
     {

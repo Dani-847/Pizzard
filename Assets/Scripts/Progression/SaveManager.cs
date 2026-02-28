@@ -11,7 +11,7 @@ namespace Pizzard.Progression
         public int tokens = 0;
         public int wandTier = 0;
         public int potionCount = 0;
-        public float manaMax = 100f;
+        public float manaMax = GameBalance.Mana.MaxMana;
         public int bossIndex = 1;
         public string languageSetting = "en";
     }

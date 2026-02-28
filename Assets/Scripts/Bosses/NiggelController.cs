@@ -12,9 +12,9 @@ namespace Pizzard.Bosses
     public class NiggelController : BossBase
     {
         [Header("Niggel Settings")]
-        [SerializeField] private float attackInterval = 3f;
-        [SerializeField] private float stealRange = 2.5f;
-        [SerializeField] private int currencyStealAmount = 10;
+        [SerializeField] private float attackInterval = Core.GameBalance.Bosses.Niggel.AttackInterval;
+        [SerializeField] private float stealRange = Core.GameBalance.Bosses.Niggel.StealRange;
+        [SerializeField] private int currencyStealAmount = Core.GameBalance.Bosses.Niggel.CurrencyStealAmount;
         
         [Header("Buffs")]
         public float speedMultiplier = 1.0f;
@@ -93,7 +93,7 @@ namespace Pizzard.Bosses
                     Debug.Log($"[Niggel] Stole {currencyStealAmount} currency! Buffing Speed!");
                     
                     // Buff Niggel
-                    speedMultiplier += 0.2f; 
+                    speedMultiplier += Core.GameBalance.Bosses.Niggel.SpeedBuffPerSteal;
                 }
                 
                 if (!stoleCurrency)

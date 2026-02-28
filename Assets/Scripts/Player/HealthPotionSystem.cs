@@ -9,11 +9,11 @@ public class HealthPotionSystem : MonoBehaviour
 {
     [Header("Configuración de pociones")]
     // Múmero máximo actual (puede subir en tienda)
-    public int maxPociones = 3;
+    public int maxPociones = Pizzard.Core.GameBalance.Potions.StartingMax;
     // Cuántas tiene disponibles
     public int pocionesActuales;
     // Medios corazones curados (2 = 1 corazón)
-    public int curacionPorPocion = 2; 
+    public int curacionPorPocion = Pizzard.Core.GameBalance.Potions.HealPerPotion;
 
     [Header("Referencias")]
     public PlayerHPController playerHP;
@@ -53,6 +53,13 @@ public class HealthPotionSystem : MonoBehaviour
         maxPociones++;
         Debug.Log("Pociones mejoradas a " + maxPociones);
         RecargarPociones();
+        
+        // --- WAVE 2: Sync to SaveData ---
+        if (Pizzard.Progression.SaveManager.Instance != null)
+        {
+            Pizzard.Progression.SaveManager.Instance.CurrentSave.potionCount = maxPociones;
+            Pizzard.Progression.SaveManager.Instance.SaveGame();
+        }
     }
     
     public void onSelectPotion(InputAction.CallbackContext context)

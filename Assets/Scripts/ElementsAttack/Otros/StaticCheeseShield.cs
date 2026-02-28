@@ -5,16 +5,16 @@ using UnityEngine;
 public class StaticCheeseShield : MonoBehaviour
 {
     [Header("Shield Settings")]
-    public float knockbackForce = 5f;
-    public float reflectionSpeedMultiplier = 1.5f;
-    public float shieldDuration = 3f;
+    public float knockbackForce = Pizzard.Core.GameBalance.Spells.Shields.StaticKnockbackForce;
+    public float reflectionSpeedMultiplier = Pizzard.Core.GameBalance.Spells.Shields.StaticReflectionSpeed;
+    public float shieldDuration = Pizzard.Core.GameBalance.Spells.Shields.StaticDuration;
 
     [Header("Contact Damage Over Time")]
-    public float contactDamagePerTick = 5f;
-    public float contactTickInterval = 0.5f;
+    public float contactDamagePerTick = Pizzard.Core.GameBalance.Spells.Shields.StaticContactDamage;
+    public float contactTickInterval = Pizzard.Core.GameBalance.Spells.Shields.StaticContactInterval;
 
     [Header("Reflection Cooldown")]
-    public float reflectionCooldown = 0.5f;
+    public float reflectionCooldown = Pizzard.Core.GameBalance.Spells.Shields.StaticReflectionCooldown;
 
     public static StaticCheeseShield CurrentActiveShield { get; private set; }
 
@@ -112,7 +112,7 @@ public class StaticCheeseShield : MonoBehaviour
             if (target.CompareTag("Boss"))
             {
                 PblobController boss = target.GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                if (boss != null)
                     boss.TakeDamage(contactDamagePerTick);
             }
 

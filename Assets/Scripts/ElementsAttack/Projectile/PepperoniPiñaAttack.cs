@@ -4,15 +4,15 @@ using System.Collections;
 public class PepperoniPiñaAttack : CharacterProjectile
 {
     [Header("Catapult Settings")]
-    public float explosionRadius = 4f;
-    public float explosionDamage = 25f;
-    public float explosionForce = 15f;
-    public float explosionDelay = 3f;
+    public float explosionRadius = Pizzard.Core.GameBalance.Spells.PepperoniPina.ExplosionRadius;
+    public float explosionDamage = Pizzard.Core.GameBalance.Spells.PepperoniPina.ExplosionDamage;
+    public float explosionForce = Pizzard.Core.GameBalance.Spells.PepperoniPina.ExplosionForce;
+    public float explosionDelay = Pizzard.Core.GameBalance.Spells.PepperoniPina.ExplosionDelay;
 
     [Header("Scale Animation")]
-    public float minScale = 0.7f;
-    public float maxScale = 1.3f;
-    public float scaleAnimationSpeed = 2f;
+    public float minScale = Pizzard.Core.GameBalance.Spells.PepperoniPina.MinScale;
+    public float maxScale = Pizzard.Core.GameBalance.Spells.PepperoniPina.MaxScale;
+    public float scaleAnimationSpeed = Pizzard.Core.GameBalance.Spells.PepperoniPina.ScaleAnimationSpeed;
 
     [Header("Visual Effects")]
     public GameObject explosionEffect;
@@ -96,7 +96,7 @@ public class PepperoniPiñaAttack : CharacterProjectile
             {
                 // Aplicar daño
                 PblobController boss = collider.GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                if (boss != null)
                 {
                     boss.TakeDamage(explosionDamage);
                 }

@@ -5,10 +5,10 @@ public class PepperoniPepperoniQuesoAttack : CharacterProjectile
 {
     [Header("Pepperoni Queso Settings")]
     public GameObject direTrailPrefab;
-    public float initialMoveTime = 0.1f;
-    public float stickDuration = 2f;
-    public float spawnInterval = 0.2f;
-    public float spawnAreaRadius = 3f;    // mayor área para queso
+    public float initialMoveTime = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniQueso.InitialMoveTime;
+    public float stickDuration = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniQueso.StickDuration;
+    public float spawnInterval = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniQueso.SpawnInterval;
+    public float spawnAreaRadius = Pizzard.Core.GameBalance.Spells.PepperoniPepperoniQueso.SpawnAreaRadius;    // mayor área para queso
 
     protected override void Start()
     {

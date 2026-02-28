@@ -1,4 +1,5 @@
 using UnityEngine;
+using Pizzard.Core;
 
 namespace Pizzard.Player
 {
@@ -8,12 +9,12 @@ namespace Pizzard.Player
     public class PlayerController : MonoBehaviour
     {
         [Header("Movement Settings")]
-        [SerializeField] private float moveSpeed = 5f;
-        
+        [SerializeField] private float moveSpeed = GameBalance.Player.MoveSpeed;
+
         [Header("Dash Settings")]
-        [SerializeField] private float dashSpeedMultiplier = 3f;
-        [SerializeField] private float dashDuration = 0.2f;
-        [SerializeField] private float dashCooldown = 1f;
+        [SerializeField] private float dashSpeedMultiplier = GameBalance.Player.DashSpeedMultiplier;
+        [SerializeField] private float dashDuration = GameBalance.Player.DashDuration;
+        [SerializeField] private float dashCooldown = GameBalance.Player.DashCooldown;
 
         private Rigidbody2D rb;
         private Vector2 movementInput;
@@ -52,12 +53,23 @@ namespace Pizzard.Player
 
         private void Update()
         {
+            if (Pizzard.Core.GameFlowManager.Instance != null && 
+                Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+            {
+                movementInput = Vector2.zero;
+                return;
+            }
+
             HandleInput();
             HandleDashTimers();
         }
 
         private void FixedUpdate()
         {
+            if (Pizzard.Core.GameFlowManager.Instance != null && 
+                Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+                return;
+
             ApplyMovement();
         }
 
@@ -85,6 +97,13 @@ namespace Pizzard.Player
         // Support for Unity Events from PlayerInput component
         public void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
+            if (Pizzard.Core.GameFlowManager.Instance != null && 
+                Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+            {
+                movementInput = Vector2.zero;
+                return;
+            }
+
             if (context.performed || context.canceled)
             {
                 movementInput = context.ReadValue<Vector2>().normalized;

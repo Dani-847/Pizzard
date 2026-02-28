@@ -4,24 +4,24 @@ using UnityEngine;
 public class PepperoniQuesoPineappleAttack : CharacterProjectile
 {
     [Header("Stick & Burn Settings")]
-    public float stickDuration = 1f;
-    public int burnStacksOnStick = 3;
-    public float burnDuration = 4f;
-    public float tickInterval = 0.25f;
+    public float stickDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.StickDuration;
+    public int burnStacksOnStick = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.BurnStacksOnStick;
+    public float burnDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.BurnDuration;
+    public float tickInterval = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.TickInterval;
 
     [Header("Damage Scaling")]
-    public float damageScaleMax = 1f; // adicional máximo (1 => hasta 2x)
+    public float damageScaleMax = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.DamageScaleMax; // adicional máximo (1 => hasta 2x)
 
     [Header("Children Settings")]
     public GameObject childPrefab;
-    public int childCount = 3;
-    public float childDamageMultiplier = 0.6f; // hijos hacen menos daño
-    public float childSpawnRadius = 0.5f; // offset desde el centro
-    public float childSpreadAngle = 60f; // grados totales de spread
-    public float childStickDuration = 1f;
-    public int childBurnStacks = 1;
-    public float childBurnDuration = 3f;
-    public float childTickInterval = 0.25f;
+    public int childCount = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildCount;
+    public float childDamageMultiplier = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildDamageMultiplier; // hijos hacen menos daño
+    public float childSpawnRadius = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildSpawnRadius; // offset desde el centro
+    public float childSpreadAngle = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildSpreadAngle; // grados totales de spread
+    public float childStickDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildStickDuration;
+    public int childBurnStacks = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildBurnStacks;
+    public float childBurnDuration = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildBurnDuration;
+    public float childTickInterval = Pizzard.Core.GameBalance.Spells.PepperoniQuesoPineapple.ChildTickInterval;
 
     protected bool isStuck = false;
     protected float stuckElapsed = 0f;
@@ -53,7 +53,7 @@ public class PepperoniQuesoPineappleAttack : CharacterProjectile
             PblobController boss = other.GetComponent<PblobController>();
             StatusEffectSystem status = other.GetComponent<StatusEffectSystem>();
 
-            if (boss != null && boss.IsVulnerable())
+            if (boss != null)
             {
                 isStuck = true;
                 attachedBoss = boss;
@@ -90,7 +90,7 @@ public class PepperoniQuesoPineappleAttack : CharacterProjectile
         {
             yield return new WaitForSeconds(tickInterval);
 
-            if (attachedBoss == null || !attachedBoss.IsVulnerable())
+            if (attachedBoss == null)
                 break;
 
             stuckElapsed += tickInterval;

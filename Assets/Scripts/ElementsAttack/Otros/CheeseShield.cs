@@ -5,23 +5,23 @@ using UnityEngine;
 public class CheeseShield : MonoBehaviour
 {
     [Header("Shield Settings")]
-    public float knockbackForce = 5f;
-    public float reflectionSpeedMultiplier = 1.5f;
-    public float shieldDuration = 3f;
+    public float knockbackForce = Pizzard.Core.GameBalance.Spells.Shields.KnockbackForce;
+    public float reflectionSpeedMultiplier = Pizzard.Core.GameBalance.Spells.Shields.ReflectionSpeedMultiplier;
+    public float shieldDuration = Pizzard.Core.GameBalance.Spells.Shields.ShieldDuration;
 
     [Header("Contact Damage Over Time")]
-    public float contactDamagePerTick = 5f;
-    public float contactTickInterval = 0.5f;
+    public float contactDamagePerTick = Pizzard.Core.GameBalance.Spells.Shields.ContactDamagePerTick;
+    public float contactTickInterval = Pizzard.Core.GameBalance.Spells.Shields.ContactTickInterval;
 
     [Header("Reflection Cooldown")]
-    public float reflectionCooldown = 0.5f;
+    public float reflectionCooldown = Pizzard.Core.GameBalance.Spells.Shields.ReflectionCooldown;
 
     public static CheeseShield CurrentActiveShield { get; private set; }
 
     private Transform playerTransform;
     private PlayerAimAndCast aimRef;
 
-    private float shieldDistance = 1.2f;
+    private float shieldDistance = Pizzard.Core.GameBalance.Spells.Shields.ShieldDistance;
     private SpriteRenderer spriteRenderer;
     private bool isActive = true;
 
@@ -194,7 +194,7 @@ public class CheeseShield : MonoBehaviour
             if (target.CompareTag("Boss"))
             {
                 PblobController boss = target.GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                if (boss != null)
                     boss.TakeDamage(contactDamagePerTick);
             }
 

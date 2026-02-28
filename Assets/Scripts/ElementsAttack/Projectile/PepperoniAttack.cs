@@ -6,8 +6,8 @@ public class PepperoniAttack : CharacterProjectile
 {
     [Header("Pepperoni Effects")]
     public StatusType statusEffect = StatusType.picante;
-    public float effectDuration = 7f;
-    public int initialStacks = 2; // 2 cargas de picante como solicitaste
+    public float effectDuration = Pizzard.Core.GameBalance.Spells.Pepperoni.EffectDuration;
+    public int initialStacks = Pizzard.Core.GameBalance.Spells.Pepperoni.InitialStacks; // 2 cargas de picante como solicitaste
 
     protected override void Start()
     {
