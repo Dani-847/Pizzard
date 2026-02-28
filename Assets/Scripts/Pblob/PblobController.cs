@@ -176,9 +176,15 @@ public class PblobController : MonoBehaviour
             // 1. Moving state (Vulnerable)
             MakeVulnerable();
             
-            // Pick random target near center (to avoid wandering infinitely off-screen)
+            // Pick random target near center but explicitly clamp it to a defined arena size 
             Vector2 randomDir = Random.insideUnitCircle.normalized;
             Vector3 targetPos = centerPoint + (Vector3)(randomDir * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius);
+
+            // Optional hard clamp if arena is strictly rectangular (like 20x20 around center)
+            float clampX = 14f; // Example half-width for standard arena
+            float clampY = 8f;  // Example half-height for standard arena
+            targetPos.x = Mathf.Clamp(targetPos.x, centerPoint.x - clampX, centerPoint.x + clampX);
+            targetPos.y = Mathf.Clamp(targetPos.y, centerPoint.y - clampY, centerPoint.y + clampY);
             
             float elapsed = 0f;
             while (elapsed < alternateTime && currentState == PblobState.Phase1)
@@ -330,6 +336,10 @@ public class PblobController : MonoBehaviour
             yield return null;
         }
     }
+    
+    // UI Helpers
+    public bool IsPhase2TimerActive() => phase2TimerActive;
+    public float GetPhase2TimeRemaining() => phase2MstTimer;
 
     private void SpawnPhase2Circles()
     {

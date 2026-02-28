@@ -9,6 +9,7 @@ public class PblobUI : MonoBehaviour
     [Header("Optional UI Elements")]
     public Text healthText; // Para mostrar "1000/1000"
     public GameObject bossNameDisplay;
+    public Text phase2TimerText; // Reference to the Phase 2 text under the Boss Bar
     
     private PblobController boss;
     private float maxHealth;
@@ -50,6 +51,22 @@ public class PblobUI : MonoBehaviour
         {
             int currentHP = Mathf.RoundToInt(healthPercentage * maxHealth);
             healthText.text = $"{currentHP}/{maxHealth}";
+        }
+    }
+    
+    void Update()
+    {
+        if (boss != null && phase2TimerText != null)
+        {
+            if (boss.IsPhase2TimerActive())
+            {
+                phase2TimerText.gameObject.SetActive(true);
+                phase2TimerText.text = $"Mini-Game Timer: {boss.GetPhase2TimeRemaining():F1}s";
+            }
+            else
+            {
+                phase2TimerText.gameObject.SetActive(false);
+            }
         }
     }
 }
