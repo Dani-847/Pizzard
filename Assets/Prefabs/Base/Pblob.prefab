@@ -141,28 +141,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 1000
-  currentPhase: 1
-  maxPhases: 3
+  currentState: 0
   attackPatterns:
   - {fileID: 8119186634493984726}
   - {fileID: 3363831982042869686}
-  vulnerableWindowDuration: 3
-  patternDuration: 10.5
-  phase2Door: {fileID: 0}
-  phase2Unlocked: 0
+  circlePrefab: {fileID: 3617510932870236986, guid: 718310184d2efb44398fa5e4188d9555, type: 3}
+  gridPuzzle: {fileID: 0}
+  gridSpawnPoint: {fileID: 0}
   OnBossBattleStart:
     m_PersistentCalls:
       m_Calls: []
   OnBossDefeated:
     m_PersistentCalls:
       m_Calls: []
-  OnPhaseCompleted:
-    m_PersistentCalls:
-      m_Calls: []
   OnPhaseTransition:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPhase2Unlocked:
     m_PersistentCalls:
       m_Calls: []
   OnHealthChanged:
@@ -171,14 +163,9 @@ MonoBehaviour:
   OnVulnerabilityChanged:
     m_PersistentCalls:
       m_Calls: []
-  OnPhaseChanged:
-    m_PersistentCalls:
-      m_Calls: []
   debugMode: 1
   damageKey: 116
-  toggleVulnerableKey: 118
   nextPhaseKey: 112
-  unlockPhase2Key: 50
 --- !u!114 &8119186634493984726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,6 +241,7 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   healthText: {fileID: 0}
   bossNameDisplay: {fileID: 0}
+  phase2TimerText: {fileID: 0}
 --- !u!114 &6637818891723941349
 MonoBehaviour:
   m_ObjectHideFlags: 0
