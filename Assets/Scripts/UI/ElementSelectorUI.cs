@@ -109,4 +109,3 @@ public class ElementSelectorUI : MonoBehaviour
             LocalizationManager.Instance.OnLanguageChanged -= GenerateButtons;
     }
 }
-}
