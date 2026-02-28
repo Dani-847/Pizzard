@@ -9,7 +9,7 @@ public class WireLocalization : EditorWindow
     [MenuItem("Tools/Wire Localization")]
     public static void Wire()
     {
-        EditorSceneManager.OpenScene("Assets/Scenes/MainScene.unity");
+        EditorSceneManager.OpenScene("Assets/FlowScenes/MainMenu.unity");
 
         // Main Menu
         WireLocalizedText("MenuUI/Panel/BotonJugar/Text (TMP)", "menu_play");
@@ -39,7 +39,7 @@ public class WireLocalization : EditorWindow
 
 
         EditorSceneManager.SaveOpenScenes();
-        Debug.Log("Localization wiring complete for MainScene.");
+        Debug.Log("Localization wiring complete for MainMenu.");
     }
 
     private static void WireLocalizedText(string path, string key)
