@@ -18,6 +18,7 @@ namespace Pizzard.UI
         [Header("Optional")]
         public TMPro.TextMeshProUGUI healthText;
         public TMPro.TextMeshProUGUI bossNameText;
+        [SerializeField] private string bossLocalizationKey = "";
 
         private BossBase trackedBoss;
         private int cachedMaxHealth;
@@ -29,14 +30,39 @@ namespace Pizzard.UI
             if (trackedBoss != null)
             {
                 cachedMaxHealth = trackedBoss.MaxHealthPublic;
-                if (bossNameText != null)
-                    bossNameText.text = trackedBoss.gameObject.name;
-                    
+                UpdateBossName();
                 UpdateBar();
             }
             else
             {
                 Debug.LogWarning("[BossHealthBarUI] No BossBase found in scene.");
+            }
+
+            if (LocalizationManager.Instance != null)
+            {
+                LocalizationManager.Instance.OnLanguageChanged += UpdateBossName;
+            }
+        }
+
+        void OnDisable()
+        {
+            if (LocalizationManager.Instance != null)
+            {
+                LocalizationManager.Instance.OnLanguageChanged -= UpdateBossName;
+            }
+        }
+
+        void UpdateBossName()
+        {
+            if (trackedBoss != null && bossNameText != null)
+            {
+                string displayName = trackedBoss.gameObject.name;
+                if (LocalizationManager.Instance != null && !string.IsNullOrEmpty(bossLocalizationKey))
+                {
+                    string loc = LocalizationManager.Instance.GetText(bossLocalizationKey);
+                    if (!loc.StartsWith("[")) displayName = loc;
+                }
+                bossNameText.text = displayName;
             }
         }
 

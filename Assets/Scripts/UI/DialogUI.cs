@@ -35,13 +35,30 @@ public class DialogUI : MonoBehaviour
 
     [Header("Dialogue Config (Fallback)")]
     [TextArea(2, 4)]
-    public string[] introDialogLines = { "Dialog 1 (EN)" };
+    public string[] introDialogLines = {
+        "Welcome, young mage, to the Pizzard's Challenge!",
+        "I am Raberto, the guardian of this trial.",
+        "You must prove your worth by defeating four elemental guardians.",
+        "Each victory will grant you a token.",
+        "Spend them wisely in my shop to empower your wand.",
+        "Your trial begins now. Good luck."
+    };
     [TextArea(2, 4)]
-    public string[] preBossDialogLines = { "Dialog 2 (EN)" };
+    public string[] preBossDialogLines = {
+        "Ready for your next opponent?",
+        "Let's see how you handle this!"
+    };
     [TextArea(2, 4)]
-    public string[] postBossDialogLines = { "Dialog 3 (EN)" };
+    public string[] postBossDialogLines = {
+        "Impressive! One step closer to becoming a true Pizzard.",
+        "Take this token as a reward for your victory.",
+        "Return to my shop and prepare for the next challenge."
+    };
     [TextArea(2, 4)]
-    public string[] deathShopDialogLines = { "You fell... But you can try again." };
+    public string[] deathShopDialogLines = {
+        "You have fallen... but do not despair.",
+        "Use what you have learned and try again."
+    };
 
     [Header("Localization Key Prefixes")]
     public string introDialogKeyPrefix = "dialog_intro_";
