@@ -75,8 +75,7 @@ public class PblobController : MonoBehaviour
         if (Vector3.Distance(worldCenter, arenaCenter) < 20f)
             arenaCenter = worldCenter;
 
-        if (debugMode)
-            Debug.Log($"🗺️ Arena bounds from Tilemap: ±{arenaClampX:F1}x ±{arenaClampY:F1}y  center={arenaCenter}");
+        Debug.Log($"[Pblob] Arena bounds: ±{arenaClampX:F1}x ±{arenaClampY:F1}y  center={arenaCenter}");
     }
 
     private void Start()
@@ -248,7 +247,7 @@ public class PblobController : MonoBehaviour
         Vector3 playerTarget = arenaCenter + new Vector3(0, gridOffset + 1f, 0); // bottom (inside grid)
 
         // Disable player movement during cinematic
-        PlayerController pm = playerTransform != null ? playerTransform.GetComponent<PlayerController>() : null;
+        Pizzard.Player.PlayerController pm = playerTransform != null ? playerTransform.GetComponent<Pizzard.Player.PlayerController>() : null;
         if (pm != null) pm.enabled = false;
 
         while (elapsed < duration)
@@ -268,7 +267,7 @@ public class PblobController : MonoBehaviour
         ChangeState(PblobState.Phase3_Grid);
     }
 
-    private IEnumerator ReenablePlayerAfter(PlayerMovement pm, float delay)
+    private IEnumerator ReenablePlayerAfter(Pizzard.Player.PlayerController pm, float delay)
     {
         yield return new WaitForSeconds(delay);
         if (pm != null) pm.enabled = true;

@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 3349158012242296273}
   - component: {fileID: 6637818891723941349}
   - component: {fileID: 9141943449515027294}
+  - component: {fileID: 8003606144800469126}
   m_Layer: 0
   m_Name: Pblob
   m_TagString: Boss
@@ -166,9 +167,6 @@ MonoBehaviour:
   OnVulnerabilityChanged:
     m_PersistentCalls:
       m_Calls: []
-  debugMode: 1
-  damageKey: 116
-  nextPhaseKey: 112
 --- !u!114 &8119186634493984726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,6 +271,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7e2e381414f98b4a8bf37159713c805, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8003606144800469126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257718434660003001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcf4ac31dcc13fa49a77f4032bdda7f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1649815310915807334
