@@ -13,9 +13,11 @@ progress:
 
 ## CURRENT STATE
 
-- **Position**: Phase 15 — COMPLETE (Plan 2/2 complete)
-- **Task**: Phase 15 done — ready for Phase 16 (Language System)
-- **Status**: 2 plans complete, wave 1 done
+## CURRENT STATE
+
+- **Position**: Phase 16 — In Progress (Plan 3/3 — Task 1 complete, awaiting Task 2 human-verify checkpoint)
+- **Task**: Plan 16-03 Task 1 done. Awaiting human Play mode verification (Task 2 checkpoint).
+- **Status**: 3 plans started, Task 1 of plan 3 complete
 
 ## Last Session Summary
 
@@ -39,10 +41,16 @@ Phase 15 — Complete ✅: 2 plans, 5 tasks total
 - GameState.Credits enum preserved as tombstone for Phase 28 endgame
 - Note: Unity scene-side DarkOverlay/DeathImage GameObjects need manual Editor setup
 
+## Completed: Plan 16-03 Task 1 (2026-02-28)
+- WireLocalization.cs Editor script created — run Tools/Wire Localization from Unity Editor
+- Wires LocalizedText to: 4 main menu buttons, 4 options labels, 1 combinations back button, 3 death screen elements
+- Sets bossLocalizationKey on BossHealthBarUI for all 4 bosses
+- CHECKPOINT: Human must run script and verify end-to-end language switching in Play mode
+
 ## Next Steps
-1. `/execute 16` — Language System Completion
-   OR
-2. Manual Unity Editor: wire DarkOverlay + DeathImage on DeathUI panel; wire botonContinuar on MenuUI
+1. Run **Tools → Wire Localization** in Unity Editor (to apply LocalizedText to static UI)
+2. Enter **Play mode** and verify EN/ES language switching across all UI screens
+3. Type "approved" to continue if all text switches correctly in both languages
 
 ## Key Decisions Active
 - All balance values go through `GameBalance.cs`
@@ -54,3 +62,4 @@ Phase 15 — Complete ✅: 2 plans, 5 tasks total
 - ContinuarJuego() resumes at Shop (not Combat)
 - GameState.Credits enum value preserved — Phase 28 will reintroduce endgame credits
 - DeathUI darkOverlay and deathImage are optional (null-guarded) SerializeFields
+- Unity Editor script approach for batch LocalizedText wiring — run Tools/Wire Localization once from Unity Editor (Phase 16)

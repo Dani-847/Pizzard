@@ -44,7 +44,7 @@ Starting token = 1 (given before Shop 1).
 ### Phase 16: Language System Completion
 **Status**: ⬚ Planned
 **Dependencies**: Phase 14
-**Plans:** 1/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 16-01-PLAN.md — Write complete EN/ES JSON string tables with real dialogue
