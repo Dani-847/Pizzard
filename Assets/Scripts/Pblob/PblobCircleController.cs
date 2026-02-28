@@ -12,6 +12,10 @@ public class PblobCircleController : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null && spriteRenderer.sprite == null)
+        {
+            spriteRenderer.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/Knob.psd");
+        }
     }
 
     private void Start()
@@ -72,9 +76,18 @@ public class PblobCircleController : MonoBehaviour
 
     public IEnumerator MoveRandomly(float duration, float speed)
     {
+        Pizzard.Bosses.PblobController boss = FindObjectOfType<Pizzard.Bosses.PblobController>();
+        if (boss == null) yield break;
+
+        Vector3 center = boss.arenaCenter;
+        float clampX = boss.arenaClampX;
+        float clampY = boss.arenaClampY;
+
         float elapsed = 0f;
         Vector3 startPos = transform.position;
-        Vector3 targetPos = startPos + (Vector3)(Random.insideUnitCircle.normalized * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius);
+        Vector3 targetPos = center + (Vector3)(Random.insideUnitCircle.normalized * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius);
+        targetPos.x = Mathf.Clamp(targetPos.x, center.x - clampX, center.x + clampX);
+        targetPos.y = Mathf.Clamp(targetPos.y, center.y - clampY, center.y + clampY);
 
         while (elapsed < duration)
         {
@@ -82,7 +95,9 @@ public class PblobCircleController : MonoBehaviour
             if (Vector3.Distance(transform.position, targetPos) < 0.1f)
             {
                 startPos = transform.position;
-                targetPos = startPos + (Vector3)(Random.insideUnitCircle.normalized * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius);
+                targetPos = center + (Vector3)(Random.insideUnitCircle.normalized * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius);
+                targetPos.x = Mathf.Clamp(targetPos.x, center.x - clampX, center.x + clampX);
+                targetPos.y = Mathf.Clamp(targetPos.y, center.y - clampY, center.y + clampY);
             }
 
             transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);

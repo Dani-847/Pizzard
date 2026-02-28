@@ -18,9 +18,23 @@ public class DelayedHealthBar : MonoBehaviour
     
     void Start()
     {
-        // Inicializar ambas barras llenas
-        redBar.fillAmount = 1f;
-        orangeBar.fillAmount = 1f;
+        // Asegurar que las imágenes están configuradas en modo Filled para que FillAmount funcione correctamente
+        if (redBar != null)
+        {
+            redBar.type = Image.Type.Filled;
+            redBar.fillMethod = Image.FillMethod.Horizontal;
+            redBar.fillOrigin = (int)Image.OriginHorizontal.Left;
+            redBar.fillAmount = 1f;
+        }
+        
+        if (orangeBar != null)
+        {
+            orangeBar.type = Image.Type.Filled;
+            orangeBar.fillMethod = Image.FillMethod.Horizontal;
+            orangeBar.fillOrigin = (int)Image.OriginHorizontal.Left;
+            orangeBar.fillAmount = 1f;
+        }
+        
         targetHealth = 1f;
     }
     

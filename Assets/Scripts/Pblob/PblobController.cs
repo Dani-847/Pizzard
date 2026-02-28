@@ -27,6 +27,11 @@ public class PblobController : MonoBehaviour
     public PblobGridPuzzle gridPuzzle;
     public Transform gridSpawnPoint;
 
+    [Header("Arena Bounds")]
+    public Vector3 arenaCenter;
+    public float arenaClampX = 10f;
+    public float arenaClampY = 5f;
+
     [Header("Events")]
     public UnityEvent OnBossBattleStart;
     public UnityEvent OnBossDefeated;
@@ -43,12 +48,11 @@ public class PblobController : MonoBehaviour
     private PblobRhythmManager rhythmManager;
     private Coroutine stateCoroutine;
     private Transform playerTransform;
-    private Vector3 centerPoint;
 
     private void Awake()
     {
         currentHealth = maxHealth;
-        centerPoint = transform.position; // Store original spawn as center
+        arenaCenter = transform.position; // Store original spawn as center
     }
 
     private void Start()
@@ -178,13 +182,10 @@ public class PblobController : MonoBehaviour
             
             // Pick random target near center but explicitly clamp it to a defined arena size 
             Vector2 randomDir = Random.insideUnitCircle.normalized;
-            Vector3 targetPos = centerPoint + (Vector3)(randomDir * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius);
+            Vector3 targetPos = arenaCenter + (Vector3)(randomDir * Pizzard.Core.GameBalance.Bosses.Pblob.WanderRadius);
 
-            // Optional hard clamp if arena is strictly rectangular (like 20x20 around center)
-            float clampX = 14f; // Example half-width for standard arena
-            float clampY = 8f;  // Example half-height for standard arena
-            targetPos.x = Mathf.Clamp(targetPos.x, centerPoint.x - clampX, centerPoint.x + clampX);
-            targetPos.y = Mathf.Clamp(targetPos.y, centerPoint.y - clampY, centerPoint.y + clampY);
+            targetPos.x = Mathf.Clamp(targetPos.x, arenaCenter.x - arenaClampX, arenaCenter.x + arenaClampX);
+            targetPos.y = Mathf.Clamp(targetPos.y, arenaCenter.y - arenaClampY, arenaCenter.y + arenaClampY);
             
             float elapsed = 0f;
             while (elapsed < alternateTime && currentState == PblobState.Phase1)
@@ -220,7 +221,7 @@ public class PblobController : MonoBehaviour
 
         while (elapsed < duration)
         {
-            transform.position = Vector3.Lerp(startPos, centerPoint, elapsed / duration);
+            transform.position = Vector3.Lerp(startPos, arenaCenter, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
@@ -234,10 +235,10 @@ public class PblobController : MonoBehaviour
         float duration = 1.5f;
         
         Vector3 bossStart = transform.position;
-        Vector3 bossTarget = centerPoint + new Vector3(0, 5f, 0); // Top Center
+        Vector3 bossTarget = arenaCenter + new Vector3(0, 5f, 0); // Top Center
         
         Vector3 playerStart = playerTransform != null ? playerTransform.position : Vector3.zero;
-        Vector3 playerTarget = centerPoint + new Vector3(0, -6f, 0); // Bottom Center
+        Vector3 playerTarget = arenaCenter + new Vector3(0, -6f, 0); // Bottom Center
 
         // We assume the player is immobilized by the transition event via PlayerMovement script externally,
         // or we just rigidly force position here.
@@ -327,10 +328,25 @@ public class PblobController : MonoBehaviour
 
                     Debug.Log("⏳ Restarting minigame...");
                     CleanupPhase2Circles();
-                    ChangeState(PblobState.Idle); // A quick pause
+                    MakeInvulnerable(); // A quick pause
                     yield return new WaitForSeconds(1f);
-                    ChangeState(PblobState.Phase2); // Restart phase 2
-                    break;
+                    
+                    // Restart phase 2 mechanics immediately without leaving the main Coroutine loop
+                    SpawnPhase2Circles();
+                    foreach (var c in activeCircles)
+                    {
+                        var controller = c.GetComponent<PblobCircleController>();
+                        if (controller != null)
+                            StartCoroutine(controller.MoveRandomly(Pizzard.Core.GameBalance.Bosses.Pblob.Phase2CircleMoveTime, 6f));
+                    }
+                    yield return new WaitForSeconds(Pizzard.Core.GameBalance.Bosses.Pblob.Phase2CircleMoveTime);
+                    
+                    phase2MstTimer = timerDuration;
+                    phase2TimerActive = true;
+                    Debug.Log($"[Pblob] Circles Stopped. You have {timerDuration}s to find the Green circle!");
+                    
+                    // Loop naturally continues
+                    continue;
                 }
             }
             yield return null;
@@ -371,7 +387,7 @@ public class PblobController : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             Vector3 randomOffset = (Vector3)(Random.insideUnitCircle.normalized * 3f);
-            GameObject newCircle = Instantiate(circlePrefab, centerPoint + randomOffset, Quaternion.identity);
+            GameObject newCircle = Instantiate(circlePrefab, arenaCenter + randomOffset, Quaternion.identity);
             var controller = newCircle.GetComponent<PblobCircleController>();
             if (controller != null)
             {
