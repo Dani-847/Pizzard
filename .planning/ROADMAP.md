@@ -76,15 +76,16 @@ Plans:
 
 ---
 
-### Phase 17: UI Polish & Resolution Independence
-**Status**: ⬚ Planned
+### ✅ Phase 17: UI Polish & Resolution Independence
+**Status**: Executed
+**Focus**: Unity UI anchors, button styling, ElementSelection grid polish, Boss/Mana bar verifications.
 **Dependencies**: Phase 16
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 17-01-PLAN.md — Setup Canvas Scalers
-- [ ] 17-02-PLAN.md — Shop Buttons & Element Selection Polish
-- [ ] 17-03-PLAN.md — Mana Bar & Boss Health Bars Polish
+- [x] 17-01-PLAN.md — Setup Canvas Scalers
+- [x] 17-02-PLAN.md — Shop Buttons & Element Selection Polish
+- [x] 17-03-PLAN.md — Mana Bar & Boss Health Bars Polish
 
 **Objective**: Final UI polish pass across all scenes.
 
