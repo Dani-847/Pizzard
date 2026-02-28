@@ -14,7 +14,19 @@ public class PblobCircleController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null && spriteRenderer.sprite == null)
         {
-            spriteRenderer.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/Knob.psd");
+            Texture2D tex = new Texture2D(128, 128);
+            Color[] pixels = new Color[128 * 128];
+            Vector2 center = new Vector2(64, 64);
+            for (int y = 0; y < 128; y++)
+            {
+                for (int x = 0; x < 128; x++)
+                {
+                    pixels[y * 128 + x] = Vector2.Distance(center, new Vector2(x, y)) <= 64f ? Color.white : Color.clear;
+                }
+            }
+            tex.SetPixels(pixels);
+            tex.Apply();
+            spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, 128, 128), new Vector2(0.5f, 0.5f), 64f);
         }
         if (spriteRenderer != null)
         {

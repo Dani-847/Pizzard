@@ -5,8 +5,8 @@ using System.Collections;
 public class DelayedHealthBar : MonoBehaviour
 {
     [Header("Health Bar References")]
-    public RectTransform redBarRect;      // Foreground moving immediately
-    public RectTransform orangeBarRect;   // Background moving slowly
+    public Image redBar;          // Foreground moving immediately
+    public Image orangeBar;       // Background moving slowly
     
     [Header("Animation Settings")]
     public float delayDuration = 0.5f;
@@ -17,45 +17,45 @@ public class DelayedHealthBar : MonoBehaviour
 
     void Start()
     {
-        if (redBarRect == null || orangeBarRect == null)
+        if (redBar == null || orangeBar == null)
         {
-            RectTransform[] children = GetComponentsInChildren<RectTransform>(true);
+            Image[] children = GetComponentsInChildren<Image>(true);
             foreach (var child in children)
             {
                 string n = child.gameObject.name.ToLower();
-                if (n.Contains("front") || n.Contains("red")) redBarRect = child;
-                if (n.Contains("back") || n.Contains("orange")) orangeBarRect = child;
+                if (n.Contains("front") || n.Contains("red")) redBar = child;
+                if (n.Contains("back") || n.Contains("orange")) orangeBar = child;
             }
         }
 
-        if (redBarRect == null || orangeBarRect == null)
+        if (redBar == null || orangeBar == null)
         {
-            Debug.LogError("Health Bar RectTransforms are not assigned and could not be found!");
+            Debug.LogError("Health Bar Images are not assigned and could not be found!");
             return;
         }
 
-        // Setup Anchors so changing anchorMax.x stretches them correctly
-        SetupAnchor(redBarRect);
-        SetupAnchor(orangeBarRect);
-    }
-    
-    private void SetupAnchor(RectTransform rt)
-    {
-        rt.anchorMin = new Vector2(0f, 0f);
-        rt.anchorMax = new Vector2(1f, 1f);
-        rt.pivot = new Vector2(0f, 0.5f);
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
+        if (redBar != null)
+        {
+            redBar.type = Image.Type.Filled;
+            redBar.fillMethod = Image.FillMethod.Horizontal;
+            redBar.fillOrigin = (int)Image.OriginHorizontal.Left;
+        }
+
+        if (orangeBar != null)
+        {
+            orangeBar.type = Image.Type.Filled;
+            orangeBar.fillMethod = Image.FillMethod.Horizontal;
+            orangeBar.fillOrigin = (int)Image.OriginHorizontal.Left;
+        }
     }
 
     public void SetHealth(float healthPercentage)
     {
         targetHealthRatio = Mathf.Clamp01(healthPercentage);
 
-        // Animate Red bar immediately
-        redBarRect.anchorMax = new Vector2(targetHealthRatio, 1f);
+        if (redBar != null)
+            redBar.fillAmount = targetHealthRatio;
         
-        // Schedule Orange bar
         if (orangeBarCoroutine != null) StopCoroutine(orangeBarCoroutine);
         orangeBarCoroutine = StartCoroutine(AnimateOrangeBar(targetHealthRatio));
     }
@@ -64,15 +64,16 @@ public class DelayedHealthBar : MonoBehaviour
     {
         yield return new WaitForSeconds(delayDuration);
         
-        while (Mathf.Abs(orangeBarRect.anchorMax.x - targetRatio) > 0.001f)
+        while (orangeBar != null && Mathf.Abs(orangeBar.fillAmount - targetRatio) > 0.001f)
         {
-            float currentRatio = orangeBarRect.anchorMax.x;
+            float currentRatio = orangeBar.fillAmount;
             float newRatio = Mathf.MoveTowards(currentRatio, targetRatio, orangeBarSpeed * Time.deltaTime);
-            orangeBarRect.anchorMax = new Vector2(newRatio, 1f);
+            orangeBar.fillAmount = newRatio;
             yield return null;
         }
         
-        orangeBarRect.anchorMax = new Vector2(targetRatio, 1f);
+        if (orangeBar != null)
+            orangeBar.fillAmount = targetRatio;
     }
     
     public void SetHealth(float current, float max)

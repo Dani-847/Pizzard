@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Tilemaps;
 
 public class PblobController : MonoBehaviour
 {
@@ -29,8 +30,8 @@ public class PblobController : MonoBehaviour
 
     [Header("Arena Bounds")]
     public Vector3 arenaCenter;
-    public float arenaClampX = 7.5f;
-    public float arenaClampY = 4f;
+    public float arenaClampX = 3.5f;
+    public float arenaClampY = 2.0f;
 
     [Header("Events")]
     public UnityEvent OnBossBattleStart;
@@ -55,6 +56,32 @@ public class PblobController : MonoBehaviour
         arenaCenter = transform.position; // Store original spawn as center
     }
 
+    // Auto-detect arena bounds from the Tilemap if present
+    private void AutoDetectArenaBounds()
+    {
+        Tilemap tilemap = FindObjectOfType<Tilemap>();
+        if (tilemap == null) return;
+
+        tilemap.CompressBounds();
+        Bounds b = tilemap.localBounds;
+        // Convert local bounds to world bounds accounting for scale
+        Vector3 scale = tilemap.transform.lossyScale;
+        float halfWidth  = b.extents.x * Mathf.Abs(scale.x);
+        float halfHeight = b.extents.y * Mathf.Abs(scale.y);
+
+        // Shrink by 1 unit to keep boss visually inside the walls
+        arenaClampX = Mathf.Max(0.5f, halfWidth - 1f);
+        arenaClampY = Mathf.Max(0.5f, halfHeight - 1f);
+
+        // Use tilemap world center as arena center if it's near origin
+        Vector3 worldCenter = tilemap.transform.TransformPoint(b.center);
+        if (Vector3.Distance(worldCenter, arenaCenter) < 20f)
+            arenaCenter = worldCenter;
+
+        if (debugMode)
+            Debug.Log($"🗺️ Arena bounds from Tilemap: ±{arenaClampX:F1}x ±{arenaClampY:F1}y  center={arenaCenter}");
+    }
+
     private void Start()
     {
         GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -64,6 +91,8 @@ public class PblobController : MonoBehaviour
         {
             rhythmManager = FindObjectOfType<PblobRhythmManager>();
         }
+
+        AutoDetectArenaBounds(); // <- Read real arena size from Tilemap
         
         ChangeState(PblobState.Idle);
         
