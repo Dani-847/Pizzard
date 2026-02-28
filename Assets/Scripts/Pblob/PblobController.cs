@@ -40,7 +40,10 @@ public class PblobController : MonoBehaviour
     public UnityEvent<float> OnHealthChanged;
     public UnityEvent<bool> OnVulnerabilityChanged;
 
-    // Debug removed — use Unity's built-in debugger or scene inspector
+    [Header("DEBUG")]
+    public bool debugMode = true;
+    public KeyCode damageKey = KeyCode.T;
+    public KeyCode nextPhaseKey = KeyCode.P;
 
     // References
     private PblobRhythmManager rhythmManager;
@@ -95,7 +98,16 @@ public class PblobController : MonoBehaviour
         Debug.Log($"[Pblob] Initialized — HP: {currentHealth} | gridPuzzle: {(gridPuzzle != null ? "Found" : "MISSING!")}");
     }
 
+    private void Update()
+    {
+        if (!debugMode) return;
 
+        if (Input.GetKeyDown(damageKey))
+            ForceTakeDamage(100f);
+
+        if (Input.GetKeyDown(nextPhaseKey))
+            ForceNextPhase();
+    }
     public void ChangeState(PblobState newState)
     {
         if (currentState == newState) return;
@@ -487,7 +499,11 @@ public class PblobController : MonoBehaviour
         ApplyDamageWithThresholds(damage);
     }
 
-
+    private void ForceTakeDamage(float damage)
+    {
+        // Debug method: bypasses vulnerability check
+        ApplyDamageWithThresholds(damage);
+    }
 
     private void ApplyDamageWithThresholds(float damage)
     {
@@ -535,6 +551,15 @@ public class PblobController : MonoBehaviour
     }
 
     // --- UTILS ---
+
+    private void ForceNextPhase()
+    {
+        if (currentState == PblobState.Idle || currentState == PblobState.Phase1)
+            ForceTakeDamage(maxHealth * 0.35f);
+        else if (currentState == PblobState.Phase2)
+            ForceTakeDamage(maxHealth * 0.35f);
+    }
+
     public bool IsVulnerable() { return isVulnerable; }
 
     public void MakeVulnerable()

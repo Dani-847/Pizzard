@@ -2,8 +2,8 @@ using UnityEngine;
 
 /// <summary>
 /// Handles Esc-key pause toggling during the boss fight.
-/// Attach to any persistent GameObject in the boss arena scene.
-/// Uses Time.timeScale for pause and shows/hides the MenuUI panel.
+/// Calls MenuUI.ShowPauseMenu() which shows Resume + BackToMenu buttons
+/// (NOT the main menu with Play/Settings/Quit).
 /// </summary>
 public class PauseBossArena : MonoBehaviour
 {
@@ -26,8 +26,21 @@ public class PauseBossArena : MonoBehaviour
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0f : 1f;
 
+        if (menuUI == null)
+            menuUI = FindObjectOfType<MenuUI>(true);
+
         if (menuUI != null)
-            menuUI.gameObject.SetActive(isPaused);
+        {
+            if (isPaused)
+            {
+                // Show pause menu (Resume + BackToMenu), NOT main menu
+                menuUI.ShowPauseMenu(Pizzard.Core.GameFlowManager.Instance);
+            }
+            else
+            {
+                menuUI.Hide();
+            }
+        }
     }
 
     private void OnDestroy()
