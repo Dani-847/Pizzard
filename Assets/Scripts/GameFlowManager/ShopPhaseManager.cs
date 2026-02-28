@@ -28,7 +28,7 @@ namespace Pizzard.Core
         public void OnLeaveShop()
         {
             Debug.Log("[ShopPhaseManager] Leaving Shop. Transitioning to PreBossDialog...");
-            GameFlowManager.Instance.ChangeState(GameState.PreBossDialog);
+            GameFlowManager.Instance.ChangeState(GameState.PreBossDialogue);
         }
     }
 }

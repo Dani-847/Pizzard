@@ -13,20 +13,13 @@ public class ElementSelectionUI : MonoBehaviour
     private int maxAllowedTier;
 
     private Dictionary<ElementType, Button> elementButtons = new Dictionary<ElementType, Button>();
+    private GameObject resetButtonGO;
 
     public void OpenSelection(PlayerEquip equip)
     {
         currentEquip = equip;
         currentWand = equip.equipedObject;
         maxAllowedTier = equip.CurrentWandTier;
-
-        if (currentWand == null)
-        {
-            Debug.Log("[Shop] No wand equipped, cannot select elements.");
-            ClearButtons();
-            gameObject.SetActive(false);
-            return;
-        }
 
         GenerateButtons();
         gameObject.SetActive(true);
@@ -39,16 +32,18 @@ public class ElementSelectionUI : MonoBehaviour
         currentWand = wand;
         maxAllowedTier = maxTier;
 
-        if (currentWand == null)
-        {
-            Debug.Log("[Shop] No wand provided, cannot select elements.");
-            ClearButtons();
-            gameObject.SetActive(false);
-            return;
-        }
-
         GenerateButtons();
         gameObject.SetActive(true);
+        RefreshVisuals();
+    }
+
+    /// <summary>
+    /// Called by ShopUI when wandTier changes (e.g., after purchasing a wand upgrade).
+    /// Updates the number of active element slots IMMEDIATELY.
+    /// </summary>
+    public void RefreshFromWandTier(int newTier)
+    {
+        maxAllowedTier = newTier;
         RefreshVisuals();
     }
 
@@ -65,7 +60,7 @@ public class ElementSelectionUI : MonoBehaviour
 
         foreach (ElementType element in System.Enum.GetValues(typeof(ElementType)))
         {
-            if (element == ElementType.None) continue; // Skip None
+            if (element == ElementType.None) continue;
 
             GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer);
             buttonGO.GetComponentInChildren<Text>().text = element.ToString();
@@ -79,9 +74,9 @@ public class ElementSelectionUI : MonoBehaviour
             elementButtons[element] = btn;
         }
 
-        // Separator logic or simply the Reset button
-        GameObject resetButtonGO = Instantiate(buttonPrefab, buttonContainer);
-        resetButtonGO.GetComponentInChildren<Text>().text = "Reset Choices";
+        // Deselect / Reset button
+        resetButtonGO = Instantiate(buttonPrefab, buttonContainer);
+        resetButtonGO.GetComponentInChildren<Text>().text = "Deselect All";
         resetButtonGO.GetComponent<Button>().onClick.AddListener(() =>
         {
             ResetWeaponElements();
@@ -107,7 +102,7 @@ public class ElementSelectionUI : MonoBehaviour
         if (currentWand == null) return;
 
         var weapon = currentWand;
-        int maxAllowed = maxAllowedTier; // Tier 1 = 1 element, Tier 2 = 2 elements...
+        int maxAllowed = maxAllowedTier; // Tier 1 = 1 element, Tier 2 = 2, Tier 3 = 3
 
         if (weapon.elements.Contains(element))
         {
@@ -122,7 +117,7 @@ public class ElementSelectionUI : MonoBehaviour
         }
 
         weapon.elements.Add(element);
-        if (currentEquip != null) currentEquip.elementsToShow.Add(element); // Sync to Combiner
+        if (currentEquip != null) currentEquip.elementsToShow.Add(element);
         Debug.Log($"[Shop] Added Element: {element}. ({weapon.elements.Count}/{maxAllowed})");
         
         RefreshVisuals();
@@ -130,31 +125,53 @@ public class ElementSelectionUI : MonoBehaviour
 
     void RefreshVisuals()
     {
-        if (currentWand == null) return;
-        var selectedElements = currentWand.elements;
+        // --- WAVE 2: REACTIVE BINDING ---
+        // wandTier 0 = ALL grayed/disabled
+        // wandTier N = N slots active, rest disabled
+        int currentSelectedCount = currentWand != null ? currentWand.elements.Count : 0;
+        bool hasAnyTier = maxAllowedTier > 0;
 
         foreach (var kvp in elementButtons)
         {
             Button btn = kvp.Value;
             Image btnImage = btn.GetComponent<Image>();
-            
-            if (btnImage != null)
+
+            if (!hasAnyTier)
             {
-                if (selectedElements.Contains(kvp.Key))
+                // Tier 0: Everything grayed out and non-interactable
+                btn.interactable = false;
+                if (btnImage != null) btnImage.color = new Color(0.4f, 0.4f, 0.4f, 0.5f);
+            }
+            else
+            {
+                bool isSelected = currentWand != null && currentWand.elements.Contains(kvp.Key);
+                bool canSelectMore = currentSelectedCount < maxAllowedTier;
+                
+                btn.interactable = isSelected || canSelectMore;
+                
+                if (btnImage != null)
                 {
-                    btnImage.color = new Color(0.5f, 1f, 0.5f); // Green for selected
-                }
-                else
-                {
-                    btnImage.color = Color.white; // Default for unselected
+                    if (isSelected)
+                        btnImage.color = new Color(0.5f, 1f, 0.5f); // Green = selected
+                    else if (canSelectMore)
+                        btnImage.color = Color.white; // White = available
+                    else
+                        btnImage.color = new Color(0.6f, 0.6f, 0.6f, 0.7f); // Gray = slots full
                 }
             }
+        }
+
+        // Deselect button: hidden when wandTier == 0 or no elements selected
+        if (resetButtonGO != null)
+        {
+            resetButtonGO.SetActive(hasAnyTier && currentSelectedCount > 0);
         }
     }
 
     void ClearButtons()
     {
         elementButtons.Clear();
+        resetButtonGO = null;
         foreach (Transform child in buttonContainer)
         {
             Destroy(child.gameObject);

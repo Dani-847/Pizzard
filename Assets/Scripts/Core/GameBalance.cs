@@ -28,8 +28,8 @@ namespace Pizzard.Core
         public static class Mana
         {
             public const float MaxMana = 100f;
-            public const float BaseRecoveryRate = 5f;      // per second
-            public const float RecoveryDelayAfterCast = 1.5f;
+            public const float BaseRecoveryRate = 50f;      // per second
+            public const float RecoveryDelayAfterCast = 0.3f;
             public const float UpgradeMultiplier = 1.5f;
             public const float DefaultSpellCost = 30f;     // fallback for unknown combos
 

@@ -14,6 +14,8 @@ public class PersistentEventSystem : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
+            var ev = GetComponent<EventSystem>();
+            if (ev != null) ev.enabled = false;
             Destroy(gameObject);
             return;
         }

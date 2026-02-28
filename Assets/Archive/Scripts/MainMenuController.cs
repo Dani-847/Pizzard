@@ -27,7 +27,7 @@ namespace Pizzard.UI
         public void OnPlayClicked()
         {
             Debug.Log("[MainMenuController] Play clicked. Transitioning to Intro Dialog.");
-            GameFlowManager.Instance.ChangeState(GameState.IntroDialog);
+            GameFlowManager.Instance.ChangeState(GameState.Dialogue);
         }
 
         /// <summary>

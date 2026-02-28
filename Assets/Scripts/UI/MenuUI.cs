@@ -30,6 +30,23 @@ public class MenuUI : MonoBehaviour
 
     void Start()
     {
+        // Initial UI State
+        // Note: btnContinuar, btnNuevaPartida, btnOpciones, btnCombinaciones are not defined in this class.
+        // This code assumes they are defined elsewhere or will be added.
+        // if (btnContinuar != null) btnContinuar.gameObject.SetActive(false);
+        // if (btnNuevaPartida != null) btnNuevaPartida.gameObject.SetActive(true);
+        // if (btnOpciones != null) btnOpciones.gameObject.SetActive(true);
+        // if (btnCombinaciones != null) btnCombinaciones.gameObject.SetActive(true);
+        
+        // Check if SaveManager has a save to show Continue
+        // (Wave 3: Continue button logic goes here)
+
+        // Check if there is a save to show the Continue button
+        // if (Pizzard.Progression.SaveManager.Instance != null && 
+        //     Pizzard.Progression.SaveManager.Instance.HasSaveFile()) {
+        //     // Logic to show continue button
+        // }
+
         if (botonJugar != null)
             botonJugar.onClick.AddListener(OnClickJugar);
         if (botonAjustes != null)

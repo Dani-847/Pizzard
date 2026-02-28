@@ -19,3 +19,19 @@
 
 ### Constraints
 - The game will be temporarily broken during this initial phase while laying the new architectural foundation.
+
+## Phase 13 Decisions
+
+**Date:** 2026-02-27
+
+### Scope
+- **Rename Fatigue → Mana** across all code and UI for player intuitiveness.
+- **No anti-abuse combo system** — fatigue/mana costs per spell handle balance naturally.
+- **End screen (credits)** deferred to Phase 28 as planned. Annotated for future.
+
+### Approach
+- Chose: **Hardcoded dictionary** for spell costs (not ScriptableObjects)
+- Reason: Easier to balance by modifying numbers directly. One central location.
+
+### Technical Debt Resolved
+- Removed `IsVulnerable()` pre-checks from **all 12 projectile/attack scripts**. `TakeDamage()` handles vulnerability internally with proper console logging.

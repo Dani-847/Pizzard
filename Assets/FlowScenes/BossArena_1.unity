@@ -136,7 +136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1892360483733102002, guid: d1ff22ae7c2688046a5cd894009a571d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.73693436
+      value: 0.7369344
       objectReference: {fileID: 0}
     - target: {fileID: 1892360483733102002, guid: d1ff22ae7c2688046a5cd894009a571d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -342,7 +342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4047162103770043344, guid: 799af96ebac99a9458f91c33e7f92faf, type: 3}
       propertyPath: maxBounds.y
-      value: 2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4047162103770043344, guid: 799af96ebac99a9458f91c33e7f92faf, type: 3}
       propertyPath: minBounds.x
@@ -350,7 +350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4047162103770043344, guid: 799af96ebac99a9458f91c33e7f92faf, type: 3}
       propertyPath: minBounds.y
-      value: -10
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 4047162103770043344, guid: 799af96ebac99a9458f91c33e7f92faf, type: 3}
       propertyPath: bossArenaZoom

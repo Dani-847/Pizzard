@@ -1,28 +1,22 @@
 ## CURRENT STATE
 
-- **Position**: Phase 13 - Mana System — Combat Integration
-- **Task**: Completed Plan 13.1 (Wave 1 code changes). Wave 2 (Visual Verification) is a checkpoint:human-verify — requires Play mode confirmation.
-- **Status**: Plan 13.1 task 1 complete. Awaiting human verify checkpoint for visual mana bar confirmation.
+- **Position**: Phase 13 — COMPLETE. Ready for Phase 14.
+- **Task**: All Phase 13 work done (13.1 Mana rename + 13.2 GameBalance centralization). ROADMAP updated with phases 14-30.
+- **Status**: Phase 13 ✅ Complete. Roadmap synthesized from MASTER_PROMPT_GUIDE.md.
 
 ## Last Session Summary
-Phase 13 Plan 1 task 1 executed successfully. Renamed FatigueSystem to ManaSystem across all scripts. Added per-spell SpellCosts dictionary. PlayerAimAndCast now uses ManaSystem.GetSpellCost() for per-combo cost lookup. 0 remaining FatigueSystem/FatigueUI references in Assets/Scripts/. Commit: 2500b79.
+
+Phase 13 fully completed across two plans:
+- **13.1** (commit 2500b79): Renamed FatigueSystem→ManaSystem, added per-spell SpellCosts dictionary, wired PlayerAimAndCast spell-gating.
+- **13.2** (commit bd51804): Created `GameBalance.cs` centralizing 123+ balance constants from 36 files. All game values now in one tuning file.
+- **ROADMAP.md** updated with all remaining phases 14-30, including objectives, dependencies, and deliverables.
 
 ## Next Steps
-1. Execute Phase 12 Step 1: Implement Token Tracker and Fatigue UI merging.
-2. Execute Phase 12 Step 2: Implement strict progressive wand unlocking.
-3. Execute Phase 12 Step 3: Implement immediate element selection after Wand 1 purchase.
+1. `/discuss-phase 14` — Dialogue System & Narrative Flow
+2. `/plan` Phase 14 — create `.gsd/phases/14/PLAN.md`
+3. `/execute` Phase 14
+4. `/verify` Phase 14
 
-## Next Steps
-1. Proceed to Phase 5 (Bosses Part 1)
-Phase 3 executed successfully. 2 plans, 4 tasks completed.
-
-## Next Steps
-1. Proceed to Phase 4 (Progression & Shop System)
-Phase 2 executed successfully. 2 plans, 4 tasks completed.
-
-## Next Steps
-1. Proceed to Phase 3 (Player Mechanics & Wand Combinations)
-Phase 1 executed successfully. 2 plans, 4 tasks completed.
-
-## Next Steps
-1. Proceed to Phase 2 (Core UI & Main Menu)
+## Key Decisions Active
+- All balance values go through `GameBalance.cs` — no new hardcoded numbers (since Phase 13.2).
+- MASTER_PROMPT_GUIDE.md contains detailed prompts and design requirements for phases 14-30.

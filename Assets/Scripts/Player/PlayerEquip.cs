@@ -22,19 +22,14 @@ public class PlayerEquip : MonoBehaviour
 
     void Start()
     {
-        if (Pizzard.Progression.SaveManager.Instance != null && Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier > 0)
+        if (Pizzard.Progression.SaveManager.Instance != null)
         {
-            LoadTierFromSave(Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier);
+            LoadTierFromSave(Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier);
         }
 
         if (equipedObject == null)
         {
-            var selector = FindObjectOfType<EquipSelectorUI>(true);
-            if (selector != null && selector.availableEquipables != null && selector.availableEquipables.Count > 0)
-            {
-                EquipObject(selector.availableEquipables[0]);
-                Debug.Log("[PlayerEquip] Auto-equipped default wand for testing context.");
-            }
+            Debug.Log("[PlayerEquip] No wand equipped. Waiting for player to equip one.");
         }
     }
 
@@ -72,8 +67,12 @@ public class PlayerEquip : MonoBehaviour
             
             if (Pizzard.Progression.SaveManager.Instance != null)
             {
-                Pizzard.Progression.SaveManager.Instance.CurrentSave.currentWandTier = CurrentWandTier;
+                Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier = CurrentWandTier;
+                Pizzard.Progression.SaveManager.Instance.SaveGame();
             }
+            
+            // Automatically equip the new visual properties based on tier
+            LoadTierFromSave(CurrentWandTier);
         }
         else
         {
@@ -86,23 +85,32 @@ public class PlayerEquip : MonoBehaviour
     /// </summary>
     public void LoadTierFromSave(int savedTier)
     {
-        CurrentWandTier = Mathf.Clamp(savedTier, 1, 3);
+        CurrentWandTier = Mathf.Clamp(savedTier, 0, 3);
         Debug.Log($"[PlayerEquip] Wand loaded at Tier {CurrentWandTier}");
 
-        if (Pizzard.Progression.SaveManager.Instance != null)
+        if (CurrentWandTier > 0)
         {
-            int selectedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.selectedWandTierEquipped;
             var selector = FindObjectOfType<EquipSelectorUI>(true);
             
             if (selector != null && selector.availableEquipables != null)
             {
-                var equip = selector.availableEquipables.Find(e => e.tier == selectedTier);
+                // Auto-equip the wand corresponding to the current highest tier achieved
+                var equip = selector.availableEquipables.Find(e => e.tier == CurrentWandTier);
                 if (equip != null)
                 {
                     EquipObject(equip);
-                    Debug.Log($"[PlayerEquip] Auto-equipped selected wand: {equip.displayName}");
+                    Debug.Log($"[PlayerEquip] Auto-equipped wand: {equip.displayName}");
                 }
             }
+        }
+        else
+        {
+            // Tier 0 (No wand yet)
+            equipedObject = null;
+            elementsToShow.Clear();
+            if (currentVisual != null) Destroy(currentVisual);
+            FindObjectOfType<ElementsCombiner>()?.ClearSelectedElements();
+            Debug.Log("[PlayerEquip] Player is currently Wand Tier 0 (No attack possible).");
         }
     }
 }
