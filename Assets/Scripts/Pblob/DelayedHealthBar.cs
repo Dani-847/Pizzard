@@ -3,25 +3,22 @@ using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
-/// Boss health bar — ManaUI-style runtime bar creation.
-/// Destroys old BackHealthBar / FrontHealthBar scene children.
-/// Creates width-scaled fill bars anchored left so they drain right-to-left.
-/// PblobBorderHealthBar (the frame) stays untouched.
+/// Boss health bar — ManaUI-style runtime fill bar.
+/// Reads PblobBorderHealthBar's RectTransform to know size/position.
+/// Creates a single foreground bar (red) that scales its WIDTH to track HP.
+/// The border sprite is the background — it stays untouched.
+/// For now: just the red fill bar. Orange delayed drain can be added later.
 /// </summary>
 public class DelayedHealthBar : MonoBehaviour
 {
-    private static readonly Color RedColor    = new Color(0.85f, 0.10f, 0.10f, 1f);
-    private static readonly Color OrangeColor = new Color(0.95f, 0.55f, 0.10f, 1f);
+    private static readonly Color BarColor = new Color(0.85f, 0.10f, 0.10f, 1f);
 
-    private RectTransform frontRT;   // Red  — instant HP tracking (width scales)
-    private RectTransform backRT;    // Orange — delayed drain animation (width scales)
+    private RectTransform foreground;
     private float fullWidth;
-
-    private Coroutine drainRoutine;
 
     private void Start()
     {
-        BuildBars();
+        BuildBar();
     }
 
     // ──────────────────────────────────── Public API
@@ -29,15 +26,8 @@ public class DelayedHealthBar : MonoBehaviour
     public void SetHealth(float ratio)
     {
         ratio = Mathf.Clamp01(ratio);
-        if (frontRT == null) return;
-
-        // Instantly resize the red bar
-        frontRT.sizeDelta = new Vector2(fullWidth * ratio, frontRT.sizeDelta.y);
-
-        // Start the orange drain animation
-        if (drainRoutine != null) StopCoroutine(drainRoutine);
-        if (gameObject.activeInHierarchy)
-            drainRoutine = StartCoroutine(DrainBack(ratio));
+        if (foreground == null) return;
+        foreground.sizeDelta = new Vector2(fullWidth * ratio, foreground.sizeDelta.y);
     }
 
     public void SetHealth(float current, float max)
@@ -47,78 +37,55 @@ public class DelayedHealthBar : MonoBehaviour
 
     // ──────────────────────────────────── Build
 
-    private void BuildBars()
+    private void BuildBar()
     {
-        // Step 1: remove old scene-placed bars
-        DestroyChildByName("FrontHealthBar");
-        DestroyChildByName("BackHealthBar");
-        DestroyChildByName("HealthFrontBar");
-        DestroyChildByName("HealthBackBar");
-
-        // Step 2: measure parent for fullWidth
-        var parentRT = GetComponent<RectTransform>();
-        fullWidth = parentRT.rect.width;
-        if (fullWidth <= 0f) fullWidth = parentRT.sizeDelta.x;
-        if (fullWidth <= 0f) fullWidth = 480f; // fallback
-
-        float barHeight = parentRT.rect.height;
-        if (barHeight <= 0f) barHeight = parentRT.sizeDelta.y;
-        if (barHeight <= 0f) barHeight = 80f;
-
-        // Step 3: create orange (back) bar first — renders behind red
-        backRT  = CreateFillBar("HealthBackBar",  OrangeColor, barHeight);
-        frontRT = CreateFillBar("HealthFrontBar", RedColor,    barHeight);
-
-        // Step 4: push border to top of sibling order
-        Transform border = transform.Find("PblobBorderHealthBar");
-        if (border != null) border.SetAsLastSibling();
-
-        Debug.Log($"[DelayedHealthBar] Built — fullWidth={fullWidth:F0} height={barHeight:F0}");
-    }
-
-    private RectTransform CreateFillBar(string goName, Color color, float height)
-    {
-        var go = new GameObject(goName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(transform, false);
-
-        var rt = go.GetComponent<RectTransform>();
-        // Anchor left-stretch vertically so width controls fill
-        rt.anchorMin = new Vector2(0f, 0f);
-        rt.anchorMax = new Vector2(0f, 1f);
-        rt.pivot     = new Vector2(0f, 0.5f);
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
-        rt.sizeDelta = new Vector2(fullWidth, 0f); // full width, height from anchors
-
-        var img = go.GetComponent<Image>();
-        img.color = color;
-
-        return rt;
-    }
-
-    private void DestroyChildByName(string childName)
-    {
-        Transform t = transform.Find(childName);
-        if (t != null) Destroy(t.gameObject);
-    }
-
-    // ──────────────────────────────────── Drain
-
-    private IEnumerator DrainBack(float targetRatio)
-    {
-        yield return new WaitForSeconds(Pizzard.Core.GameBalance.Bosses.Pblob.HealthBarDrainDelay);
-
-        float targetWidth = fullWidth * targetRatio;
-        float speed = Pizzard.Core.GameBalance.Bosses.Pblob.HealthBarDrainSpeed * fullWidth;
-
-        while (backRT != null && Mathf.Abs(backRT.sizeDelta.x - targetWidth) > 1f)
+        // Find the border child — it defines the size and position
+        RectTransform border = null;
+        foreach (Transform child in transform)
         {
-            float newW = Mathf.MoveTowards(backRT.sizeDelta.x, targetWidth, speed * Time.deltaTime);
-            backRT.sizeDelta = new Vector2(newW, backRT.sizeDelta.y);
-            yield return null;
+            if (child.name == "PblobBorderHealthBar")
+            {
+                border = child as RectTransform;
+                break;
+            }
         }
 
-        if (backRT != null)
-            backRT.sizeDelta = new Vector2(targetWidth, backRT.sizeDelta.y);
+        if (border == null)
+        {
+            Debug.LogError("[DelayedHealthBar] PblobBorderHealthBar not found as child!");
+            return;
+        }
+
+        // Read the border's dimensions
+        fullWidth = border.sizeDelta.x;  // 566.23
+        float barHeight = border.sizeDelta.y;  // 100
+
+        // Create the foreground fill bar
+        var fgGO = new GameObject("HealthFill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        fgGO.transform.SetParent(transform, false);
+
+        foreground = fgGO.GetComponent<RectTransform>();
+
+        // Same anchors/pivot as border so it sits in the exact same spot
+        foreground.anchorMin = border.anchorMin;
+        foreground.anchorMax = border.anchorMax;
+        foreground.pivot = new Vector2(0f, 0.5f); // Left-anchored pivot for width scaling
+
+        // Position: border center offset, adjusted for left-pivot
+        // Border is center-pivoted at (-15, 139), so left edge = -15 - fullWidth/2
+        foreground.anchoredPosition = new Vector2(
+            border.anchoredPosition.x - fullWidth / 2f,
+            border.anchoredPosition.y
+        );
+
+        foreground.sizeDelta = new Vector2(fullWidth, barHeight);
+
+        var img = fgGO.GetComponent<Image>();
+        img.color = BarColor;
+
+        // Ensure fill bar renders BEHIND the border frame
+        foreground.SetAsFirstSibling();
+
+        Debug.Log($"[DelayedHealthBar] Built — width={fullWidth:F0} height={barHeight:F0} pos={foreground.anchoredPosition}");
     }
 }

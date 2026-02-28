@@ -182,12 +182,7 @@ public class MenuUI : MonoBehaviour
     {
         if (botonJugar != null)
             botonJugar.gameObject.SetActive(visible);
-        if (botonAjustes != null)
-            botonAjustes.gameObject.SetActive(visible);
-        if (botonSalir != null)
-            botonSalir.gameObject.SetActive(visible);
-        if (botonContinuar != null)
-            botonContinuar.gameObject.SetActive(visible);
+        RefreshContinueButton();
     }
 
     /// <summary>

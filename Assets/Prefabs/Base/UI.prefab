@@ -4156,10 +4156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d9f696ad45bd74ba2d01c4b7f5e9c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  redBarRect: {fileID: 0}
-  orangeBarRect: {fileID: 0}
-  delayDuration: 0.5
-  orangeBarSpeed: 1
 --- !u!114 &4778117866868066920
 MonoBehaviour:
   m_ObjectHideFlags: 0
