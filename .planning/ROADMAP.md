@@ -66,7 +66,7 @@
 ---
 
 ### Phase 15: Boss Loop Completion & Progression
-**Status**: ⬚ Not Started
+**Status**: 🔄 In Progress (Plan 1/2 complete)
 **Dependencies**: Phase 14
 
 **Objective**: Complete the full 4-boss progression loop end-to-end.
