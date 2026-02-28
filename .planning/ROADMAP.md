@@ -26,66 +26,7 @@
 | 13.1 | ✅ | Mana System — Rename Fatigue→Mana, per-spell cost dictionary, cast gating |
 | 13.2 | ✅ | GameBalance Centralization — 123+ constants into `GameBalance.cs`, 36 files updated |
 | 14 | ✅ | Dialogue System & Narrative Flow — DialogUI overlay, intro/pre/post-boss/death-shop dialogue sequences |
-| 15 | ✅ | Boss Loop Completion & Progression — BossArenaManager→AvanzarFase, ContinuarJuego, DeathUI overlay fields, Credits archived |
-
----
-
-## Remaining Phases (14–30)
-
----
-
-### Phase 14: Dialogue System & Narrative Flow
-**Status**: ✅ Complete (2026-02-28, verified 8/8 must-haves)
-**Dependencies**: Phase 13
-
-**Objective**: Integrate full dialogue system with the game loop.
-
-**Requirements**:
-- DialogsManager controls all dialogue scenes.
-- During Dialogue GameState: ALL player input frozen (movement, combat, shop).
-- Dialogue must complete before any state transition.
-
-**Dialogue Triggers** (in loop order):
-1. Intro Dialogue — after pressing Play, before first shop.
-2. Pre-Boss Dialogue — after exiting shop, before combat starts.
-3. Post-Boss Dialogue — after boss defeated + tokens awarded, before next shop.
-
-**Content Structure**:
-- All dialogue text from language JSON files (`en.json` / `es.json`).
-- Keys: `intro_dialogue`, `pre_boss_1`, `post_boss_1`, `pre_boss_2`, etc.
-- Characters: Bob (player), Raberto (shopkeeper).
-- Raberto gives hints about upcoming boss (e.g., "A good hair can be bad" before P'blob).
-
-**UI**:
-- Dialogue box at bottom of screen, anchored.
-- Character portrait on left.
-- Text with typewriter effect.
-- Press button/key to advance.
-- Auto-close after last line → trigger next GameState transition.
-
-**Verify**: Screenshots of dialogue flow. Use language system for all text.
-
----
-
-### Phase 15: Boss Loop Completion & Progression
-**Status**: ✅ Complete (2026-02-28, 2 plans / 5 tasks)
-**Dependencies**: Phase 14
-
-**Objective**: Complete the full 4-boss progression loop end-to-end.
-
-**Requirements**:
-- 4 bosses: P'blob, Hec'kiel, Pomodoro Paganini, Niggel Worthington.
-- Each boss has a scene. Create placeholder scenes for missing bosses.
-- Boss defeat → token reward → auto-save → post-boss dialogue → next shop.
-- After Boss 4 → final dialogue → magical pizza reward → credits scene.
-
-**Boss Index Tracking**:
-- `bossIndex` in SaveData tracks NEXT boss (0-3, or 4 = game complete).
-- On Play: load save → resume at correct loop point.
-
-**Token Table**:
-
-| After Boss | Earned | Available at Next Shop |
+| 15 | ✅ | Complete    | 2026-02-28 | After Boss | Earned | Available at Next Shop |
 |------------|--------|------------------------|
 | Boss 1     | 1      | 1 (spent 1 in Shop 1)  |
 | Boss 2     | 2      | 2 + unspent            |
