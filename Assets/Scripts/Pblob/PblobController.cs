@@ -17,6 +17,12 @@ public class PblobController : MonoBehaviour
     [Header("Attack Patterns")]
     public PblobAttackPattern[] attackPatterns;
 
+    [Header("Phase 2 Minigame")]
+    public GameObject circlePrefab;
+    private List<GameObject> activeCircles = new List<GameObject>();
+    private float phase2MstTimer = 0f;
+    private bool phase2TimerActive = false;
+
     [Header("Events")]
     public UnityEvent OnBossBattleStart;
     public UnityEvent OnBossDefeated;
@@ -205,11 +211,107 @@ public class PblobController : MonoBehaviour
         ChangeState(nextState);
     }
 
-    private IEnumerator Phase2PlaceholderRoutine()
+    // --- PHASE 2 LOGIC (Circle Minigame) ---
+    private IEnumerator Phase2Routine()
     {
-        Debug.Log("[Pblob] Phase 2 - Placeholders standing by");
-        // We will inject the circle logic in Plan 18.2 here.
-        yield return null;
+        Debug.Log("[Pblob] Starting Phase 2 Circle Minigame!");
+        
+        // 1. Spawn Circles
+        SpawnPhase2Circles();
+
+        // 2. Random Movement for 5 seconds
+        float moveTime = Pizzard.Core.GameBalance.Bosses.Pblob.Phase2CircleMoveTime;
+        foreach (var c in activeCircles)
+        {
+            var controller = c.GetComponent<PblobCircleController>();
+            if (controller != null)
+                StartCoroutine(controller.MoveRandomly(moveTime, 6f));
+        }
+
+        yield return new WaitForSeconds(moveTime);
+
+        // 3. Circles Stop. Start 30s vulnerability timer UI (console for now if no UI provided).
+        float timerDuration = Pizzard.Core.GameBalance.Bosses.Pblob.Phase2Timer;
+        phase2MstTimer = timerDuration;
+        phase2TimerActive = true;
+        
+        Debug.Log($"[Pblob] Circles Stopped. You have {timerDuration}s to find the Green circle!");
+
+        // The vulnerability is now implicitly handled by PblobCircleController OnTriggerEnter2D 
+        // which calls MakeVulnerable() / MakeInvulnerable().
+
+        while (currentState == PblobState.Phase2)
+        {
+            if (phase2TimerActive)
+            {
+                phase2MstTimer -= Time.deltaTime;
+                
+                // Show floating text here in a real game. For now we use GUI later.
+
+                if (phase2MstTimer <= 0)
+                {
+                    phase2TimerActive = false;
+                    Debug.Log("⏳ Phase 2 Time Out! Restarting minigame...");
+                    CleanupPhase2Circles();
+                    ChangeState(PblobState.Idle); // A quick pause
+                    yield return new WaitForSeconds(1f);
+                    ChangeState(PblobState.Phase2); // Restart phase 2
+                    break;
+                }
+            }
+            yield return null;
+        }
+    }
+
+    private void SpawnPhase2Circles()
+    {
+        CleanupPhase2Circles();
+
+        if (circlePrefab == null)
+        {
+            Debug.LogError("Circle Prefab missing! Please assign it to PblobController.");
+            return;
+        }
+
+        // We need 1 Green, 2 Red
+        List<PblobCircleController.CircleType> types = new List<PblobCircleController.CircleType>
+        {
+            PblobCircleController.CircleType.Green,
+            PblobCircleController.CircleType.Red,
+            PblobCircleController.CircleType.Red
+        };
+
+        // Shuffle types
+        for (int i = 0; i < types.Count; i++)
+        {
+            var temp = types[i];
+            int rnd = Random.Range(i, types.Count);
+            types[i] = types[rnd];
+            types[rnd] = temp;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3 randomOffset = (Vector3)(Random.insideUnitCircle.normalized * 3f);
+            GameObject newCircle = Instantiate(circlePrefab, centerPoint + randomOffset, Quaternion.identity);
+            var controller = newCircle.GetComponent<PblobCircleController>();
+            if (controller != null)
+            {
+                controller.type = types[i];
+            }
+            activeCircles.Add(newCircle);
+        }
+    }
+
+    private void CleanupPhase2Circles()
+    {
+        foreach (var c in activeCircles)
+        {
+            if (c != null) Destroy(c);
+        }
+        activeCircles.Clear();
+        phase2TimerActive = false;
+        MakeInvulnerable(); // Ensure boss is invuln once circles depart
     }
 
     // --- HEALTH & DAMAGE LOGIC ---
@@ -267,6 +369,7 @@ public class PblobController : MonoBehaviour
         else if (hpPercent <= 0.33f && currentState == PblobState.Phase2)
         {
             Debug.Log("🎯 33% HP Reached. Triggering Phase 3!");
+            CleanupPhase2Circles();
             ChangeState(PblobState.Phase3Transition);
         }
     }
@@ -332,7 +435,7 @@ public class PblobController : MonoBehaviour
     {
         if (debugMode)
         {
-            GUI.Box(new Rect(10, 10, 250, 140), "BOSS 1 STATE");
+            GUI.Box(new Rect(10, 10, 250, 170), "BOSS 1 STATE");
             
             float hp = (currentHealth / maxHealth) * 100f;
             GUI.Label(new Rect(20, 35, 230, 20), $"HP: {hp:F0}% ({currentHealth:F0}/{maxHealth})");
@@ -341,12 +444,17 @@ public class PblobController : MonoBehaviour
             GUI.Label(new Rect(20, 55, 230, 20), $"Status: {vulnText}");
             
             GUI.Label(new Rect(20, 75, 230, 20), $"State: {currentState}");
+
+            if (currentState == PblobState.Phase2)
+            {
+                GUI.Label(new Rect(20, 95, 230, 20), $"<color=yellow>Phase 2 Timer: {phase2MstTimer:F1}s</color>");
+            }
             
-            if (GUI.Button(new Rect(20, 100, 100, 25), "KILL"))
+            if (GUI.Button(new Rect(20, 125, 100, 25), "KILL"))
             {
                 ForceTakeDamage(currentHealth);
             }
-            if (GUI.Button(new Rect(130, 100, 100, 25), "NEXT PHASE"))
+            if (GUI.Button(new Rect(130, 125, 100, 25), "NEXT PHASE"))
             {
                 ForceNextPhase();
             }
