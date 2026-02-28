@@ -1,13 +1,13 @@
 # ROADMAP.md
 
-> **Current Phase**: 14 — Dialogue System & Narrative Flow
+> **Current Phase**: 16 — Language System Completion
 > **Milestone**: v1.0 (Full Loop & 4 Bosses)
-> **Phases Complete**: 1–13 (including 13.1 Mana + 13.2 GameBalance)
-> **Phases Remaining**: 14–30
+> **Phases Complete**: 1–15 (including 13.1 Mana + 13.2 GameBalance + 14 Dialogue + 15 Boss Loop)
+> **Phases Remaining**: 16–30
 
 ---
 
-## Completed Phases (1–13)
+## Completed Phases (1–15)
 
 | Phase | Status | Summary |
 |-------|--------|---------|
@@ -25,6 +25,8 @@
 | 12 | ✅ | Shop Progression & Layout Rework — Shop UI, Wand unlocking, Token/Mana tracking |
 | 13.1 | ✅ | Mana System — Rename Fatigue→Mana, per-spell cost dictionary, cast gating |
 | 13.2 | ✅ | GameBalance Centralization — 123+ constants into `GameBalance.cs`, 36 files updated |
+| 14 | ✅ | Dialogue System & Narrative Flow — DialogUI overlay, intro/pre/post-boss/death-shop dialogue sequences |
+| 15 | ✅ | Boss Loop Completion & Progression — BossArenaManager→AvanzarFase, ContinuarJuego, DeathUI overlay fields, Credits archived |
 
 ---
 
@@ -33,7 +35,7 @@
 ---
 
 ### Phase 14: Dialogue System & Narrative Flow
-**Status**: ⬚ Not Started
+**Status**: ✅ Complete (2026-02-28, verified 8/8 must-haves)
 **Dependencies**: Phase 13
 
 **Objective**: Integrate full dialogue system with the game loop.
@@ -66,7 +68,7 @@
 ---
 
 ### Phase 15: Boss Loop Completion & Progression
-**Status**: 🔄 In Progress (Plan 1/2 complete)
+**Status**: ✅ Complete (2026-02-28, 2 plans / 5 tasks)
 **Dependencies**: Phase 14
 
 **Objective**: Complete the full 4-boss progression loop end-to-end.
