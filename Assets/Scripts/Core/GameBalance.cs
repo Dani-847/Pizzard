@@ -96,6 +96,8 @@ namespace Pizzard.Core
                 public const float Phase1MoveSpeed = 4f;   // Slower than player, but pursues
                 public const float Phase2Timer = 30f;
                 public const float Phase2CircleMoveTime = 5f;
+                public const int Phase2TimeoutDamage = 2; // Damage taken if player fails the phase 2 timer
+                
                 public const float GridDamagePerTick = 1f;
                 
                 // Attack limits

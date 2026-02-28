@@ -313,13 +313,14 @@ public class PblobController : MonoBehaviour
 
                     if (!inGreen)
                     {
-                        Debug.Log("❌ Player failed to stand in the Green circle! Taking 2 damage.");
+                        int penaltyDamage = Pizzard.Core.GameBalance.Bosses.Pblob.Phase2TimeoutDamage;
+                        Debug.Log($"❌ Player failed to stand in the Green circle! Taking {penaltyDamage} damage.");
                         if (playerTransform != null)
                         {
                             var playerHealth = playerTransform.GetComponent<Pizzard.Core.PlayerHealth>();
                             if (playerHealth != null)
                             {
-                                playerHealth.TakeDamage(2);
+                                playerHealth.TakeDamage(penaltyDamage);
                             }
                         }
                     }
