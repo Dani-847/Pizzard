@@ -226,6 +226,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pantallaMuerte: {fileID: 259681394326654543}
+  darkOverlay: {fileID: 0}
+  deathImage: {fileID: 0}
   botonReintentar: {fileID: 5699743029119285176}
   botonSalirAlMenu: {fileID: 6860157553739147142}
 --- !u!1 &581622219836081077
@@ -452,7 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d220f27cd34324085ab539745d3398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manaFillBar: {fileID: 7665079837090297388}
+  foreground: {fileID: 0}
 --- !u!1 &751719149072068613
 GameObject:
   m_ObjectHideFlags: 0
@@ -2524,7 +2526,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogPanel: {fileID: 2189630880241721753}
   dialogText: {fileID: 1624276025109782004}
-  continueButton: {fileID: 3861400041664081659}
+  speakerNameText: {fileID: 0}
+  leftPortrait: {fileID: 0}
+  rightPortrait: {fileID: 0}
+  typewriterSpeed: 0.03
+  bobColor: {r: 0, g: 0.85, b: 0.85, a: 1}
+  rabertoColor: {r: 1, g: 0.55, b: 0, a: 1}
   introDialogLines:
   - Welcome to the world of Pizzard!
   - Prepare to face your first enemy...
@@ -2534,15 +2541,12 @@ MonoBehaviour:
   postBossDialogLines:
   - Congratulations! You defeated the boss.
   - Continue your adventure...
-  preNextBossDialogLines:
-  - A new challenge awaits...
-  - Forward!
-  introDialogKeyPrefix: dialog_intro_
-  preBossDialogKeyPrefix: dialog_preboss_
-  postBossDialogKeyPrefix: dialog_postboss_
   deathShopDialogLines:
   - Ah, you perished. I scraped you off the floor.
   - Take a moment to prepare before you try again.
+  introDialogKeyPrefix: dialog_intro_
+  preBossDialogKeyPrefix: dialog_preboss_
+  postBossDialogKeyPrefix: dialog_postboss_
   deathShopDialogKeyPrefix: dialog_deathshop_
 --- !u!1 &2189630880241721753
 GameObject:
@@ -4152,11 +4156,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d9f696ad45bd74ba2d01c4b7f5e9c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  redBar: {fileID: 6386028326728028771}
-  orangeBar: {fileID: 7445342365195824573}
+  redBarRect: {fileID: 0}
+  orangeBarRect: {fileID: 0}
   delayDuration: 0.5
   orangeBarSpeed: 1
-  smoothTime: 0.3
 --- !u!114 &4778117866868066920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4172,6 +4175,7 @@ MonoBehaviour:
   healthBar: {fileID: 8182051612417600187}
   healthText: {fileID: 0}
   bossNameDisplay: {fileID: 0}
+  phase2TimerText: {fileID: 0}
 --- !u!1 &3797076993651188792
 GameObject:
   m_ObjectHideFlags: 0
@@ -7337,6 +7341,7 @@ MonoBehaviour:
   botonJugar: {fileID: 2647384844646716053}
   botonAjustes: {fileID: 1067879428306454063}
   botonSalir: {fileID: 5228291757624089188}
+  botonContinuar: {fileID: 0}
   botonReanudar: {fileID: 2301801652026715359}
   botonVolverMenu: {fileID: 6577525079760115386}
   optionsUIPanel: {fileID: 8114624175893853164}

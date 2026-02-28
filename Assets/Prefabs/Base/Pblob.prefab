@@ -148,6 +148,9 @@ MonoBehaviour:
   circlePrefab: {fileID: 3617510932870236986, guid: 718310184d2efb44398fa5e4188d9555, type: 3}
   gridPuzzle: {fileID: 0}
   gridSpawnPoint: {fileID: 0}
+  arenaCenter: {x: 0, y: 0, z: 0}
+  arenaClampX: -1.5
+  arenaClampY: -1.5
   OnBossBattleStart:
     m_PersistentCalls:
       m_Calls: []

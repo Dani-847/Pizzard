@@ -29,8 +29,8 @@ public class PblobController : MonoBehaviour
 
     [Header("Arena Bounds")]
     public Vector3 arenaCenter;
-    public float arenaClampX = 10f;
-    public float arenaClampY = 5f;
+    public float arenaClampX = 7.5f;
+    public float arenaClampY = 4f;
 
     [Header("Events")]
     public UnityEvent OnBossBattleStart;

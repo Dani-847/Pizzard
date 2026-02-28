@@ -5,88 +5,78 @@ using System.Collections;
 public class DelayedHealthBar : MonoBehaviour
 {
     [Header("Health Bar References")]
-    public Image redBar;          // Barra roja (frente) - disminuye inmediato
-    public Image orangeBar;       // Barra naranja (atrás) - disminuye con delay
+    public RectTransform redBarRect;      // Foreground moving immediately
+    public RectTransform orangeBarRect;   // Background moving slowly
     
     [Header("Animation Settings")]
-    public float delayDuration = 0.5f;    // Tiempo antes de que empiece a moverse la naranja
-    public float orangeBarSpeed = 1f;     // Velocidad de la barra naranja
-    public float smoothTime = 0.3f;       // Suavizado del movimiento
+    public float delayDuration = 0.5f;
+    public float orangeBarSpeed = 0.5f;   // Speed in percent per second
     
-    private float targetHealth = 1f;
+    private float targetHealthRatio = 1f;
     private Coroutine orangeBarCoroutine;
-    
+
     void Start()
     {
-        // Asegurar que las imágenes están configuradas en modo Filled para que FillAmount funcione correctamente
-        if (redBar != null)
+        if (redBarRect == null || orangeBarRect == null)
         {
-            redBar.type = Image.Type.Filled;
-            redBar.fillMethod = Image.FillMethod.Horizontal;
-            redBar.fillOrigin = (int)Image.OriginHorizontal.Left;
-            redBar.fillAmount = 1f;
+            RectTransform[] children = GetComponentsInChildren<RectTransform>(true);
+            foreach (var child in children)
+            {
+                string n = child.gameObject.name.ToLower();
+                if (n.Contains("front") || n.Contains("red")) redBarRect = child;
+                if (n.Contains("back") || n.Contains("orange")) orangeBarRect = child;
+            }
         }
-        
-        if (orangeBar != null)
+
+        if (redBarRect == null || orangeBarRect == null)
         {
-            orangeBar.type = Image.Type.Filled;
-            orangeBar.fillMethod = Image.FillMethod.Horizontal;
-            orangeBar.fillOrigin = (int)Image.OriginHorizontal.Left;
-            orangeBar.fillAmount = 1f;
+            Debug.LogError("Health Bar RectTransforms are not assigned and could not be found!");
+            return;
         }
-        
-        targetHealth = 1f;
+
+        // Setup Anchors so changing anchorMax.x stretches them correctly
+        SetupAnchor(redBarRect);
+        SetupAnchor(orangeBarRect);
     }
     
+    private void SetupAnchor(RectTransform rt)
+    {
+        rt.anchorMin = new Vector2(0f, 0f);
+        rt.anchorMax = new Vector2(1f, 1f);
+        rt.pivot = new Vector2(0f, 0.5f);
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+    }
+
     public void SetHealth(float healthPercentage)
     {
-        // Asegurarse de que el valor esté entre 0 y 1
-        healthPercentage = Mathf.Clamp01(healthPercentage);
+        targetHealthRatio = Mathf.Clamp01(healthPercentage);
+
+        // Animate Red bar immediately
+        redBarRect.anchorMax = new Vector2(targetHealthRatio, 1f);
         
-        // Actualizar salud objetivo
-        targetHealth = healthPercentage;
-        
-        // Barra ROJA se actualiza inmediatamente
-        redBar.fillAmount = targetHealth;
-        
-        // Programar movimiento de barra NARANJA
-        if (orangeBarCoroutine != null)
-            StopCoroutine(orangeBarCoroutine);
-            
-        orangeBarCoroutine = StartCoroutine(AnimateOrangeBar());
+        // Schedule Orange bar
+        if (orangeBarCoroutine != null) StopCoroutine(orangeBarCoroutine);
+        orangeBarCoroutine = StartCoroutine(AnimateOrangeBar(targetHealthRatio));
     }
     
-    private IEnumerator AnimateOrangeBar()
+    private IEnumerator AnimateOrangeBar(float targetRatio)
     {
-        // ESPERAR antes de empezar a mover la barra naranja
         yield return new WaitForSeconds(delayDuration);
         
-        // ANIMAR barra naranja hasta alcanzar a la roja
-        while (Mathf.Abs(orangeBar.fillAmount - redBar.fillAmount) > 0.01f)
+        while (Mathf.Abs(orangeBarRect.anchorMax.x - targetRatio) > 0.001f)
         {
-            // Mover suavemente la barra naranja hacia la posición de la roja
-            orangeBar.fillAmount = Mathf.Lerp(
-                orangeBar.fillAmount, 
-                redBar.fillAmount, 
-                orangeBarSpeed * Time.deltaTime
-            );
-            
+            float currentRatio = orangeBarRect.anchorMax.x;
+            float newRatio = Mathf.MoveTowards(currentRatio, targetRatio, orangeBarSpeed * Time.deltaTime);
+            orangeBarRect.anchorMax = new Vector2(newRatio, 1f);
             yield return null;
         }
         
-        // Asegurar que sean iguales al final
-        orangeBar.fillAmount = redBar.fillAmount;
+        orangeBarRect.anchorMax = new Vector2(targetRatio, 1f);
     }
     
-    // Método para actualizar con valores absolutos (opcional)
     public void SetHealth(float current, float max)
     {
         SetHealth(current / max);
-    }
-    
-    void Update()
-    {
-        // Actualización en tiempo real si necesitas seguimiento constante
-        // (opcional, depende de tu implementación)
     }
 }

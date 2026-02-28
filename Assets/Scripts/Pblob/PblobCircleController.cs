@@ -16,6 +16,10 @@ public class PblobCircleController : MonoBehaviour
         {
             spriteRenderer.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/Knob.psd");
         }
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sortingOrder = 15; // Force render over the arena tilemap
+        }
     }
 
     private void Start()
