@@ -1,76 +1,83 @@
+
 {
   "entries": [
-    {
-      "key": "menu_play",
-      "value": "Play"
-    },
-    {
-      "key": "menu_options",
-      "value": "Options"
-    },
-    {
-      "key": "menu_exit",
-      "value": "Exit"
-    },
-    {
-      "key": "options_language",
-      "value": "Language"
-    },
-    {
-      "key": "options_volume",
-      "value": "Volume"
-    },
-    {
-      "key": "options_combinations",
-      "value": "Combinations"
-    },
-    {
-      "key": "options_accept",
-      "value": "Accept"
-    },
-    {
-      "key": "dialog_intro_1",
-      "value": "Dialog 1 (EN)"
-    },
-    {
-      "key": "dialog_preboss1_1",
-      "value": "Dialog 2 (EN)"
-    },
-    {
-      "key": "dialog_postboss1_1",
-      "value": "Dialog 3 (EN)"
-    },
-    {
-      "key": "dialog_preboss2_1",
-      "value": "Dialog 4 (EN)"
-    },
-    {
-      "key": "dialog_postboss2_1",
-      "value": "Dialog 5 (EN)"
-    },
-    {
-      "key": "dialog_preboss3_1",
-      "value": "Dialog 6 (EN)"
-    },
-    {
-      "key": "dialog_postboss3_1",
-      "value": "Dialog 7 (EN)"
-    },
-    {
-      "key": "dialog_preboss4_1",
-      "value": "Dialog 8 (EN)"
-    },
-    {
-      "key": "dialog_postboss4_1",
-      "value": "Dialog 9 (EN)"
-    },
-    {
-      "key": "dialog_deathshop_1",
-      "value": "Dialog 10 (EN)"
-    },
-    {
-      "key": "shop_warning_exit",
-      "value": "Raberto: Are you sure? You're going to face the boss without spending your tokens..."
-    }
+    { "key": "menu_play", "value": "Play" },
+    { "key": "menu_options", "value": "Options" },
+    { "key": "menu_exit", "value": "Exit" },
+    { "key": "menu_continue", "value": "Continue" },
+
+    { "key": "options_language", "value": "Language" },
+    { "key": "options_volume", "value": "Volume" },
+    { "key": "options_combinations", "value": "Combinations" },
+    { "key": "options_accept", "value": "Accept" },
+    { "key": "options_back", "value": "Back" },
+
+    { "key": "shop_upgrade_wand", "value": "Upgrade Wand" },
+    { "key": "shop_upgrade_potion", "value": "Upgrade Potion" },
+    { "key": "shop_upgrade_mana", "value": "Upgrade Mana" },
+    { "key": "shop_exit_shop", "value": "Exit Shop" },
+    { "key": "shop_token_count", "value": "Tokens: {0}" },
+    { "key": "shop_wand_max_level", "value": "Max Wand Level" },
+    { "key": "shop_wand_buy", "value": "Buy next wand:\n\"{0}\"" },
+    { "key": "shop_wand_tier_2", "value": "Tier 2 Wand" },
+    { "key": "shop_wand_tier_3", "value": "Tier 3 Wand" },
+    { "key": "shop_reset", "value": "Reset" },
+    { "key": "shop_deselect_all", "value": "Deselect All" },
+    { "key": "shop_warning_exit", "value": "Raberto: Are you sure? You're going to face the boss without spending your tokens..." },
+
+    { "key": "element_queso", "value": "Cheese" },
+    { "key": "element_pepperoni", "value": "Pepperoni" },
+    { "key": "element_piña", "value": "Pineapple" },
+
+    { "key": "boss_heckiel", "value": "Hec'kiel" },
+    { "key": "boss_pomodoro", "value": "Pomodoro" },
+    { "key": "boss_niggel", "value": "Niggel" },
+    { "key": "boss_pblob", "value": "P'blob" },
+
+    { "key": "combat_health", "value": "Health" },
+    { "key": "combat_mana", "value": "Mana" },
+    { "key": "combat_potions", "value": "Potions" },
+
+    { "key": "death_retry", "value": "Retry" },
+    { "key": "death_exit_menu", "value": "Exit to Menu" },
+    { "key": "death_title", "value": "You Died!" },
+
+    { "key": "dialog_intro_1", "value": "Hey there, rookie! Welcome to Pizzard's Pizza Academy!" },
+    { "key": "dialog_intro_2", "value": "I'm Raberto, your guide. And cheese-istant." },
+    { "key": "dialog_intro_3", "value": "Your quest, should you choose to accept it, is to defeat the four Pizza Overlords." },
+    { "key": "dialog_intro_4", "value": "Do so, and the Legendary Pizza Recipe of Pizzard himself shall be yours!" },
+    { "key": "dialog_intro_5", "value": "You'll use that magic wand to cast elemental spells. Try mixing and matching ingredients!" },
+    { "key": "dialog_intro_6", "value": "Now, head into my shop. Spend some of those shiny tokens I gave you." },
+
+    { "key": "dialog_preboss1_1", "value": "Raberto: Watch out! Hec'kiel, the Dragon of Dough, breathes cheesy fire!" },
+    { "key": "dialog_preboss1_2", "value": "Raberto: He's all about that elemental power. Show him what you've learned!" },
+
+    { "key": "dialog_preboss2_1", "value": "Raberto: Next up is Pomodoro, the Infernal Oven!" },
+    { "key": "dialog_preboss2_2", "value": "Raberto: It's gonna get hot in here. Don't get burned!" },
+
+    { "key": "dialog_preboss3_1", "value": "Raberto: This is Niggel. He's... a very picky, very rich customer." },
+    { "key": "dialog_preboss3_2", "value": "Raberto: His attacks are unpredictable and frankly, quite insulting. Don't let him get to you!" },
+
+    { "key": "dialog_preboss4_1", "value": "Raberto: This is it! The final test! P'blob, the Primordial Pizza Slime!" },
+    { "key": "dialog_preboss4_2", "value": "Raberto: It's a bubbling monstrosity of all ingredients combined! Give it everything you've got!" },
+
+    { "key": "dialog_postboss1_1", "value": "Raberto: You did it! You toasted that dragon!" },
+    { "key": "dialog_postboss1_2", "value": "Raberto: One step closer to the legendary recipe. But the challenges only get hotter from here." },
+    { "key": "dialog_postboss1_3", "value": "Raberto: Back to the shop to power up!" },
+
+    { "key": "dialog_postboss2_1", "value": "Raberto: Woohoo! You shut down the oven for good!" },
+    { "key": "dialog_postboss2_2", "value": "Raberto: You're getting pretty good at this pizza-making... er, I mean, pizza-fighting!" },
+    { "key": "dialog_postboss2_3", "value": "Raberto: Don't get cocky though, the next one's a weird one." },
+
+    { "key": "dialog_postboss3_1", "value": "Raberto: The customer is NOT always right! You showed him!" },
+    { "key": "dialog_postboss3_2", "value": "Raberto: Just one more to go! The final boss of this culinary academy!" },
+    { "key": "dialog_postboss3_3", "value": "Raberto: This is your final chance to prepare. Make it count!" },
+
+    { "key": "dialog_postboss4_1", "value": "Raberto: YOU ARE A PIZZA WIZARD!" },
+    { "key": "dialog_postboss4_2", "value": "Raberto: You've done it! You've mastered all the challenges Pizzard's has to offer!" },
+    { "key": "dialog_postboss4_3", "value": "Raberto: The Legendary Pizza Recipe is... well, it's more of a metaphor. The real recipe was the friends we made along the way." },
+
+    { "key": "dialog_deathshop_1", "value": "Raberto: Oof, that looked like it hurt." },
+    { "key": "dialog_deathshop_2", "value": "Raberto: Don't worry, every great chef burns a pizza now and then. Go spend your tokens and try again!" }
   ]
 }
