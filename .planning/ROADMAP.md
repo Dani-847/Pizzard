@@ -42,8 +42,14 @@ Starting token = 1 (given before Shop 1).
 ---
 
 ### Phase 16: Language System Completion
-**Status**: ⬚ Not Started
+**Status**: ⬚ Planned
 **Dependencies**: Phase 14
+**Plans:** 3 plans (2 waves)
+
+Plans:
+- [ ] 16-01-PLAN.md — Write complete EN/ES JSON string tables with real dialogue
+- [ ] 16-02-PLAN.md — Replace hardcoded strings in C# scripts with GetText() calls
+- [ ] 16-03-PLAN.md — Attach LocalizedText components to scene UI + human verification
 
 **Objective**: Complete the EN ↔ ES translation system.
 
