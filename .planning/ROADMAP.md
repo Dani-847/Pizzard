@@ -107,31 +107,30 @@ Plans:
 ---
 
 ### Phase 18: Boss 1 — P'blob AI & Patterns
-**Status**: ⬚ Not Started
+**Status**: ⬚ Planned
 **Dependencies**: Phase 15, `GameBalance.Bosses.Pblob`
+**Plans:** 3/3 plans complete
+
+Plans:
+- [ ] 18-01-PLAN.md — P'blob Core Refactor & Phase 1
+- [ ] 18-02-PLAN.md — P'blob Phase 2 (Circle Minigame)
+- [ ] 18-03-PLAN.md — P'blob Phase 3 (Grid Puzzle & Death)
 
 **Objective**: Full P'blob boss fight implementation.
 
 **Current State**: `PblobController` exists with basic phase system, vulnerability windows, knockback, and wander AI. Attack patterns are stubbed.
 
 **Design**:
-- 3-room progression (Room 1 → Room 2 → Room 3).
-- Room 1: Hair attacks — projectile patterns from mustache, simon-says color matching.
-- Room 2: Tile puzzle — floor tiles activate in patterns, player must dodge/match.
-- Room 3: Final phase — combined attacks, faster patterns, rage mode at low HP.
-
-**Mustache Mechanic**:
-- Boss has visible mustache with multiple "hair strands" as hitboxes.
-- Destroying hair strands reveals vulnerable core temporarily.
-- Hair regrows after vulnerability window closes.
+- All phases occur within `BossArena_1.unity`.
+- **Phase 1 (100%-66%):** Boss alternates 2s moving (vulnerable) and 2s standing still shooting (invulnerable).
+- **Phase 2 (66%-33%):** Boss center, invulnerable. 30s timer. 3 circles spawn (2 Red, 1 Green) and move randomly for 5s. They stop and hide colors. Player steps on them to reveal. Player must stand in Green circle to damage boss.
+- **Phase 3 (< 33%):** Boss Top-Center, Player Bottom-Center. Grid spawns. Gray -> Red/Green flash -> reveals green path. Player must follow green path (red damages/slows). Reaching the boss makes it permanently vulnerable.
 
 **Implementation**:
 - Use `GameBalance.Bosses.Pblob` for all timing/HP values.
-- `PblobAttackPattern1` and `PblobAttackPattern2` need real implementations.
-- Room transitions via `phase2Door` and `StartPhase2()` already wired.
-- Add projectile prefabs, visual effects, audio triggers.
+- Refactor `PblobController.cs` to explicit states rather than automatic pattern cycling.
 
-**Verify**: Each room independently with Play mode + screenshots.
+**Verify**: Each phase independently in Play mode + Death screen loop to Shop.
 
 ---
 

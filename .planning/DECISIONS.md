@@ -73,3 +73,20 @@
 
 ### Credits Removal
 - **Credits scene removed** — development overhead not justified. Death screen is sufficient for watermarks/branding in the future. Boss 4 ending → Main Menu for now.
+
+## Phase 18 Decisions
+
+**Date:** 2026-02-28
+
+### Scope
+- **Arena:** All 3 phases occur within the single `BossArena_1.unity` scene. There are no actual physical "rooms" to transition between.
+- **Phase 1 (100% to 66% HP):** Boss spawns in center, idle until hit. Once hit, attack pattern begins. Boss alternates every 2 seconds between moving and standing still. Boss is ONLY vulnerable while moving.
+- **Phase 2 (66% to 33% HP):** Boss goes invulnerable, moves to center. A 30s timer spawns above boss/below healthbar. 3 placeholder circles (2 red, 1 green) spawn, 2x player diameter. They randomly move for 5s, then stop until the timer ends or boss HP hits 33%. Circles are white by default, revealing true color only when stepped on. Stepping off turns them white again. Boss is ONLY vulnerable if the player is standing inside the green circle.
+- **Phase 3 (33% to 0% HP):** Boss goes invulnerable, moves to top center. Player is explicitly teleported to bottom center. A grid spawns between them. A random, walkable path is generated. Grid animation: starts gray, flashes red/green randomly, then reveals the green path. Player must follow the green route. Stepping on red slows player and deals 1 DMG/sec. Once the path is completed (player reaches the boss), the boss becomes permanently vulnerable until defeated.
+
+### Approach
+- **State-Driven Architecture:** The `PblobController` will be refactored to use explicit states (e.g., `Idle`, `Phase1_Combat`, `Phase2_Minigame`, `Phase3_Puzzle`) rather than time-based automatic pattern cycling.
+- **GameBalance Integration:** All timings (2s alternate, 5s movement, 30s timer), speeds, sizes (circle size), and damages must be strictly driven from `GameBalance.cs` to allow easy balance adjustments.
+
+### Constraints & Edge Cases
+- **Death Loop:** If the player dies during the boss fight, they get 2 options: Return to the last Shop (preserving original incoming tokens) or Return to Main Menu. (Ties into Phase 15 implementation).
