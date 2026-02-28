@@ -92,13 +92,17 @@ namespace Pizzard.Core
             public static class Pblob
             {
                 public const float MaxHP = 1000f;
-                public const int MaxPhases = 3;
-                public const float VulnerableWindowDuration = 3f;
+                public const float Phase1AlternateTime = 2f;
+                public const float Phase1MoveSpeed = 4f;   // Slower than player, but pursues
+                public const float Phase2Timer = 30f;
+                public const float Phase2CircleMoveTime = 5f;
+                public const float GridDamagePerTick = 1f;
+                
+                // Attack limits
                 public const float PatternDuration = 10.5f;
-                public const float PhaseHPPercent = 0.1f;   // 10% per phase
+                public const float WanderRadius = 4f;
                 public const float KnockbackDistance = 5f;
                 public const float KnockbackDuration = 0.4f;
-                public const float WanderRadius = 4f;
             }
 
             public static class Heckiel
