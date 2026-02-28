@@ -23,12 +23,6 @@ public class PblobController : MonoBehaviour
     private float phase2MstTimer = 0f;
     private bool phase2TimerActive = false;
 
-    [Header("Phase 2 Minigame")]
-    public GameObject circlePrefab;
-    private List<GameObject> activeCircles = new List<GameObject>();
-    private float phase2MstTimer = 0f;
-    private bool phase2TimerActive = false;
-
     [Header("Phase 3 Grid Puzzle")]
     public PblobGridPuzzle gridPuzzle;
     public Transform gridSpawnPoint;
@@ -123,7 +117,7 @@ public class PblobController : MonoBehaviour
                 break;
             case PblobState.Phase2:
                 MakeInvulnerable();
-                stateCoroutine = StartCoroutine(Phase2PlaceholderRoutine());
+                stateCoroutine = StartCoroutine(Phase2Routine());
                 break;
             case PblobState.Phase3Transition:
                 MakeInvulnerable();
@@ -317,7 +311,7 @@ public class PblobController : MonoBehaviour
                         Debug.Log($"❌ Player failed to stand in the Green circle! Taking {penaltyDamage} damage.");
                         if (playerTransform != null)
                         {
-                            var playerHealth = playerTransform.GetComponent<Pizzard.Core.PlayerHealth>();
+                            var playerHealth = playerTransform.GetComponent<Pizzard.Player.PlayerHealth>();
                             if (playerHealth != null)
                             {
                                 playerHealth.TakeDamage(penaltyDamage);

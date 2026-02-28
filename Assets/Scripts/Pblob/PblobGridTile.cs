@@ -7,8 +7,8 @@ public class PblobGridTile : MonoBehaviour
     public bool isSafePath = false;
     private SpriteRenderer spriteRenderer;
     private Coroutine damageCoroutine;
-    private PlayerMovement playerMove;
-    private PlayerHealth playerHealth;
+    private Pizzard.Player.PlayerController playerMove;
+    private Pizzard.Player.PlayerHealth playerHealth;
 
     private float originalSpeed;
 
@@ -28,8 +28,8 @@ public class PblobGridTile : MonoBehaviour
     {
         if (collision.CompareTag("Player") && !isSafePath)
         {
-            playerMove = collision.GetComponent<PlayerMovement>();
-            playerHealth = collision.GetComponent<PlayerHealth>();
+            playerMove = collision.GetComponent<Pizzard.Player.PlayerController>();
+            playerHealth = collision.GetComponent<Pizzard.Player.PlayerHealth>();
 
             // Apply slow debuff
             if (playerMove != null)

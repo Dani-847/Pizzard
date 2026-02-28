@@ -9,7 +9,7 @@ namespace Pizzard.Player
     public class PlayerController : MonoBehaviour
     {
         [Header("Movement Settings")]
-        [SerializeField] private float moveSpeed = GameBalance.Player.MoveSpeed;
+        [SerializeField] public float moveSpeed = GameBalance.Player.MoveSpeed;
 
         [Header("Dash Settings")]
         [SerializeField] private float dashSpeedMultiplier = GameBalance.Player.DashSpeedMultiplier;

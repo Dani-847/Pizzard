@@ -18,11 +18,11 @@ public class Phase2Door : MonoBehaviour
         // Buscar el BossController en la escena
         bossController = FindObjectOfType<PblobController>();
         
-        // ✅ Suscribirse al evento de desbloqueo de fase 2 (con verificación de null)
-        if (bossController != null && bossController.OnPhase2Unlocked != null)
+        // ✅ Suscribirse al evento de transición (con verificación de null)
+        if (bossController != null && bossController.OnPhaseTransition != null)
         {
-            bossController.OnPhase2Unlocked.AddListener(OnPhase2Unlocked);
-            Debug.Log("🚪 Phase2Door: Suscrito a evento OnPhase2Unlocked");
+            bossController.OnPhaseTransition.AddListener(OnPhase2Unlocked);
+            Debug.Log("🚪 Phase2Door: Suscrito a evento OnPhaseTransition");
         }
         else
         {
@@ -39,9 +39,9 @@ public class Phase2Door : MonoBehaviour
     void OnDestroy()
     {
         // Desuscribirse del evento al destruirse para evitar memory leaks
-        if (bossController != null && bossController.OnPhase2Unlocked != null)
+        if (bossController != null && bossController.OnPhaseTransition != null)
         {
-            bossController.OnPhase2Unlocked.RemoveListener(OnPhase2Unlocked);
+            bossController.OnPhaseTransition.RemoveListener(OnPhase2Unlocked);
         }
     }
     
@@ -91,10 +91,8 @@ public class Phase2Door : MonoBehaviour
     // ✅ Iniciar fase 2
     private void StartPhase2()
     {
-        if (bossController != null)
-        {
-            bossController.StartPhase2();
-        }
+        // Phase 2 now starts automatically via PblobController's MoveToCenterAndTransition coroutine,
+        // so we don't need to force the state change here anymore.
     }
     
     // DEBUG
