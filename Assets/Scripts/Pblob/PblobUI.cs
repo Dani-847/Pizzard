@@ -30,12 +30,11 @@ public class PblobUI : MonoBehaviour
 
     void Start()
     {
-        // Initialize health bar to full AFTER all Start() methods run (incl. DelayedHealthBar)
         if (boss == null)
             boss = FindObjectOfType<PblobController>();
         if (boss != null)
             maxHealth = boss.maxHealth;
-        UpdateHealthBar(1f); // Show bar as full at start
+        // Note: DelayedHealthBar.Start() builds bars and sets them full — no call needed here
     }
     
     void OnDisable()

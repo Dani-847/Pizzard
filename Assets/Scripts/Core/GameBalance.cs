@@ -104,8 +104,18 @@ namespace Pizzard.Core
                 public const float PatternDuration = 10.5f;
                 public const float WanderRadius = 4f;
                 public const float CircleMoveSpeed = 2.5f;  // Speed at which phase 2 circles wander
+                public const float CircleScale = 1.5f;       // Scale multiplier applied at spawn
+                public const float CircleSpawnRadius = 3.5f; // Radius of 120-deg spread
                 public const float KnockbackDistance = 5f;
                 public const float KnockbackDuration = 0.4f;
+
+                // Health bar
+                public const float HealthBarDrainDelay = 0.5f;   // Seconds before orange bar starts draining
+                public const float HealthBarDrainSpeed = 0.35f;  // fillAmount units per second
+
+                // Phase 3
+                public const float Phase3MoveSpeed = 6f;    // Boss chase speed in enrage
+                public const float GridSpawnOffsetY = -5f;  // World-units below arenaCenter for grid spawn
             }
 
             public static class Heckiel

@@ -40,10 +40,7 @@ public class PblobController : MonoBehaviour
     public UnityEvent<float> OnHealthChanged;
     public UnityEvent<bool> OnVulnerabilityChanged;
 
-    [Header("DEBUG")]
-    public bool debugMode = true;
-    public KeyCode damageKey = KeyCode.T;
-    public KeyCode nextPhaseKey = KeyCode.P;
+    // Debug removed — use Unity's built-in debugger or scene inspector
 
     // References
     private PblobRhythmManager rhythmManager;
@@ -88,36 +85,17 @@ public class PblobController : MonoBehaviour
         if (p != null) playerTransform = p.transform;
 
         if (rhythmManager == null)
-        {
             rhythmManager = FindObjectOfType<PblobRhythmManager>();
-        }
 
-        AutoDetectArenaBounds(); // <- Read real arena size from Tilemap
-        
+        if (gridPuzzle == null)
+            gridPuzzle = FindObjectOfType<PblobGridPuzzle>();
+
+        AutoDetectArenaBounds();
         ChangeState(PblobState.Idle);
-        
-        if (debugMode)
-        {
-            Debug.Log($"✔ P'blob Initialized - HP: {currentHealth}");
-            Debug.Log("⚠️ Boss is IDLE. Hit him once to start the fight.");
-        }
+
+        Debug.Log($"[Pblob] Initialized — HP: {currentHealth} | gridPuzzle: {(gridPuzzle != null ? "Found" : "MISSING!")}");
     }
 
-    private void Update()
-    {
-        if (!debugMode) return;
-
-        if (Input.GetKeyDown(damageKey))
-        {
-            // Note: debugging damage bypasses vulnerability checks
-            ForceTakeDamage(100f);
-        }
-
-        if (Input.GetKeyDown(nextPhaseKey))
-        {
-            ForceNextPhase();
-        }
-    }
 
     public void ChangeState(PblobState newState)
     {
@@ -161,17 +139,16 @@ public class PblobController : MonoBehaviour
                 MakeInvulnerable();
                 if (gridPuzzle != null)
                 {
-                    Vector3 spawnPos = gridSpawnPoint != null ? gridSpawnPoint.position : transform.position - new Vector3(0, 5f, 0);
+                    Vector3 spawnPos = arenaCenter + new Vector3(0, Pizzard.Core.GameBalance.Bosses.Pblob.GridSpawnOffsetY, 0);
                     gridPuzzle.GenerateGrid(spawnPos);
+                }
+                else
+                {
+                    Debug.LogError("[Pblob] Phase3_Grid: gridPuzzle is null! Add PblobGridPuzzle to scene.");
                 }
                 break;
             case PblobState.Phase3_Combat:
-                MakeVulnerable(); // Permanently vulnerable in final enrage
-                if (attackPatterns.Length > 0 && attackPatterns[0] != null)
-                {
-                    // Full rage mode
-                    attackPatterns[0].StartPattern();
-                }
+                stateCoroutine = StartCoroutine(Phase3CombatRoutine());
                 break;
             case PblobState.Defeated:
                 MakeInvulnerable();
@@ -262,30 +239,66 @@ public class PblobController : MonoBehaviour
     {
         float elapsed = 0f;
         float duration = 1.5f;
-        
-        Vector3 bossStart = transform.position;
-        Vector3 bossTarget = arenaCenter + new Vector3(0, 5f, 0); // Top Center
-        
-        Vector3 playerStart = playerTransform != null ? playerTransform.position : Vector3.zero;
-        Vector3 playerTarget = arenaCenter + new Vector3(0, -6f, 0); // Bottom Center
 
-        // We assume the player is immobilized by the transition event via PlayerMovement script externally,
-        // or we just rigidly force position here.
+        float gridOffset  = Pizzard.Core.GameBalance.Bosses.Pblob.GridSpawnOffsetY;  // e.g. -5
+        Vector3 bossStart   = transform.position;
+        Vector3 bossTarget  = arenaCenter + new Vector3(0, Mathf.Abs(gridOffset) - 2f, 0); // top
+
+        Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
+        Vector3 playerTarget = arenaCenter + new Vector3(0, gridOffset + 1f, 0); // bottom (inside grid)
+
+        // Disable player movement during cinematic
+        PlayerController pm = playerTransform != null ? playerTransform.GetComponent<PlayerController>() : null;
+        if (pm != null) pm.enabled = false;
+
         while (elapsed < duration)
         {
             float t = elapsed / duration;
             transform.position = Vector3.Lerp(bossStart, bossTarget, t);
-            
             if (playerTransform != null)
-            {
                 playerTransform.position = Vector3.Lerp(playerStart, playerTarget, t);
-            }
-            
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
+
+        // Re-enable player after brief grid-reveal delay
+        if (pm != null)
+            StartCoroutine(ReenablePlayerAfter(pm, 2f));
+
         ChangeState(PblobState.Phase3_Grid);
+    }
+
+    private IEnumerator ReenablePlayerAfter(PlayerMovement pm, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (pm != null) pm.enabled = true;
+    }
+
+    private IEnumerator Phase3CombatRoutine()
+    {
+        MakeVulnerable(); // Permanently vulnerable
+
+        // Use phase-3-specific pattern if available, else pure chase
+        if (attackPatterns != null && attackPatterns.Length > 1 && attackPatterns[1] != null)
+            attackPatterns[1].StartPattern();
+
+        float speed = Pizzard.Core.GameBalance.Bosses.Pblob.Phase3MoveSpeed;
+
+        while (currentState == PblobState.Phase3_Combat)
+        {
+            if (playerTransform != null)
+            {
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    playerTransform.position,
+                    speed * Time.deltaTime
+                );
+            }
+            yield return null;
+        }
+
+        if (attackPatterns != null && attackPatterns.Length > 1 && attackPatterns[1] != null)
+            attackPatterns[1].StopPattern();
     }
 
     // --- PHASE 2 LOGIC (Circle Minigame) ---
@@ -414,24 +427,22 @@ public class PblobController : MonoBehaviour
         }
 
         // Only ignore collisions between BossCircle and the Projectile layer
-        // DO NOT ignore Default (Player is on Default)
         int bossCircleLayer = LayerMask.NameToLayer("BossCircle");
         int projLayer = LayerMask.NameToLayer("Projectile");
         if (bossCircleLayer >= 0 && projLayer >= 0)
             Physics2D.IgnoreLayerCollision(bossCircleLayer, projLayer, true);
 
+        float spawnRadius = Pizzard.Core.GameBalance.Bosses.Pblob.CircleSpawnRadius;
+        float circleScale = Pizzard.Core.GameBalance.Bosses.Pblob.CircleScale;
+
         for (int i = 0; i < 3; i++)
         {
-            // Spread circles at 120° intervals so they're always well separated
             float angleDeg = (i * 120f) + Random.Range(-20f, 20f);
             float angleRad = angleDeg * Mathf.Deg2Rad;
-            Vector3 offset = new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad), 0f) * 3.5f;
+            Vector3 offset = new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad), 0f) * spawnRadius;
             GameObject newCircle = Instantiate(circlePrefab, arenaCenter + offset, Quaternion.identity);
 
-            // Scale circles +0.5 larger than prefab default
-            newCircle.transform.localScale = circlePrefab.transform.localScale * 1.5f;
-
-            // Assign BossCircle layer so projectiles can pass through
+            newCircle.transform.localScale = circlePrefab.transform.localScale * circleScale;
             if (bossCircleLayer >= 0) newCircle.layer = bossCircleLayer;
 
             var controller = newCircle.GetComponent<PblobCircleController>();
@@ -477,11 +488,7 @@ public class PblobController : MonoBehaviour
         ApplyDamageWithThresholds(damage);
     }
 
-    private void ForceTakeDamage(float damage)
-    {
-        // Debug method to force damage bypassing vulnerability
-        ApplyDamageWithThresholds(damage);
-    }
+
 
     private void ApplyDamageWithThresholds(float damage)
     {
@@ -525,18 +532,6 @@ public class PblobController : MonoBehaviour
             Debug.Log("🎯 33% HP Reached. Triggering Phase 3!");
             CleanupPhase2Circles();
             ChangeState(PblobState.Phase3Transition);
-        }
-    }
-
-    private void ForceNextPhase()
-    {
-        if (currentState == PblobState.Idle || currentState == PblobState.Phase1)
-        {
-            ForceTakeDamage((maxHealth * 0.35f)); // Drop below 66%
-        }
-        else if (currentState == PblobState.Phase2)
-        {
-            ForceTakeDamage((maxHealth * 0.35f)); // Drop below 33%
         }
     }
 
@@ -585,41 +580,4 @@ public class PblobController : MonoBehaviour
         }
     }
 
-    // --- GUI ---
-    void OnGUI()
-    {
-        if (debugMode)
-        {
-            GUI.Box(new Rect(10, 10, 250, 170), "BOSS 1 STATE");
-            
-            float hp = (currentHealth / maxHealth) * 100f;
-            GUI.Label(new Rect(20, 35, 230, 20), $"HP: {hp:F0}% ({currentHealth:F0}/{maxHealth})");
-            
-            string vulnText = isVulnerable ? "<color=green>VULNERABLE</color>" : "<color=red>INVULNERABLE</color>";
-            GUI.Label(new Rect(20, 55, 230, 20), $"Status: {vulnText}");
-            
-            GUI.Label(new Rect(20, 75, 230, 20), $"State: {currentState}");
-
-            if (currentState == PblobState.Phase2)
-            {
-                GUI.Label(new Rect(20, 95, 230, 20), $"<color=yellow>Phase 2 Timer: {phase2MstTimer:F1}s</color>");
-            }
-            if (currentState == PblobState.Phase3_Grid)
-            {
-                if (GUI.Button(new Rect(20, 155, 210, 25), "SIMULATE GRID FINISH"))
-                {
-                    FinishGridPuzzle();
-                }
-            }
-            
-            if (GUI.Button(new Rect(20, 125, 100, 25), "KILL"))
-            {
-                ForceTakeDamage(currentHealth);
-            }
-            if (GUI.Button(new Rect(130, 125, 100, 25), "NEXT PHASE"))
-            {
-                ForceNextPhase();
-            }
-        }
-    }
 }
