@@ -413,10 +413,28 @@ public class PblobController : MonoBehaviour
             types[rnd] = temp;
         }
 
+        // Get projectile layer index so we can ignore collisions with circles
+        int bossCircleLayer = LayerMask.NameToLayer("BossCircle");
+        int projLayer = LayerMask.NameToLayer("Projectile");
+        if (bossCircleLayer >= 0 && projLayer >= 0)
+            Physics2D.IgnoreLayerCollision(bossCircleLayer, projLayer, true);
+        // Also ignore vs Default layer in case projectiles use it
+        Physics2D.IgnoreLayerCollision(bossCircleLayer, LayerMask.NameToLayer("Default"), true);
+
         for (int i = 0; i < 3; i++)
         {
-            Vector3 randomOffset = (Vector3)(Random.insideUnitCircle.normalized * 3f);
-            GameObject newCircle = Instantiate(circlePrefab, arenaCenter + randomOffset, Quaternion.identity);
+            // Spread circles at 120° intervals so they're always well separated
+            float angleDeg = (i * 120f) + Random.Range(-20f, 20f);
+            float angleRad = angleDeg * Mathf.Deg2Rad;
+            Vector3 offset = new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad), 0f) * 3.5f;
+            GameObject newCircle = Instantiate(circlePrefab, arenaCenter + offset, Quaternion.identity);
+
+            // Scale circles 0.5 (50%) smaller than prefab default
+            newCircle.transform.localScale = circlePrefab.transform.localScale * 0.5f;
+
+            // Assign BossCircle layer so projectiles can pass through
+            if (bossCircleLayer >= 0) newCircle.layer = bossCircleLayer;
+
             var controller = newCircle.GetComponent<PblobCircleController>();
             if (controller != null)
             {

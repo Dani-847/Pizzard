@@ -3,48 +3,46 @@ using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
-/// Two-layer horizontal health bar — mirrors ManaUI approach but horizontal.
-/// Orange layer drains slowly after a delay; Red (front) layer drains instantly.
-/// Operates on RectTransform.sizeDelta.x — no FillAmount needed.
-/// Auto-wires to FrontHealthBar / BackHealthBar children by name.
+/// Boss health bar using anchor-clipping (same approach as ManaUI height scaling).
+/// Children FrontHealthBar and BackHealthBar must have their RectTransform
+/// set up as STRETCH (anchorMin.x=0, anchorMax.x=1, offsetMin.x=0, offsetMax.x=0).
+/// We scale down anchorMax.x to clip the right side — no Image.fillAmount needed.
 /// </summary>
 public class DelayedHealthBar : MonoBehaviour
 {
     [Header("Bar References (auto-found if empty)")]
-    public RectTransform frontBar;    // Red   — drains instantly
-    public RectTransform backBar;     // Orange — drains slowly after delay
+    public RectTransform frontBar;    // Red   — clips instantly
+    public RectTransform backBar;     // Orange — clamps slowly after delay
 
     [Header("Animation")]
     public float delayDuration  = 0.5f;
-    public float drainSpeed     = 120f;   // px/sec for orange bar
+    public float drainSpeed     = 0.4f;   // anchor units/sec  (0..1 per second)
 
-    private float fullWidth = -1f;
     private Coroutine drainRoutine;
+    private float currentRatio = 1f;
 
     private void Start()
     {
         AutoFindBars();
-        CacheFullWidth();
-        SetImmediate(1f);         // Start bar fully filled
+        SetupBars();
+        ApplyRatio(frontBar, 1f);
+        ApplyRatio(backBar,  1f);
     }
 
     // ------------------------------------------------------------------ public API
 
     public void SetHealth(float ratio)
     {
-        ratio = Mathf.Clamp01(ratio);
+        currentRatio = Mathf.Clamp01(ratio);
         AutoFindBars();
-        CacheFullWidth();
-
-        float targetPx = fullWidth * ratio;
 
         // Front bar: instant
-        if (frontBar != null)
-            SetWidth(frontBar, targetPx);
+        if (frontBar != null) ApplyRatio(frontBar, currentRatio);
 
         // Orange bar: delayed drain
         if (drainRoutine != null) StopCoroutine(drainRoutine);
-        drainRoutine = StartCoroutine(DrainOrange(targetPx));
+        if (gameObject.activeInHierarchy)
+            drainRoutine = StartCoroutine(DrainBackBar(currentRatio));
     }
 
     public void SetHealth(float current, float max)
@@ -60,54 +58,61 @@ public class DelayedHealthBar : MonoBehaviour
 
         foreach (RectTransform rt in GetComponentsInChildren<RectTransform>(true))
         {
+            if (rt == GetComponent<RectTransform>()) continue; // skip self
             string n = rt.gameObject.name.ToLower();
             if (frontBar == null && (n.Contains("front") || n.Contains("red") || n.Contains("fill")))
                 frontBar = rt;
             if (backBar == null && (n.Contains("back") || n.Contains("orange") || n.Contains("delay")))
                 backBar = rt;
         }
+
+        if (frontBar != null)
+            Debug.Log($"[HealthBar] frontBar found: {frontBar.name}");
+        else
+            Debug.LogWarning("[HealthBar] frontBar NOT found — check child names contain 'front' or 'red'");
+        if (backBar != null)
+            Debug.Log($"[HealthBar] backBar found: {backBar.name}");
+        else
+            Debug.LogWarning("[HealthBar] backBar NOT found — check child names contain 'back' or 'orange'");
     }
 
-    private void CacheFullWidth()
+    /// Ensure each child bar is set up for horizontal anchor clipping
+    private void SetupBars()
     {
-        if (fullWidth > 0f) return;               // already cached
-        RectTransform rt = GetComponent<RectTransform>();
-        if (rt != null && rt.rect.width > 1f)
-            fullWidth = rt.rect.width;
-
-        // Fallback: read from child size
-        if (fullWidth <= 0f && frontBar != null && frontBar.rect.width > 1f)
-            fullWidth = frontBar.rect.width;
-
-        if (fullWidth <= 0f) fullWidth = 300f;    // last-resort default
+        SetupBar(frontBar);
+        SetupBar(backBar);
     }
 
-    /// Set both bars immediately (used at init or when you want instant snap).
-    private void SetImmediate(float ratio)
+    private void SetupBar(RectTransform rt)
     {
-        float px = fullWidth * Mathf.Clamp01(ratio);
-        if (frontBar != null) SetWidth(frontBar, px);
-        if (backBar  != null) SetWidth(backBar,  px);
+        if (rt == null) return;
+        // Left-anchor so only the right edge moves
+        rt.anchorMin   = new Vector2(0f, 0f);
+        rt.anchorMax   = new Vector2(1f, 1f);
+        rt.offsetMin   = Vector2.zero;
+        rt.offsetMax   = Vector2.zero;
     }
 
-    private void SetWidth(RectTransform rt, float w)
+    /// Set the visible width ratio (0=empty, 1=full) via anchorMax.x clipping
+    private void ApplyRatio(RectTransform rt, float ratio)
     {
-        rt.sizeDelta = new Vector2(w, rt.sizeDelta.y);
+        if (rt == null) return;
+        rt.anchorMax = new Vector2(Mathf.Clamp01(ratio), rt.anchorMax.y);
     }
 
-    private IEnumerator DrainOrange(float targetPx)
+    private IEnumerator DrainBackBar(float targetRatio)
     {
         yield return new WaitForSeconds(delayDuration);
 
         while (backBar != null)
         {
-            float current = backBar.sizeDelta.x;
-            if (Mathf.Abs(current - targetPx) < 0.5f) break;
-            float next = Mathf.MoveTowards(current, targetPx, drainSpeed * Time.deltaTime);
-            SetWidth(backBar, next);
+            float cur = backBar.anchorMax.x;
+            if (Mathf.Abs(cur - targetRatio) < 0.002f) break;
+            float next = Mathf.MoveTowards(cur, targetRatio, drainSpeed * Time.deltaTime);
+            ApplyRatio(backBar, next);
             yield return null;
         }
 
-        if (backBar != null) SetWidth(backBar, targetPx);
+        if (backBar != null) ApplyRatio(backBar, targetRatio);
     }
 }
