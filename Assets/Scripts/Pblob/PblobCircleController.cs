@@ -7,7 +7,7 @@ public class PblobCircleController : MonoBehaviour
     public CircleType type;
 
     private SpriteRenderer spriteRenderer;
-    private bool playerInside = false;
+    public bool playerInside = false;
 
     private void Awake()
     {

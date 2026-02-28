@@ -298,7 +298,33 @@ public class PblobController : MonoBehaviour
                 if (phase2MstTimer <= 0)
                 {
                     phase2TimerActive = false;
-                    Debug.Log("⏳ Phase 2 Time Out! Restarting minigame...");
+                    Debug.Log("⏳ Phase 2 Time Out! Checking penalty...");
+
+                    bool inGreen = false;
+                    foreach (var c in activeCircles)
+                    {
+                        var controller = c.GetComponent<PblobCircleController>();
+                        if (controller != null && controller.type == PblobCircleController.CircleType.Green && controller.playerInside)
+                        {
+                            inGreen = true;
+                            break;
+                        }
+                    }
+
+                    if (!inGreen)
+                    {
+                        Debug.Log("❌ Player failed to stand in the Green circle! Taking 2 damage.");
+                        if (playerTransform != null)
+                        {
+                            var playerHealth = playerTransform.GetComponent<Pizzard.Core.PlayerHealth>();
+                            if (playerHealth != null)
+                            {
+                                playerHealth.TakeDamage(2);
+                            }
+                        }
+                    }
+
+                    Debug.Log("⏳ Restarting minigame...");
                     CleanupPhase2Circles();
                     ChangeState(PblobState.Idle); // A quick pause
                     yield return new WaitForSeconds(1f);
