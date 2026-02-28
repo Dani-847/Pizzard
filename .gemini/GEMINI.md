@@ -61,7 +61,7 @@ Key recommendations:
 
 ---
 
-*GSD Methodology — Official Framework*
+*GSD Methodology adapted for Google Antigravity*
 *Canonical rules: [PROJECT_RULES.md](../PROJECT_RULES.md)*
 *Source: https://github.com/glittercowboy/get-shit-done*
 
