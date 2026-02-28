@@ -76,7 +76,7 @@ public class PblobCircleController : MonoBehaviour
 
     public IEnumerator MoveRandomly(float duration, float speed)
     {
-        Pizzard.Bosses.PblobController boss = FindObjectOfType<Pizzard.Bosses.PblobController>();
+        global::PblobController boss = FindObjectOfType<global::PblobController>();
         if (boss == null) yield break;
 
         Vector3 center = boss.arenaCenter;
