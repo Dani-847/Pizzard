@@ -1,76 +1,83 @@
+
 {
   "entries": [
-    {
-      "key": "menu_play",
-      "value": "Jugar"
-    },
-    {
-      "key": "menu_options",
-      "value": "Opciones"
-    },
-    {
-      "key": "menu_exit",
-      "value": "Salir"
-    },
-    {
-      "key": "options_language",
-      "value": "Idioma"
-    },
-    {
-      "key": "options_volume",
-      "value": "Volumen"
-    },
-    {
-      "key": "options_combinations",
-      "value": "Combinaciones"
-    },
-    {
-      "key": "options_accept",
-      "value": "Aceptar"
-    },
-    {
-      "key": "dialog_intro_1",
-      "value": "Dialog 1 (ES)"
-    },
-    {
-      "key": "dialog_preboss1_1",
-      "value": "Dialog 2 (ES)"
-    },
-    {
-      "key": "dialog_postboss1_1",
-      "value": "Dialog 3 (ES)"
-    },
-    {
-      "key": "dialog_preboss2_1",
-      "value": "Dialog 4 (ES)"
-    },
-    {
-      "key": "dialog_postboss2_1",
-      "value": "Dialog 5 (ES)"
-    },
-    {
-      "key": "dialog_preboss3_1",
-      "value": "Dialog 6 (ES)"
-    },
-    {
-      "key": "dialog_postboss3_1",
-      "value": "Dialog 7 (ES)"
-    },
-    {
-      "key": "dialog_preboss4_1",
-      "value": "Dialog 8 (ES)"
-    },
-    {
-      "key": "dialog_postboss4_1",
-      "value": "Dialog 9 (ES)"
-    },
-    {
-      "key": "dialog_deathshop_1",
-      "value": "Dialog 10 (ES)"
-    },
-    {
-      "key": "shop_warning_exit",
-      "value": "Raberto: ¿Estás seguro? Te vas a enfrentar al boss sin gastar todos tus tokens..."
-    }
+    { "key": "menu_play", "value": "Jugar" },
+    { "key": "menu_options", "value": "Opciones" },
+    { "key": "menu_exit", "value": "Salir" },
+    { "key": "menu_continue", "value": "Continuar" },
+
+    { "key": "options_language", "value": "Idioma" },
+    { "key": "options_volume", "value": "Volumen" },
+    { "key": "options_combinations", "value": "Combinaciones" },
+    { "key": "options_accept", "value": "Aceptar" },
+    { "key": "options_back", "value": "Atrás" },
+
+    { "key": "shop_upgrade_wand", "value": "Mejorar Varita" },
+    { "key": "shop_upgrade_potion", "value": "Mejorar Poción" },
+    { "key": "shop_upgrade_mana", "value": "Mejorar Maná" },
+    { "key": "shop_exit_shop", "value": "Salir de la Tienda" },
+    { "key": "shop_token_count", "value": "Fichas: {0}" },
+    { "key": "shop_wand_max_level", "value": "Nivel Máximo de Varita" },
+    { "key": "shop_wand_buy", "value": "Comprar siguiente varita:\n\"{0}\"" },
+    { "key": "shop_wand_tier_2", "value": "Varita Nivel 2" },
+    { "key": "shop_wand_tier_3", "value": "Varita Nivel 3" },
+    { "key": "shop_reset", "value": "Reiniciar" },
+    { "key": "shop_deselect_all", "value": "Deseleccionar Todo" },
+    { "key": "shop_warning_exit", "value": "Raberto: ¿Estás seguro? Te vas a enfrentar al jefe sin gastar tus fichas..." },
+
+    { "key": "element_queso", "value": "Queso" },
+    { "key": "element_pepperoni", "value": "Pepperoni" },
+    { "key": "element_piña", "value": "Piña" },
+
+    { "key": "boss_heckiel", "value": "Hec'kiel" },
+    { "key": "boss_pomodoro", "value": "Pomodoro" },
+    { "key": "boss_niggel", "value": "Niggel" },
+    { "key": "boss_pblob", "value": "P'blob" },
+
+    { "key": "combat_health", "value": "Salud" },
+    { "key": "combat_mana", "value": "Maná" },
+    { "key": "combat_potions", "value": "Pociones" },
+
+    { "key": "death_retry", "value": "Reintentar" },
+    { "key": "death_exit_menu", "value": "Salir al Menú" },
+    { "key": "death_title", "value": "¡Has Muerto!" },
+
+    { "key": "dialog_intro_1", "value": "¡Hola, novato! ¡Bienvenido a la Academia de Pizza de Pizzard!" },
+    { "key": "dialog_intro_2", "value": "Soy Raberto, tu guía. Y queso-istente." },
+    { "key": "dialog_intro_3", "value": "Tu misión, si decides aceptarla, es derrotar a los cuatro Señores de la Pizza." },
+    { "key": "dialog_intro_4", "value": "Si lo logras, ¡la Receta de Pizza Legendaria del mismísimo Pizzard será tuya!" },
+    { "key": "dialog_intro_5", "value": "Usarás esa varita mágica para lanzar hechizos elementales. ¡Prueba a mezclar y combinar ingredientes!" },
+    { "key": "dialog_intro_6", "value": "Ahora, entra en mi tienda. Gasta algunas de esas fichas brillantes que te di." },
+
+    { "key": "dialog_preboss1_1", "value": "Raberto: ¡Cuidado! ¡Hec'kiel, el Dragón de la Masa, escupe fuego de queso!" },
+    { "key": "dialog_preboss1_2", "value": "Raberto: Le va mucho el poder elemental. ¡Muéstrale lo que has aprendido!" },
+
+    { "key": "dialog_preboss2_1", "value": "Raberto: ¡El siguiente es Pomodoro, el Horno Infernal!" },
+    { "key": "dialog_preboss2_2", "value": "Raberto: Esto se va a poner caliente. ¡No te quemes!" },
+
+    { "key": "dialog_preboss3_1", "value": "Raberto: Este es Niggel. Es... un cliente muy exigente y muy rico." },
+    { "key": "dialog_preboss3_2", "value": "Raberto: Sus ataques son impredecibles y, francamente, bastante insultantes. ¡No dejes que te afecte!" },
+
+    { "key": "dialog_preboss4_1", "value": "Raberto: ¡Este es el momento! ¡La prueba final! ¡P'blob, el Limo de Pizza Primordial!" },
+    { "key": "dialog_preboss4_2", "value": "Raberto: ¡Es una monstruosidad burbujeante de todos los ingredientes combinados! ¡Dale con todo lo que tienes!" },
+
+    { "key": "dialog_postboss1_1", "value": "Raberto: ¡Lo lograste! ¡Tostaste a ese dragón!" },
+    { "key": "dialog_postboss1_2", "value": "Raberto: Un paso más cerca de la receta legendaria. Pero los desafíos solo se ponen más calientes a partir de aquí." },
+    { "key": "dialog_postboss1_3", "value": "Raberto: ¡De vuelta a la tienda a potenciarte!" },
+
+    { "key": "dialog_postboss2_1", "value": "Raberto: ¡Yujuu! ¡Apagaste el horno para siempre!" },
+    { "key": "dialog_postboss2_2", "value": "Raberto: Te estás volviendo bastante bueno en esto de hacer pizza... eh, ¡quiero decir, de luchar contra pizzas!" },
+    { "key": "dialog_postboss2_3", "value": "Raberto: Pero no te confíes, el próximo es un poco raro." },
+
+    { "key": "dialog_postboss3_1", "value": "Raberto: ¡El cliente NO siempre tiene la razón! ¡Le has puesto en su sitio!" },
+    { "key": "dialog_postboss3_2", "value": "Raberto: ¡Solo queda uno más! ¡El jefe final de esta academia culinaria!" },
+    { "key": "dialog_postboss3_3", "value": "Raberto: Esta es tu última oportunidad para prepararte. ¡Haz que valga la pena!" },
+
+    { "key": "dialog_postboss4_1", "value": "Raberto: ¡ERES UN MAGO DE LA PIZZA!" },
+    { "key": "dialog_postboss4_2", "value": "Raberto: ¡Lo has conseguido! ¡Has superado todos los desafíos que Pizzard's te ha ofrecido!" },
+    { "key": "dialog_postboss4_3", "value": "Raberto: La Receta de Pizza Legendaria es... bueno, es más bien una metáfora. La verdadera receta fueron los amigos que hicimos por el camino." },
+
+    { "key": "dialog_deathshop_1", "value": "Raberto: Uff, eso pareció doler." },
+    { "key": "dialog_deathshop_2", "value": "Raberto: No te preocupes, a todo gran chef se le quema una pizza de vez en cuando. ¡Ve a gastar tus fichas e inténtalo de nuevo!" }
   ]
 }
