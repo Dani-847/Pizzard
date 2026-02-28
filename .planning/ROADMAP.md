@@ -77,8 +77,14 @@ Plans:
 ---
 
 ### Phase 17: UI Polish & Resolution Independence
-**Status**: ⬚ Not Started
+**Status**: ⬚ Planned
 **Dependencies**: Phase 16
+**Plans:** 3/3 plans complete
+
+Plans:
+- [ ] 17-01-PLAN.md — Setup Canvas Scalers
+- [ ] 17-02-PLAN.md — Shop Buttons & Element Selection Polish
+- [ ] 17-03-PLAN.md — Mana Bar & Boss Health Bars Polish
 
 **Objective**: Final UI polish pass across all scenes.
 

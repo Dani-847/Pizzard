@@ -2,55 +2,40 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-28T13:28:37.900Z"
+status: in_progress
+last_updated: "2026-02-28T14:00:00.000Z"
 progress:
-  total_phases: 15
-  completed_phases: 9
-  total_plans: 20
-  completed_plans: 21
+  total_phases: 30
+  completed_phases: 16
+  total_plans: 23
+  completed_plans: 23
 ---
 
 ## CURRENT STATE
 
-## CURRENT STATE
-
-- **Position**: Phase 16 — In Progress (Plan 3/3 — Task 1 complete, awaiting Task 2 human-verify checkpoint)
-- **Task**: Plan 16-03 Task 1 done. Awaiting human Play mode verification (Task 2 checkpoint).
-- **Status**: 3 plans started, Task 1 of plan 3 complete
+- **Position**: Phase 17 — Planned (UI Polish & Resolution Independence)
+- **Task**: Planning complete
+- **Status**: Ready for execution
 
 ## Last Session Summary
 
-Phase 14 — Verified ✅ (8/8 must-haves)
+Phase 16 — Complete ✅: 3 plans, language system fully implemented and human-verified
+- Plan 16-01: EN/ES JSON string tables with real dialogue — COMPLETE ✅
+- Plan 16-02: Replace hardcoded strings with GetText() calls — COMPLETE ✅
+- Plan 16-03: WireLocalization Editor script + human Play mode verification — COMPLETE ✅ (approved 2026-02-28)
+
 Phase 15 — Complete ✅: 2 plans, 5 tasks total
 - Plan 15.1: BossArenaManager fix + ContinuarJuego + Continue button (3 tasks) — COMPLETE ✅
 - Plan 15.2: Death screen restyle + Credits removal (2 tasks) — COMPLETE ✅
 
-## Completed: Plan 15.1 (2026-02-28)
-- BossArenaManager.HandleBossDefeated() calls AvanzarFase() — 4-boss loop wired
-- GameFlowManager.HasSavedGame() and ContinuarJuego() implemented
-- MenuUI botonContinuar field with conditional visibility via RefreshContinueButton()
-- Note: Unity scene-side botonContinuar wiring still needs manual Editor setup
-
-## Completed: Plan 15.2 (2026-02-28)
-- DeathUI extended with darkOverlay + deathImage serialized fields
-- MostrarPantallaMuerte() / OcultarPantallaMuerte() enable/disable both overlay elements
-- Boss 4 win condition in AvanzarFase() calls VolverAlMenu() (not Credits)
-- Credits.unity moved to Archive/Scenes/ — no longer in build pipeline
-- BuildSettingsSetup.cs: Credits.unity removed from requiredScenes
-- GameState.Credits enum preserved as tombstone for Phase 28 endgame
-- Note: Unity scene-side DarkOverlay/DeathImage GameObjects need manual Editor setup
-
-## Completed: Plan 16-03 Task 1 (2026-02-28)
-- WireLocalization.cs Editor script created — run Tools/Wire Localization from Unity Editor
-- Wires LocalizedText to: 4 main menu buttons, 4 options labels, 1 combinations back button, 3 death screen elements
-- Sets bossLocalizationKey on BossHealthBarUI for all 4 bosses
-- CHECKPOINT: Human must run script and verify end-to-end language switching in Play mode
-
-## Next Steps
-1. Run **Tools → Wire Localization** in Unity Editor (to apply LocalizedText to static UI)
-2. Enter **Play mode** and verify EN/ES language switching across all UI screens
-3. Type "approved" to continue if all text switches correctly in both languages
+## Completed: Phase 16 (2026-02-28)
+- LocalizationManager singleton — loads en.json / es.json from Resources/Languages/
+- LocalizedText component — attaches to any TMP/Text with a key, updates on language change
+- Language preference saved in SaveData
+- WireLocalization.cs Editor script — Tools/Wire Localization wires all static UI text
+- All main menu, options, combinations, death screen text localized
+- BossHealthBarUI.bossLocalizationKey set for all 4 bosses
+- Human verified: EN ↔ ES switching works across all UI screens in Play mode ✅
 
 ## Key Decisions Active
 - All balance values go through `GameBalance.cs`
@@ -63,3 +48,9 @@ Phase 15 — Complete ✅: 2 plans, 5 tasks total
 - GameState.Credits enum value preserved — Phase 28 will reintroduce endgame credits
 - DeathUI darkOverlay and deathImage are optional (null-guarded) SerializeFields
 - Unity Editor script approach for batch LocalizedText wiring — run Tools/Wire Localization once from Unity Editor (Phase 16)
+
+## Session Continuity
+
+Last session: 2026-02-28
+Stopped at: Phase 16 approved, ready for Phase 17 planning
+Resume file: none
