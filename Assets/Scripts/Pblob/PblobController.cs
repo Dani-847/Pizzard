@@ -421,6 +421,9 @@ public class PblobController : MonoBehaviour
             if (controller != null)
             {
                 controller.type = types[i];
+                controller.StartMoving(
+                    Pizzard.Core.GameBalance.Bosses.Pblob.Phase2CircleMoveTime,
+                    Pizzard.Core.GameBalance.Bosses.Pblob.CircleMoveSpeed);
             }
             activeCircles.Add(newCircle);
         }

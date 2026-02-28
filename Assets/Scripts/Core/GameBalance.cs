@@ -103,6 +103,7 @@ namespace Pizzard.Core
                 // Attack limits
                 public const float PatternDuration = 10.5f;
                 public const float WanderRadius = 4f;
+                public const float CircleMoveSpeed = 2.5f;  // Speed at which phase 2 circles wander
                 public const float KnockbackDistance = 5f;
                 public const float KnockbackDuration = 0.4f;
             }
