@@ -16,6 +16,8 @@ public class MenuUI : MonoBehaviour
     public Button botonAjustes;
     [Tooltip("Cierra la aplicación")]
     public Button botonSalir;
+    [Tooltip("Continue from last save (visible only when save exists)")]
+    public Button botonContinuar;
     [Tooltip("Botón para reanudar el juego (solo visible en pausa)")]
     public Button botonReanudar;
     [Tooltip("Botón para volver al menú principal desde la pausa")]
@@ -30,25 +32,10 @@ public class MenuUI : MonoBehaviour
 
     void Start()
     {
-        // Initial UI State
-        // Note: btnContinuar, btnNuevaPartida, btnOpciones, btnCombinaciones are not defined in this class.
-        // This code assumes they are defined elsewhere or will be added.
-        // if (btnContinuar != null) btnContinuar.gameObject.SetActive(false);
-        // if (btnNuevaPartida != null) btnNuevaPartida.gameObject.SetActive(true);
-        // if (btnOpciones != null) btnOpciones.gameObject.SetActive(true);
-        // if (btnCombinaciones != null) btnCombinaciones.gameObject.SetActive(true);
-        
-        // Check if SaveManager has a save to show Continue
-        // (Wave 3: Continue button logic goes here)
-
-        // Check if there is a save to show the Continue button
-        // if (Pizzard.Progression.SaveManager.Instance != null && 
-        //     Pizzard.Progression.SaveManager.Instance.HasSaveFile()) {
-        //     // Logic to show continue button
-        // }
-
         if (botonJugar != null)
             botonJugar.onClick.AddListener(OnClickJugar);
+        if (botonContinuar != null)
+            botonContinuar.onClick.AddListener(OnClickContinuar);
         if (botonAjustes != null)
             botonAjustes.onClick.AddListener(OnClickAjustes);
         if (botonSalir != null)
@@ -57,9 +44,22 @@ public class MenuUI : MonoBehaviour
             botonReanudar.onClick.AddListener(OnClickReanudar);
         if (botonVolverMenu != null)
             botonVolverMenu.onClick.AddListener(OnClickVolverMenu);
-        
+
+        // Show/hide Continue based on saved progress
+        RefreshContinueButton();
+
         // Ocultar botones de pausa inicialmente
         SetPauseButtonsVisible(false);
+    }
+
+    /// <summary>
+    /// Shows or hides the Continue button based on saved game state.
+    /// </summary>
+    public void RefreshContinueButton()
+    {
+        if (botonContinuar == null) return;
+        bool hasSave = GameFlowManager.Instance != null && GameFlowManager.Instance.HasSavedGame();
+        botonContinuar.gameObject.SetActive(hasSave);
     }
 
     /// <summary>
@@ -78,6 +78,24 @@ public class MenuUI : MonoBehaviour
         else
         {
             Debug.LogError("[MenuUI] GameFlowManager.Instance no encontrado");
+        }
+    }
+
+    /// <summary>
+    /// Continue from last saved game state.
+    /// </summary>
+    public void OnClickContinuar()
+    {
+        Debug.Log("Continuing from saved game");
+        Hide();
+
+        if (GameFlowManager.Instance != null)
+        {
+            GameFlowManager.Instance.ContinuarJuego();
+        }
+        else
+        {
+            Debug.LogError("[MenuUI] GameFlowManager.Instance not found");
         }
     }
 
@@ -164,6 +182,7 @@ public class MenuUI : MonoBehaviour
     {
         if (botonJugar != null)
             botonJugar.gameObject.SetActive(visible);
+        RefreshContinueButton();
     }
 
     /// <summary>

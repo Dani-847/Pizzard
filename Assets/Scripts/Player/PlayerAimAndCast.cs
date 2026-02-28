@@ -24,7 +24,7 @@ public class PlayerAimAndCast : MonoBehaviour
             return;
             
         if (Pizzard.Core.GameFlowManager.Instance != null && 
-            Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+            Pizzard.Core.GameFlowManager.Instance.IsDialogueActive)
             return;
 
         if (isGamepad)
@@ -63,7 +63,7 @@ public class PlayerAimAndCast : MonoBehaviour
     public void OnLookDirection(InputAction.CallbackContext context)
     {
         if (Pizzard.Core.GameFlowManager.Instance != null && 
-            Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+            Pizzard.Core.GameFlowManager.Instance.IsDialogueActive)
             return;
 
         lookInput = context.ReadValue<Vector2>();
@@ -101,7 +101,7 @@ public class PlayerAimAndCast : MonoBehaviour
             return;
 
         if (Pizzard.Core.GameFlowManager.Instance != null && 
-            Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+            Pizzard.Core.GameFlowManager.Instance.IsDialogueActive)
             return;
 
         var elements = combiner.GetSelectedElements();

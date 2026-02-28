@@ -77,6 +77,8 @@ public class UIManager : MonoBehaviour
                 if (tiendaUI != null) tiendaUI.Show();
                 break;
             case GameState.Dialogue:
+            case GameState.PreBossDialogue:
+            case GameState.PostBossDialogue:
                 if (dialogUI != null) dialogUI.gameObject.SetActive(true);
                 break;
             case GameState.Combat:

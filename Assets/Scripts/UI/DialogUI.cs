@@ -6,59 +6,82 @@ using TMPro;
 using Pizzard.Core;
 
 /// <summary>
-/// Gestiona la interfaz de diálogos durante el flujo del juego.
-/// Muestra textos narrativos en distintos momentos (intro, pre-boss, post-boss, etc.)
-/// y notifica al GameFlowManager cuando el jugador avanza.
-/// Soporta localización a través de LocalizationManager.
+/// Overlay-based dialogue UI. Lives on the persistent UIManager canvas.
+/// Features: typewriter text reveal, click-anywhere to advance, 
+/// character portrait placeholders, localization support.
+/// Phase 14 — replaces scene-based dialogue system.
 /// </summary>
 public class DialogUI : MonoBehaviour
 {
-    [Header("Referencias UI")]
-    [Tooltip("Panel contenedor del diálogo")]
+    [Header("UI References")]
+    [Tooltip("Root panel containing all dialogue elements")]
     public GameObject dialogPanel;
-    [Tooltip("Texto principal del diálogo")]
+    [Tooltip("Main dialogue text (centered)")]
     public TMP_Text dialogText;
-    [Tooltip("Botón para continuar/avanzar el diálogo")]
-    public Button continueButton;
-    
-    [Header("Configuración de Diálogos (Fallback)")]
-    [Tooltip("Líneas del diálogo introductorio (usado si no hay localización)")]
-    [TextArea(2, 4)]
-    public string[] introDialogLines = { "Welcome to the world of Pizzard!", "Prepare to face your first enemy..." };
-    [Tooltip("Líneas del diálogo antes del boss (usado si no hay localización)")]
-    [TextArea(2, 4)]
-    public string[] preBossDialogLines = { "The boss awaits...", "Good luck!" };
-    [Tooltip("Líneas del diálogo después de derrotar al boss (usado si no hay localización)")]
-    [TextArea(2, 4)]
-    public string[] postBossDialogLines = { "Congratulations! You defeated the boss.", "Continue your adventure..." };
-    [Tooltip("Líneas del diálogo antes del siguiente boss (usado si no hay localización)")]
-    [TextArea(2, 4)]
-    public string[] preNextBossDialogLines = { "A new challenge awaits...", "Forward!" };
+    [Tooltip("Speaker name label above dialogue text")]
+    public TMP_Text speakerNameText;
+    [Tooltip("Left portrait image (player — Bob)")]
+    public Image leftPortrait;
+    [Tooltip("Right portrait image (NPC — Raberto)")]
+    public Image rightPortrait;
 
-    [Header("Claves de Localización")]
-    [Tooltip("Prefijo para las claves de diálogo intro (ej: dialog_intro_1, dialog_intro_2)")]
+    [Header("Typewriter Settings")]
+    [Tooltip("Seconds between each character reveal")]
+    public float typewriterSpeed = 0.03f;
+
+    [Header("Portrait Colors (Placeholders)")]
+    public Color bobColor = new Color(0f, 0.85f, 0.85f, 1f);      // Cyan/teal
+    public Color rabertoColor = new Color(1f, 0.55f, 0f, 1f);      // Orange
+
+    [Header("Dialogue Config (Fallback)")]
+    [TextArea(2, 4)]
+    public string[] introDialogLines = { "Dialog 1 (EN)" };
+    [TextArea(2, 4)]
+    public string[] preBossDialogLines = { "Dialog 2 (EN)" };
+    [TextArea(2, 4)]
+    public string[] postBossDialogLines = { "Dialog 3 (EN)" };
+    [TextArea(2, 4)]
+    public string[] deathShopDialogLines = { "You fell... But you can try again." };
+
+    [Header("Localization Key Prefixes")]
     public string introDialogKeyPrefix = "dialog_intro_";
-    [Tooltip("Prefijo para las claves de diálogo pre-boss")]
-    public string preBossDialogKeyPrefix = "dialog_preboss"; // Append boss ID like dialog_preboss1_
-    [Tooltip("Prefijo para las claves de diálogo post-boss")]
-    public string postBossDialogKeyPrefix = "dialog_postboss_";
+    public string preBossDialogKeyPrefix = "dialog_preboss";
+    public string postBossDialogKeyPrefix = "dialog_postboss";
+    public string deathShopDialogKeyPrefix = "dialog_deathshop_";
 
+    // Internal state
     private GameFlowManager flowManager;
     private string[] currentLines;
     private int currentLineIndex;
     private bool advancePhaseOnEnd = true;
+    private bool isTyping = false;
+    private bool dialogActive = false;
+    private Coroutine typewriterCoroutine;
 
-    void Start()
+    void Update()
     {
-        if (continueButton != null)
+        if (!dialogActive) return;
+
+        // Click-anywhere to advance (mouse click, touch, or Enter/Space key)
+        bool clicked = false;
+        if (UnityEngine.InputSystem.Mouse.current != null &&
+            UnityEngine.InputSystem.Mouse.current.leftButton.wasPressedThisFrame)
+            clicked = true;
+        if (UnityEngine.InputSystem.Keyboard.current != null &&
+            (UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame ||
+             UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame))
+            clicked = true;
+
+        if (clicked)
         {
-            continueButton.onClick.AddListener(OnContinueClicked);
+            OnAdvanceClicked();
         }
     }
 
-    /// <summary>
-    /// Muestra el panel de diálogos.
-    /// </summary>
+    // ─────────────────────────────────────────────
+    //  PUBLIC API — called by GameFlowManager
+    // ─────────────────────────────────────────────
+
     public void Show()
     {
         gameObject.SetActive(true);
@@ -66,11 +89,16 @@ public class DialogUI : MonoBehaviour
             dialogPanel.SetActive(true);
     }
 
-    /// <summary>
-    /// Oculta el panel de diálogos.
-    /// </summary>
     public void Hide()
     {
+        dialogActive = false;
+        if (typewriterCoroutine != null)
+        {
+            StopCoroutine(typewriterCoroutine);
+            typewriterCoroutine = null;
+        }
+        isTyping = false;
+
         if (dialogPanel != null)
             dialogPanel.SetActive(false);
         else
@@ -78,156 +106,213 @@ public class DialogUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Inicia el diálogo introductorio.
-    /// Intenta usar localización, si no hay usa los textos por defecto.
+    /// Shows the intro dialogue (after pressing Play, before first shop).
     /// </summary>
-    /// <param name="manager">GameFlowManager que recibirá la notificación al terminar.</param>
     public void ShowIntroDialog(GameFlowManager manager)
     {
         flowManager = manager;
         advancePhaseOnEnd = true;
+        SetPortraits("Raberto", isPlayerSpeaking: false);
         StartDialogWithLocalization(introDialogKeyPrefix, introDialogLines);
     }
 
     /// <summary>
-    /// Inicia el diálogo previo al combate con el boss.
+    /// Shows the pre-boss dialogue (after shop, before combat).
+    /// Uses boss-specific localization keys: dialog_prebossN_1, dialog_prebossN_2...
     /// </summary>
-    /// <param name="manager">GameFlowManager que recibirá la notificación al terminar.</param>
     public void ShowPreBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
         advancePhaseOnEnd = true;
-        // Dynamically get boss dialog string: dialog_preboss1_, dialog_preboss2_, etc
+        SetPortraits("Raberto", isPlayerSpeaking: false);
         string dynamicKey = preBossDialogKeyPrefix + manager.currentBossIndex + "_";
         StartDialogWithLocalization(dynamicKey, preBossDialogLines);
     }
 
     /// <summary>
-    /// Inicia el diálogo posterior a derrotar al boss.
+    /// Shows the post-boss dialogue (after boss defeated, before next shop or credits).
     /// </summary>
-    /// <param name="manager">GameFlowManager que recibirá la notificación al terminar.</param>
     public void ShowPostBossDialog(GameFlowManager manager)
     {
         flowManager = manager;
         advancePhaseOnEnd = true;
-        StartDialogWithLocalization(postBossDialogKeyPrefix, postBossDialogLines);
+        SetPortraits("Raberto", isPlayerSpeaking: false);
+        string dynamicKey = postBossDialogKeyPrefix + manager.currentBossIndex + "_";
+        StartDialogWithLocalization(dynamicKey, postBossDialogLines);
     }
 
-    [Header("Diálogo de Muerte (Tienda)")]
-    public string[] deathShopDialogLines = { "Ah, you perished. I scraped you off the floor.", "Take a moment to prepare before you try again." };
-    public string deathShopDialogKeyPrefix = "dialog_deathshop_";
-
+    /// <summary>
+    /// Shows the death/shop return dialogue. Does NOT advance phase on end.
+    /// </summary>
     public void ShowDeathShopDialog(GameFlowManager manager)
     {
         flowManager = manager;
         advancePhaseOnEnd = false;
+        SetPortraits("Raberto", isPlayerSpeaking: false);
         StartDialogWithLocalization(deathShopDialogKeyPrefix, deathShopDialogLines);
     }
 
     /// <summary>
-    /// Muestra únicamente el texto de advertencia (al intentar salir de tienda pronto).
+    /// Shows the shop warning overlay (when trying to leave shop too early).
+    /// Auto-hides after a few seconds. Does not trigger dialogue engine.
     /// </summary>
     public void ShowShopWarningDialog()
     {
         if (LocalizationManager.Instance != null && !string.IsNullOrEmpty(LocalizationManager.Instance.GetText("shop_warning_exit")))
         {
             string loc = LocalizationManager.Instance.GetText("shop_warning_exit");
-            // Only show it if it exists and isn't a bracketed fallback
-            if(!loc.StartsWith("["))
+            if (!loc.StartsWith("["))
             {
-                dialogText.text = loc;
+                if (dialogText != null) dialogText.text = loc;
+                if (speakerNameText != null) speakerNameText.text = "Raberto";
                 Show();
                 StartCoroutine(HideAfterWarning());
             }
         }
     }
 
-    private IEnumerator HideAfterWarning()
+    private System.Collections.IEnumerator HideAfterWarning()
     {
         yield return new WaitForSeconds(3.5f);
         Hide();
     }
 
-    /// <summary>
-    /// Inicia un diálogo intentando usar localización primero.
-    /// </summary>
-    /// <param name="keyPrefix">Prefijo de la clave de localización.</param>
-    /// <param name="fallbackLines">Líneas por defecto si no hay localización.</param>
+    // ─────────────────────────────────────────────
+    //  PORTRAITS
+    // ─────────────────────────────────────────────
+
+    private void SetPortraits(string speakerName, bool isPlayerSpeaking)
+    {
+        if (speakerNameText != null)
+            speakerNameText.text = speakerName;
+
+        // Show both portrait slots with placeholder colors
+        if (leftPortrait != null)
+        {
+            leftPortrait.color = bobColor;
+            leftPortrait.gameObject.SetActive(true);
+        }
+        if (rightPortrait != null)
+        {
+            rightPortrait.color = rabertoColor;
+            rightPortrait.gameObject.SetActive(true);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    //  LOCALIZATION
+    // ─────────────────────────────────────────────
+
     private void StartDialogWithLocalization(string keyPrefix, string[] fallbackLines)
     {
         string[] lines = GetLocalizedLines(keyPrefix, fallbackLines);
         StartDialog(lines);
     }
 
-    /// <summary>
-    /// Obtiene las líneas de diálogo localizadas o las de fallback.
-    /// </summary>
     private string[] GetLocalizedLines(string keyPrefix, string[] fallbackLines)
     {
         if (LocalizationManager.Instance == null)
-        {
             return fallbackLines;
-        }
 
         List<string> localizedLines = new List<string>();
         for (int i = 0; i < fallbackLines.Length; i++)
         {
             string key = keyPrefix + (i + 1);
             string localized = LocalizationManager.Instance.GetText(key);
-            
-            // Si la clave no existe, GetText devuelve [key]
+
+            // If key doesn't exist, GetText returns [key]
             if (localized.StartsWith("[") && localized.EndsWith("]"))
-            {
-                // Usar el fallback para esta línea
                 localizedLines.Add(fallbackLines[i]);
-            }
             else
-            {
                 localizedLines.Add(localized);
-            }
         }
-        
+
         return localizedLines.ToArray();
     }
 
-    /// <summary>
-    /// Inicia un diálogo con las líneas especificadas.
-    /// </summary>
+    // ─────────────────────────────────────────────
+    //  DIALOGUE ENGINE
+    // ─────────────────────────────────────────────
+
     private void StartDialog(string[] lines)
     {
         currentLines = lines;
         currentLineIndex = 0;
+        dialogActive = true;
         Show();
-        ShowCurrentLine();
+        ShowCurrentLineWithTypewriter();
     }
 
-    /// <summary>
-    /// Muestra la línea actual del diálogo.
-    /// </summary>
-    private void ShowCurrentLine()
+    private void ShowCurrentLineWithTypewriter()
     {
-        if (currentLines != null && currentLineIndex < currentLines.Length)
+        if (currentLines == null || currentLineIndex >= currentLines.Length)
+            return;
+
+        string fullText = currentLines[currentLineIndex];
+
+        if (typewriterCoroutine != null)
+            StopCoroutine(typewriterCoroutine);
+
+        typewriterCoroutine = StartCoroutine(TypewriterReveal(fullText));
+    }
+
+    private IEnumerator TypewriterReveal(string fullText)
+    {
+        isTyping = true;
+        if (dialogText != null)
+            dialogText.text = "";
+
+        for (int i = 0; i < fullText.Length; i++)
         {
+            if (!isTyping) break; // interrupted by click
+
             if (dialogText != null)
-                dialogText.text = currentLines[currentLineIndex];
+                dialogText.text = fullText.Substring(0, i + 1);
+
+            yield return new WaitForSecondsRealtime(typewriterSpeed);
         }
+
+        // Ensure full text is shown
+        if (dialogText != null)
+            dialogText.text = fullText;
+
+        isTyping = false;
+        typewriterCoroutine = null;
     }
 
     /// <summary>
-    /// Callback del botón "Continuar".
-    /// Avanza al siguiente texto o cierra el diálogo y notifica al GameFlowManager.
+    /// Called when player clicks anywhere on screen during dialogue.
+    /// If typing: instantly reveal full text.
+    /// If fully revealed: advance to next line or end dialogue.
     /// </summary>
-    private void OnContinueClicked()
+    private void OnAdvanceClicked()
     {
+        if (isTyping)
+        {
+            // Instantly show the full current line
+            isTyping = false;
+            if (typewriterCoroutine != null)
+            {
+                StopCoroutine(typewriterCoroutine);
+                typewriterCoroutine = null;
+            }
+            if (currentLines != null && currentLineIndex < currentLines.Length && dialogText != null)
+            {
+                dialogText.text = currentLines[currentLineIndex];
+            }
+            return;
+        }
+
+        // Advance to next line
         currentLineIndex++;
-        
+
         if (currentLines != null && currentLineIndex < currentLines.Length)
         {
-            ShowCurrentLine();
+            ShowCurrentLineWithTypewriter();
         }
         else
         {
-            // Diálogo terminado
+            // Dialogue finished
             Hide();
             if (advancePhaseOnEnd)
             {

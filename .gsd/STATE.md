@@ -1,22 +1,22 @@
 ## CURRENT STATE
 
-- **Position**: Phase 13 — COMPLETE. Ready for Phase 14.
-- **Task**: All Phase 13 work done (13.1 Mana rename + 13.2 GameBalance centralization). ROADMAP updated with phases 14-30.
-- **Status**: Phase 13 ✅ Complete. Roadmap synthesized from MASTER_PROMPT_GUIDE.md.
+- **Position**: Phase 15 — PLANNED
+- **Task**: Boss Loop Completion & Progression — ready for execution
+- **Status**: 2 plans created, wave 1
 
 ## Last Session Summary
 
-Phase 13 fully completed across two plans:
-- **13.1** (commit 2500b79): Renamed FatigueSystem→ManaSystem, added per-spell SpellCosts dictionary, wired PlayerAimAndCast spell-gating.
-- **13.2** (commit bd51804): Created `GameBalance.cs` centralizing 123+ balance constants from 36 files. All game values now in one tuning file.
-- **ROADMAP.md** updated with all remaining phases 14-30, including objectives, dependencies, and deliverables.
+Phase 14 — Verified ✅ (8/8 must-haves)
+Phase 15 — Planned: 2 plans, 5 tasks total
+- Plan 15.1: BossArenaManager fix + ContinuarJuego + Continue button (3 tasks)
+- Plan 15.2: Death screen restyle + Credits removal (2 tasks)
 
 ## Next Steps
-1. `/discuss-phase 14` — Dialogue System & Narrative Flow
-2. `/plan` Phase 14 — create `.gsd/phases/14/PLAN.md`
-3. `/execute` Phase 14
-4. `/verify` Phase 14
+1. `/execute 15` — run both plans
 
 ## Key Decisions Active
-- All balance values go through `GameBalance.cs` — no new hardcoded numbers (since Phase 13.2).
-- MASTER_PROMPT_GUIDE.md contains detailed prompts and design requirements for phases 14-30.
+- All balance values go through `GameBalance.cs`
+- Dialogue is overlay-based
+- BossArenaManager calls AvanzarFase()
+- Continue button on Main Menu (save-based)
+- Credits scene removed (Boss 4 → Main Menu)

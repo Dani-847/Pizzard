@@ -9,14 +9,8 @@ EditorBuildSettings:
     path: Assets/FlowScenes/MainMenu.unity
     guid: 6c49478b4a12423438f11c2f374701be
   - enabled: 1
-    path: Assets/FlowScenes/IntroDialog.unity
-    guid: 7574ed37a79a42f49bb1e7dfc3c31bd8
-  - enabled: 1
     path: Assets/FlowScenes/Shop.unity
     guid: 3231e4f1070a02c4e8ac0c77be2cfc0f
-  - enabled: 1
-    path: Assets/FlowScenes/PreBossDialog.unity
-    guid: f00e52d87adcfad4aa3f71fd4c55bcff
   - enabled: 1
     path: Assets/FlowScenes/BossArena_1.unity
     guid: 0e0b3944b14d6014287d1097dfd40b79
@@ -29,10 +23,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/FlowScenes/BossArena_4.unity
     guid: 72c669dd570b2c44e985dc970660f379
-  - enabled: 1
-    path: Assets/FlowScenes/PostBossDialog.unity
-    guid: 91ad46e2b1e4e4740b4d52ea1b4f947c
-  - enabled: 1
-    path: Assets/FlowScenes/Credits.unity
-    guid: e7316c5643ea2704a978ea87b8dc3a17
   m_configObjects: {}

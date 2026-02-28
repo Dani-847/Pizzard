@@ -22,6 +22,15 @@ namespace Pizzard.Core
         public static GameFlowManager Instance { get; private set; }
 
         public GameState CurrentState { get; private set; }
+        
+        /// <summary>
+        /// True when ANY dialogue state is active (Dialogue, PreBossDialogue, PostBossDialogue).
+        /// Use this to freeze player input during narrative.
+        /// </summary>
+        public bool IsDialogueActive => CurrentState == GameState.Dialogue || 
+                                        CurrentState == GameState.PreBossDialogue || 
+                                        CurrentState == GameState.PostBossDialogue;
+        
         private bool isInitialized = false;
 
         private void Awake()
@@ -89,7 +98,7 @@ namespace Pizzard.Core
                     case GameState.Shop: valid = (newState == GameState.PreBossDialogue || newState == GameState.Combat); break; // Fallback to combat if dialogue missing
                     case GameState.PreBossDialogue: valid = (newState == GameState.Combat); break;
                     case GameState.Combat: valid = (newState == GameState.PostBossDialogue || newState == GameState.Shop); break; // Fallback to shop if dialogue missing
-                    case GameState.PostBossDialogue: valid = (newState == GameState.Shop || newState == GameState.Credits); break;
+                    case GameState.PostBossDialogue: valid = (newState == GameState.Shop || newState == GameState.MainMenu); break;
                     default: valid = false; break; // Block transitions from unhandled states
                 }
                 if (!valid)
@@ -156,7 +165,7 @@ namespace Pizzard.Core
                         if (manaUI) manaUI.gameObject.SetActive(true);
                         break;
                     case GameState.Credits:
-                        // We leave all UI hidden, the Credits scene will have its own Canvas
+                        // Credits removed — kept enum for future. No UI changes.
                         break;
                 }
             }
@@ -177,12 +186,12 @@ namespace Pizzard.Core
             return state switch
             {
                 GameState.MainMenu => "MainMenu",
-                GameState.Dialogue => "IntroDialog", // Placeholder for actual new Dialogue logic
+                GameState.Dialogue => string.Empty,          // Overlay — no scene load
                 GameState.Shop => "Shop",
-                GameState.PreBossDialogue => "PreBossDialog",
+                GameState.PreBossDialogue => string.Empty,   // Overlay — no scene load
                 GameState.Combat => "BossArena_" + currentBossIndex,
-                GameState.PostBossDialogue => "PostBossDialog",
-                GameState.Credits => "Credits",
+                GameState.PostBossDialogue => string.Empty,  // Overlay — no scene load
+                GameState.Credits => string.Empty,  // Credits scene removed — no scene load
                 _ => string.Empty
             };
         }
@@ -228,6 +237,33 @@ namespace Pizzard.Core
             }
 
             ChangeState(GameState.Dialogue);
+        }
+
+        /// <summary>
+        /// Returns true if a saved game exists with progress beyond Boss 1.
+        /// </summary>
+        public bool HasSavedGame()
+        {
+            if (Progression.SaveManager.Instance == null) return false;
+            return Progression.SaveManager.Instance.CurrentSave != null 
+                && Progression.SaveManager.Instance.CurrentSave.bossIndex > 1;
+        }
+
+        /// <summary>
+        /// Loads the last save and resumes the game at the Shop before the next boss.
+        /// </summary>
+        public void ContinuarJuego()
+        {
+            if (Progression.SaveManager.Instance == null) return;
+
+            // Load persisted state
+            Progression.SaveManager.Instance.LoadGame();
+            var save = Progression.SaveManager.Instance.CurrentSave;
+
+            currentBossIndex = save.bossIndex;
+            Debug.Log($"[GameFlowManager] Continuing game at bossIndex={currentBossIndex}");
+
+            ChangeState(GameState.Shop);
         }
 
         public void VolverAlMenu()
@@ -305,12 +341,12 @@ namespace Pizzard.Core
                     else
                     {
                         // Win Condition: All bosses defeated.
-                        Debug.Log("[GameFlowManager] All bosses defeated! Triggering Win Sequence.");
-                        ChangeState(GameState.Credits);
+                        Debug.Log("[GameFlowManager] All bosses defeated! Returning to Main Menu.");
+                        VolverAlMenu();
                     }
                     break;
                 case GameState.Credits:
-                    VolverAlMenu(); // Used when exiting Credits
+                    VolverAlMenu(); // Credits removed — fallback
                     break;
                 default:
                     Debug.LogWarning("[GameFlowManager] Cannot advance phase from " + CurrentState);

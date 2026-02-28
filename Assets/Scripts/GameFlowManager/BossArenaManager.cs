@@ -34,7 +34,7 @@ namespace Pizzard.Core
             activeBoss.OnBossDefeated.RemoveListener(HandleBossDefeated);
             
             // For now, return to the Shop scene. Later we might want an Outro dialog here.
-            GameFlowManager.Instance.ChangeState(GameState.Shop);
+            GameFlowManager.Instance.AvanzarFase();
         }
     }
 }

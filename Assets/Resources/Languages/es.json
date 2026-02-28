@@ -30,63 +30,43 @@
     },
     {
       "key": "dialog_intro_1",
-      "value": "Raberto: ¡Eh, Bob! ¡Despierta!"
-    },
-    {
-      "key": "dialog_intro_2",
-      "value": "Bob: ¿Qué pasa? Estaba soñando con extra queso..."
-    },
-    {
-      "key": "dialog_intro_3",
-      "value": "Raberto: ¡El reino está en peligro! Alguien robó la Pizza Sagrada."
-    },
-    {
-      "key": "dialog_intro_4",
-      "value": "Bob: ¡No puede ser! ¡Mi ingrediente favorito!"
-    },
-    {
-      "key": "dialog_intro_5",
-      "value": "Raberto: Toma estos tokens, ve a mi tienda y prepárate."
+      "value": "Dialog 1 (ES)"
     },
     {
       "key": "dialog_preboss1_1",
-      "value": "Bob: Ese monstruo parece hecho de masa cruda..."
+      "value": "Dialog 2 (ES)"
     },
     {
-      "key": "dialog_preboss1_2",
-      "value": "Raberto: ¡Cuidado! Le gusta envestir. ¡Usa tus hechizos sabiamente y vigila tu fatiga!"
+      "key": "dialog_postboss1_1",
+      "value": "Dialog 3 (ES)"
     },
     {
       "key": "dialog_preboss2_1",
-      "value": "Bob: Uy, este huele a peperoni pasado."
+      "value": "Dialog 4 (ES)"
     },
     {
-      "key": "dialog_preboss2_2",
-      "value": "Raberto: Mantiene la distancia. ¡Acércate cuando puedas!"
+      "key": "dialog_postboss2_1",
+      "value": "Dialog 5 (ES)"
     },
     {
       "key": "dialog_preboss3_1",
-      "value": "Bob: ¿Por qué tiene piña? ¡Es un sacrilegio!"
+      "value": "Dialog 6 (ES)"
     },
     {
-      "key": "dialog_preboss3_2",
-      "value": "Raberto: ¡Cuidado con el jugo ácido! Muevete sin parar."
+      "key": "dialog_postboss3_1",
+      "value": "Dialog 7 (ES)"
     },
     {
       "key": "dialog_preboss4_1",
-      "value": "Bob: ¡El Rey de la Comida Rápida en persona!"
+      "value": "Dialog 8 (ES)"
     },
     {
-      "key": "dialog_preboss4_2",
-      "value": "Raberto: Esta es la batalla final, Bob. ¡No te guardes nada!"
+      "key": "dialog_postboss4_1",
+      "value": "Dialog 9 (ES)"
     },
     {
-      "key": "dialog_postboss_1",
-      "value": "Bob: ¡Toma eso! Una porción menos de la que preocuparse."
-    },
-    {
-      "key": "dialog_postboss_2",
-      "value": "Raberto: Bien hecho. Ven a mi tienda a descansar y gastar esos tokens."
+      "key": "dialog_deathshop_1",
+      "value": "Dialog 10 (ES)"
     },
     {
       "key": "shop_warning_exit",

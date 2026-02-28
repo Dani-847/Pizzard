@@ -19,15 +19,11 @@ namespace Pizzard.EditorTools
             string[] requiredScenes = new string[]
             {
                 "Assets/FlowScenes/MainMenu.unity",
-                "Assets/FlowScenes/IntroDialog.unity",
                 "Assets/FlowScenes/Shop.unity",
-                "Assets/FlowScenes/PreBossDialog.unity",
-                "Assets/FlowScenes/BossArena_1.unity", // Found in FlowScenes
-                "Assets/FlowScenes/BossArena_2.unity", // Found in FlowScenes
-                "Assets/FlowScenes/BossArena_3.unity", // Found in FlowScenes
-                "Assets/FlowScenes/BossArena_4.unity", // Found in FlowScenes
-                "Assets/FlowScenes/PostBossDialog.unity",
-                "Assets/FlowScenes/Credits.unity"
+                "Assets/FlowScenes/BossArena_1.unity",
+                "Assets/FlowScenes/BossArena_2.unity",
+                "Assets/FlowScenes/BossArena_3.unity",
+                "Assets/FlowScenes/BossArena_4.unity"
             };
 
             List<EditorBuildSettingsScene> buildScenes = new List<EditorBuildSettingsScene>();

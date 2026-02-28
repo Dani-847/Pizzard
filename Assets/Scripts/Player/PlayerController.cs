@@ -54,7 +54,7 @@ namespace Pizzard.Player
         private void Update()
         {
             if (Pizzard.Core.GameFlowManager.Instance != null && 
-                Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+                Pizzard.Core.GameFlowManager.Instance.IsDialogueActive)
             {
                 movementInput = Vector2.zero;
                 return;
@@ -67,7 +67,7 @@ namespace Pizzard.Player
         private void FixedUpdate()
         {
             if (Pizzard.Core.GameFlowManager.Instance != null && 
-                Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+                Pizzard.Core.GameFlowManager.Instance.IsDialogueActive)
                 return;
 
             ApplyMovement();
@@ -98,7 +98,7 @@ namespace Pizzard.Player
         public void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             if (Pizzard.Core.GameFlowManager.Instance != null && 
-                Pizzard.Core.GameFlowManager.Instance.CurrentState == Pizzard.Core.GameState.Dialogue)
+                Pizzard.Core.GameFlowManager.Instance.IsDialogueActive)
             {
                 movementInput = Vector2.zero;
                 return;

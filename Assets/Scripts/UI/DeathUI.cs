@@ -13,6 +13,12 @@ public class DeathUI : MonoBehaviour
     [Tooltip("Panel raíz de la pantalla de muerte (contiene el mensaje y los botones).")]
     [SerializeField] public GameObject pantallaMuerte;
 
+    [Tooltip("Full-screen dark overlay behind death content.")]
+    [SerializeField] public Image darkOverlay;
+
+    [Tooltip("Death image placeholder (centered upper half).")]
+    [SerializeField] public Image deathImage;
+
     [Tooltip("Botón de reintentar (reinicia el combate del boss).")]
     [SerializeField] public Button botonReintentar;
 
@@ -47,6 +53,10 @@ public class DeathUI : MonoBehaviour
 
         if (pantallaMuerte != null)
             pantallaMuerte.SetActive(true);
+        if (darkOverlay != null)
+            darkOverlay.gameObject.SetActive(true);
+        if (deathImage != null)
+            deathImage.gameObject.SetActive(true);
 
         // Pausar el juego
         Time.timeScale = 0f;
@@ -61,6 +71,10 @@ public class DeathUI : MonoBehaviour
 
         if (pantallaMuerte != null)
             pantallaMuerte.SetActive(false);
+        if (darkOverlay != null)
+            darkOverlay.gameObject.SetActive(false);
+        if (deathImage != null)
+            deathImage.gameObject.SetActive(false);
 
         // Reanudar el juego
         Time.timeScale = 1f;
