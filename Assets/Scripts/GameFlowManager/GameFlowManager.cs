@@ -286,6 +286,15 @@ namespace Pizzard.Core
         public void VolverATiendaTrasMuerte()
         {
             Time.timeScale = 1f;
+
+            // --- WAVE 3: DEATH LOOP FIX ---
+            // Revert state to the last auto-save (which happens upon Boss Defeat, meaning this resets to the state entering the *current* boss's pre-shop)
+            if (Progression.SaveManager.Instance != null && HasSavedGame())
+            {
+                Debug.Log("[GameFlowManager] Player died. Reloading last save to revert spent tokens/HP...");
+                Progression.SaveManager.Instance.LoadGame();
+            }
+
             ChangeState(GameState.Shop);
             
             var dialog = FindObjectOfType<DialogUI>(true);

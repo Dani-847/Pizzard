@@ -23,6 +23,16 @@ public class PblobController : MonoBehaviour
     private float phase2MstTimer = 0f;
     private bool phase2TimerActive = false;
 
+    [Header("Phase 2 Minigame")]
+    public GameObject circlePrefab;
+    private List<GameObject> activeCircles = new List<GameObject>();
+    private float phase2MstTimer = 0f;
+    private bool phase2TimerActive = false;
+
+    [Header("Phase 3 Grid Puzzle")]
+    public PblobGridPuzzle gridPuzzle;
+    public Transform gridSpawnPoint;
+
     [Header("Events")]
     public UnityEvent OnBossBattleStart;
     public UnityEvent OnBossDefeated;
@@ -118,8 +128,15 @@ public class PblobController : MonoBehaviour
             case PblobState.Phase3Transition:
                 MakeInvulnerable();
                 OnPhaseTransition?.Invoke();
-                // TODO: Teleport logic in Phase 3
-                ChangeState(PblobState.Phase3_Combat);
+                stateCoroutine = StartCoroutine(Phase3TransitionRoutine());
+                break;
+            case PblobState.Phase3_Grid:
+                MakeInvulnerable();
+                if (gridPuzzle != null)
+                {
+                    Vector3 spawnPos = gridSpawnPoint != null ? gridSpawnPoint.position : transform.position - new Vector3(0, 5f, 0);
+                    gridPuzzle.GenerateGrid(spawnPos);
+                }
                 break;
             case PblobState.Phase3_Combat:
                 MakeVulnerable(); // Permanently vulnerable in final enrage
@@ -209,6 +226,36 @@ public class PblobController : MonoBehaviour
         }
         
         ChangeState(nextState);
+    }
+
+    private IEnumerator Phase3TransitionRoutine()
+    {
+        float elapsed = 0f;
+        float duration = 1.5f;
+        
+        Vector3 bossStart = transform.position;
+        Vector3 bossTarget = centerPoint + new Vector3(0, 5f, 0); // Top Center
+        
+        Vector3 playerStart = playerTransform != null ? playerTransform.position : Vector3.zero;
+        Vector3 playerTarget = centerPoint + new Vector3(0, -6f, 0); // Bottom Center
+
+        // We assume the player is immobilized by the transition event via PlayerMovement script externally,
+        // or we just rigidly force position here.
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            transform.position = Vector3.Lerp(bossStart, bossTarget, t);
+            
+            if (playerTransform != null)
+            {
+                playerTransform.position = Vector3.Lerp(playerStart, playerTarget, t);
+            }
+            
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        
+        ChangeState(PblobState.Phase3_Grid);
     }
 
     // --- PHASE 2 LOGIC (Circle Minigame) ---
@@ -357,6 +404,17 @@ public class PblobController : MonoBehaviour
         }
     }
 
+    // Called via a BossArea trigger volume usually, or a manual debug button
+    public void FinishGridPuzzle()
+    {
+        if (currentState == PblobState.Phase3_Grid)
+        {
+            if (gridPuzzle != null) gridPuzzle.DestroyGrid();
+            ChangeState(PblobState.Phase3_Combat);
+            Debug.Log("🏁 Player finished the Grid! Final enrage combat starts.");
+        }
+    }
+
     private void CheckPhaseThresholds()
     {
         float hpPercent = currentHealth / maxHealth;
@@ -420,6 +478,7 @@ public class PblobController : MonoBehaviour
         Debug.Log("🎊 BOSS DEFEATED!");
         battleActive = false;
         StopAllPatterns();
+        if (gridPuzzle != null) gridPuzzle.DestroyGrid();
         if (rhythmManager != null) rhythmManager.StopRhythm();
         
         OnBossDefeated?.Invoke();
@@ -448,6 +507,13 @@ public class PblobController : MonoBehaviour
             if (currentState == PblobState.Phase2)
             {
                 GUI.Label(new Rect(20, 95, 230, 20), $"<color=yellow>Phase 2 Timer: {phase2MstTimer:F1}s</color>");
+            }
+            if (currentState == PblobState.Phase3_Grid)
+            {
+                if (GUI.Button(new Rect(20, 155, 210, 25), "SIMULATE GRID FINISH"))
+                {
+                    FinishGridPuzzle();
+                }
             }
             
             if (GUI.Button(new Rect(20, 125, 100, 25), "KILL"))
