@@ -3,46 +3,42 @@ using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
-/// Boss health bar using anchor-clipping (same approach as ManaUI height scaling).
-/// Children FrontHealthBar and BackHealthBar must have their RectTransform
-/// set up as STRETCH (anchorMin.x=0, anchorMax.x=1, offsetMin.x=0, offsetMax.x=0).
-/// We scale down anchorMax.x to clip the right side — no Image.fillAmount needed.
+/// Boss health bar.
+/// Uses Image.fillAmount on FrontHealthBar (red, instant) and
+/// BackHealthBar (orange, delayed drain) — as nature intended.
+/// Auto-finds children by name. Works regardless of anchor setup.
 /// </summary>
 public class DelayedHealthBar : MonoBehaviour
 {
-    [Header("Bar References (auto-found if empty)")]
-    public RectTransform frontBar;    // Red   — clips instantly
-    public RectTransform backBar;     // Orange — clamps slowly after delay
+    [Header("Bar References (auto-found by name if left empty)")]
+    public Image frontBar;   // Red   — drains instantly
+    public Image backBar;    // Orange — drains with delay
 
     [Header("Animation")]
-    public float delayDuration  = 0.5f;
-    public float drainSpeed     = 0.4f;   // anchor units/sec  (0..1 per second)
+    public float delayDuration = 0.5f;
+    public float drainSpeed    = 0.35f;   // fillAmount units/sec
 
     private Coroutine drainRoutine;
-    private float currentRatio = 1f;
 
     private void Start()
     {
         AutoFindBars();
-        SetupBars();
-        ApplyRatio(frontBar, 1f);
-        ApplyRatio(backBar,  1f);
+        InitBars();
     }
 
     // ------------------------------------------------------------------ public API
 
     public void SetHealth(float ratio)
     {
-        currentRatio = Mathf.Clamp01(ratio);
+        ratio = Mathf.Clamp01(ratio);
         AutoFindBars();
+        InitBars();
 
-        // Front bar: instant
-        if (frontBar != null) ApplyRatio(frontBar, currentRatio);
+        if (frontBar != null) frontBar.fillAmount = ratio;
 
-        // Orange bar: delayed drain
         if (drainRoutine != null) StopCoroutine(drainRoutine);
         if (gameObject.activeInHierarchy)
-            drainRoutine = StartCoroutine(DrainBackBar(currentRatio));
+            drainRoutine = StartCoroutine(DrainBack(ratio));
     }
 
     public void SetHealth(float current, float max)
@@ -56,63 +52,42 @@ public class DelayedHealthBar : MonoBehaviour
     {
         if (frontBar != null && backBar != null) return;
 
-        foreach (RectTransform rt in GetComponentsInChildren<RectTransform>(true))
+        foreach (Image img in GetComponentsInChildren<Image>(true))
         {
-            if (rt == GetComponent<RectTransform>()) continue; // skip self
-            string n = rt.gameObject.name.ToLower();
-            if (frontBar == null && (n.Contains("front") || n.Contains("red") || n.Contains("fill")))
-                frontBar = rt;
-            if (backBar == null && (n.Contains("back") || n.Contains("orange") || n.Contains("delay")))
-                backBar = rt;
+            if (img.gameObject == gameObject) continue;  // skip self if any
+            string n = img.gameObject.name.ToLower();
+            if (frontBar == null && (n.Contains("front") || n.Contains("red")))
+                frontBar = img;
+            else if (backBar == null && (n.Contains("back") || n.Contains("orange")))
+                backBar = img;
         }
-
-        if (frontBar != null)
-            Debug.Log($"[HealthBar] frontBar found: {frontBar.name}");
-        else
-            Debug.LogWarning("[HealthBar] frontBar NOT found — check child names contain 'front' or 'red'");
-        if (backBar != null)
-            Debug.Log($"[HealthBar] backBar found: {backBar.name}");
-        else
-            Debug.LogWarning("[HealthBar] backBar NOT found — check child names contain 'back' or 'orange'");
     }
 
-    /// Ensure each child bar is set up for horizontal anchor clipping
-    private void SetupBars()
+    private void InitBars()
     {
-        SetupBar(frontBar);
-        SetupBar(backBar);
+        SetupImage(frontBar);
+        SetupImage(backBar);
     }
 
-    private void SetupBar(RectTransform rt)
+    private void SetupImage(Image img)
     {
-        if (rt == null) return;
-        // Left-anchor so only the right edge moves
-        rt.anchorMin   = new Vector2(0f, 0f);
-        rt.anchorMax   = new Vector2(1f, 1f);
-        rt.offsetMin   = Vector2.zero;
-        rt.offsetMax   = Vector2.zero;
+        if (img == null) return;
+        img.type         = Image.Type.Filled;
+        img.fillMethod   = Image.FillMethod.Horizontal;
+        img.fillOrigin   = (int)Image.OriginHorizontal.Left;
+        img.fillAmount   = 1f;
     }
 
-    /// Set the visible width ratio (0=empty, 1=full) via anchorMax.x clipping
-    private void ApplyRatio(RectTransform rt, float ratio)
-    {
-        if (rt == null) return;
-        rt.anchorMax = new Vector2(Mathf.Clamp01(ratio), rt.anchorMax.y);
-    }
-
-    private IEnumerator DrainBackBar(float targetRatio)
+    private IEnumerator DrainBack(float target)
     {
         yield return new WaitForSeconds(delayDuration);
 
-        while (backBar != null)
+        while (backBar != null && Mathf.Abs(backBar.fillAmount - target) > 0.002f)
         {
-            float cur = backBar.anchorMax.x;
-            if (Mathf.Abs(cur - targetRatio) < 0.002f) break;
-            float next = Mathf.MoveTowards(cur, targetRatio, drainSpeed * Time.deltaTime);
-            ApplyRatio(backBar, next);
+            backBar.fillAmount = Mathf.MoveTowards(backBar.fillAmount, target, drainSpeed * Time.deltaTime);
             yield return null;
         }
 
-        if (backBar != null) ApplyRatio(backBar, targetRatio);
+        if (backBar != null) backBar.fillAmount = target;
     }
 }

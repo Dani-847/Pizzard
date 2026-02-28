@@ -413,13 +413,12 @@ public class PblobController : MonoBehaviour
             types[rnd] = temp;
         }
 
-        // Get projectile layer index so we can ignore collisions with circles
+        // Only ignore collisions between BossCircle and the Projectile layer
+        // DO NOT ignore Default (Player is on Default)
         int bossCircleLayer = LayerMask.NameToLayer("BossCircle");
         int projLayer = LayerMask.NameToLayer("Projectile");
         if (bossCircleLayer >= 0 && projLayer >= 0)
             Physics2D.IgnoreLayerCollision(bossCircleLayer, projLayer, true);
-        // Also ignore vs Default layer in case projectiles use it
-        Physics2D.IgnoreLayerCollision(bossCircleLayer, LayerMask.NameToLayer("Default"), true);
 
         for (int i = 0; i < 3; i++)
         {
@@ -429,8 +428,8 @@ public class PblobController : MonoBehaviour
             Vector3 offset = new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad), 0f) * 3.5f;
             GameObject newCircle = Instantiate(circlePrefab, arenaCenter + offset, Quaternion.identity);
 
-            // Scale circles 0.5 (50%) smaller than prefab default
-            newCircle.transform.localScale = circlePrefab.transform.localScale * 0.5f;
+            // Scale circles +0.5 larger than prefab default
+            newCircle.transform.localScale = circlePrefab.transform.localScale * 1.5f;
 
             // Assign BossCircle layer so projectiles can pass through
             if (bossCircleLayer >= 0) newCircle.layer = bossCircleLayer;
