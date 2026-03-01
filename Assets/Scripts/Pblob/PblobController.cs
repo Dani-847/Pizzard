@@ -258,7 +258,7 @@ public class PblobController : MonoBehaviour
         Vector3 bossTarget  = arenaCenter + new Vector3(0, Mathf.Abs(gridOffset) - 2f, 0); // top
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
-        Vector3 playerTarget = arenaCenter + new Vector3(0, gridOffset + 1f, 0);
+        Vector3 playerTarget = gridSpawnPoint != null ? gridSpawnPoint.transform.position : arenaCenter + new Vector3(0, gridOffset + 1f, 0);
 
         // Disable player movement + freeze physics during cinematic
         Pizzard.Player.PlayerController pm = playerTransform != null ? playerTransform.GetComponent<Pizzard.Player.PlayerController>() : null;
@@ -373,14 +373,12 @@ public class PblobController : MonoBehaviour
                         }
                         if (playerTransform != null)
                         {
-                            var playerHP = playerTransform.GetComponent<PlayerHPController>();
+                            var playerHP = playerTransform.GetComponentInChildren<PlayerHPController>();
+                            if (playerHP == null) playerHP = FindObjectOfType<PlayerHPController>();
+
                             if (playerHP != null) 
                             {
-                                // Force invulnerability to 0 so penalty always applies
-                                var timerField = typeof(PlayerHPController).GetField("invulnerabilityTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                                if (timerField != null) timerField.SetValue(playerHP, 0f);
-                                
-                                playerHP.RecibirDaño(penaltyDamage);
+                                playerHP.ForceDamage(penaltyDamage);
                             }
                         }
                     }
@@ -625,7 +623,17 @@ public class PblobController : MonoBehaviour
     // --- PHASE 3 CONTACT VULNERABILITY ---
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        HandlePlayerContact(collision.gameObject);
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        HandlePlayerContact(other.gameObject);
+    }
+
+    private void HandlePlayerContact(GameObject obj)
+    {
+        if (obj.CompareTag("Player"))
         {
             if (currentState == PblobState.Phase3_Grid)
             {
@@ -640,7 +648,17 @@ public class PblobController : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (currentState == PblobState.Phase3_Combat && collision.gameObject.CompareTag("Player"))
+        HandlePlayerExit(collision.gameObject);
+    }
+    
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        HandlePlayerExit(other.gameObject);
+    }
+
+    private void HandlePlayerExit(GameObject obj)
+    {
+        if (currentState == PblobState.Phase3_Combat && obj.CompareTag("Player"))
             MakeInvulnerable();
     }
 

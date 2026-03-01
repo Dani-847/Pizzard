@@ -296,6 +296,17 @@ namespace Pizzard.Core
             }
 
             ChangeState(GameState.Shop);
+            StartCoroutine(ShowDeathDialogAfterLoad());
+        }
+
+        private System.Collections.IEnumerator ShowDeathDialogAfterLoad()
+        {
+            // Wait until the active scene is Shop
+            while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Shop")
+            {
+                yield return null;
+            }
+            yield return null; // Wait one more frame for UI init
             
             var dialog = FindObjectOfType<DialogUI>(true);
             if (dialog != null)

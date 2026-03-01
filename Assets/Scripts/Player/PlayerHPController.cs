@@ -56,6 +56,17 @@ public class PlayerHPController : MonoBehaviour
     }
 
     /// <summary>
+    /// Aplica daño ignorando el timer de invulnerabilidad.
+    /// </summary>
+    public void ForceDamage(int cantidad)
+    {
+        float oldTimer = invulnerabilityTimer;
+        invulnerabilityTimer = 0f;
+        RecibirDaño(cantidad);
+        invulnerabilityTimer = oldTimer;
+    }
+
+    /// <summary>
     /// Resta vida según la cantidad de daño (normalmente 1 = medio corazón).
     /// Actualiza la UI. Si llega a 0, llama a OnDeath().
     /// </summary>
