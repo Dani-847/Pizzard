@@ -135,10 +135,16 @@ Plans:
 ---
 
 ### Phase 19: Boss 2 — Niggel Worthington AI
-**Status**: ⬚ Not Started
+**Status**: ⬚ Planned
 **Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Niggel`
+**Plans:** 3 plans
 
-**Objective**: Full Niggel Worthington (The Rich Guy) boss fight.
+Plans:
+- [ ] 19-01-PLAN.md — GameBalance constants + NiggelController core (CoinVault HP, enrage state machine, momentum)
+- [ ] 19-02-PLAN.md — Attack coroutines + projectile scripts + black dot barriers
+- [ ] 19-03-PLAN.md — NiggelCoinMeterUI HUD + scene wiring in BossArena_2 + human verification
+
+**Objective**: Full Niggel Worthington (The Rich Guy) boss fight — role reversal where player gets stronger as they steal Niggel's coins.
 
 **Current State**: `NiggelController` exists with attack interval, steal mechanic (range check + currency theft + speed buff), and 3 stubbed attacks.
 
