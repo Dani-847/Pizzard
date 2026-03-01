@@ -252,7 +252,8 @@ public class PblobController : MonoBehaviour
 
         float gridOffset  = Pizzard.Core.GameBalance.Bosses.Pblob.GridSpawnOffsetY;  // e.g. -5
         Vector3 bossStart   = transform.position;
-        Vector3 bossTarget  = arenaCenter + new Vector3(0, Mathf.Abs(gridOffset) - 2f, 0); // top
+        // User requested boss to be exactly at Y=5 during phase 3 transition
+        Vector3 bossTarget  = new Vector3(arenaCenter.x, 5f, 0f);
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
         

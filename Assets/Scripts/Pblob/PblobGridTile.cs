@@ -25,7 +25,8 @@ public class PblobGridTile : MonoBehaviour
             for (int i = 0; i < px.Length; i++) px[i] = Color.white;
             tex.SetPixels(px);
             tex.Apply();
-            spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, SIZE, SIZE), new Vector2(0.5f, 0.5f), (float)SIZE);
+            // Create sprite with PPU equal to SIZE so it perfectly equates to 1x1 Unity World Units
+            spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, SIZE, SIZE), new Vector2(0.5f, 0.5f), pixelsPerUnit: SIZE, 0, SpriteMeshType.FullRect);
         }
 
         var col = GetComponent<BoxCollider2D>();
