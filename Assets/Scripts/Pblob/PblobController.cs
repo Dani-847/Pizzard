@@ -85,7 +85,11 @@ public class PblobController : MonoBehaviour
         debugMode = SaveSystem.GetDebugMode();
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) playerTransform = p.transform;
+        if (p != null) 
+        {
+            var pmRoot = p.GetComponentInParent<Pizzard.Player.PlayerController>();
+            playerTransform = pmRoot != null ? pmRoot.transform : p.transform.root;
+        }
 
         if (rhythmManager == null)
             rhythmManager = FindObjectOfType<PblobRhythmManager>();
@@ -243,17 +247,6 @@ public class PblobController : MonoBehaviour
 
     private IEnumerator Phase3TransitionRoutine()
     {
-        // Re-find player in case it wasn't ready at Start()
-        if (playerTransform == null)
-        {
-            var p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) 
-            {
-                var pmRoot = p.GetComponentInParent<Pizzard.Player.PlayerController>();
-                playerTransform = pmRoot != null ? pmRoot.transform : p.transform.root;
-            }
-        }
-
         float elapsed = 0f;
         float duration = 1.5f;
 
