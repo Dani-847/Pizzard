@@ -63,6 +63,17 @@ public class PblobUI : MonoBehaviour
     
     void Update()
     {
+        // Re-find boss if it spawned after this UI initialized
+        if (boss == null)
+        {
+            boss = FindObjectOfType<PblobController>();
+            if (boss != null) maxHealth = boss.maxHealth;
+        }
+
+        // Poll boss HP every frame — same pattern as ManaUI
+        if (boss != null && healthBar != null && maxHealth > 0f)
+            healthBar.SetHealth(boss.CurrentHealth / maxHealth);
+
         if (boss != null && phase2TimerText != null)
         {
             if (boss.IsPhase2TimerActive())

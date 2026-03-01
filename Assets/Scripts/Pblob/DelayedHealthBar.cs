@@ -1,19 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 /// <summary>
-/// Boss health bar — ManaUI-style runtime fill bar.
-/// Reads PblobBorderHealthBar's RectTransform to know size/position.
-/// Creates a single foreground bar (red) that scales its WIDTH to track HP.
-/// The border sprite is the background — it stays untouched.
-/// For now: just the red fill bar. Orange delayed drain can be added later.
+/// Horizontal boss health bar — exact ManaUI pattern rotated 90°.
+/// Place this on a RectTransform with a fixed sizeDelta (not stretch-anchored).
+/// Position/size the rect manually in the Inspector to sit inside the border image.
+/// Foreground anchored LEFT, scales WIDTH as HP drains.
 /// </summary>
 public class DelayedHealthBar : MonoBehaviour
 {
-    private static readonly Color BarColor = new Color(0.85f, 0.10f, 0.10f, 1f);
+    [Header("Auto-created at runtime — no inspector wiring needed")]
+    public RectTransform foreground;
 
-    private RectTransform foreground;
+    private static readonly Color BarColor = new Color(0.85f, 0.10f, 0.10f, 1f);
+    private static readonly Color BgColor  = new Color(0.1f, 0.1f, 0.15f, 0.8f);
+
     private float fullWidth;
 
     private void Start()
@@ -21,7 +22,39 @@ public class DelayedHealthBar : MonoBehaviour
         BuildBar();
     }
 
-    // ──────────────────────────────────── Public API
+    private void BuildBar()
+    {
+        var rt = GetComponent<RectTransform>();
+        fullWidth = rt.sizeDelta.x;
+
+        // --- Background (static, dark) ---
+        var bgGO = new GameObject("HealthBg", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        bgGO.transform.SetParent(transform, false);
+        var bgRT = bgGO.GetComponent<RectTransform>();
+        bgRT.anchorMin = Vector2.zero;
+        bgRT.anchorMax = Vector2.one;
+        bgRT.offsetMin = Vector2.zero;
+        bgRT.offsetMax = Vector2.zero;
+        bgGO.GetComponent<Image>().color = BgColor;
+
+        // --- Foreground (scales with HP) ---
+        var fgGO = new GameObject("HealthFill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        fgGO.transform.SetParent(transform, false);
+        foreground = fgGO.GetComponent<RectTransform>();
+        // Anchor to left-stretch so we only change width (mirrors ManaUI bottom-stretch)
+        foreground.anchorMin = new Vector2(0f, 0f);
+        foreground.anchorMax = new Vector2(0f, 1f);
+        foreground.pivot     = new Vector2(0f, 0.5f);
+        foreground.offsetMin = Vector2.zero;
+        foreground.offsetMax = Vector2.zero;
+        foreground.sizeDelta = new Vector2(fullWidth, 0f);
+        fgGO.GetComponent<Image>().color = BarColor;
+
+        // Hide the parent Image so only the two children render
+        var parentImg = GetComponent<Image>();
+        if (parentImg != null)
+            parentImg.color = Color.clear;
+    }
 
     public void SetHealth(float ratio)
     {
@@ -33,59 +66,5 @@ public class DelayedHealthBar : MonoBehaviour
     public void SetHealth(float current, float max)
     {
         if (max > 0f) SetHealth(current / max);
-    }
-
-    // ──────────────────────────────────── Build
-
-    private void BuildBar()
-    {
-        // Find the border child — it defines the size and position
-        RectTransform border = null;
-        foreach (Transform child in transform)
-        {
-            if (child.name == "PblobBorderHealthBar")
-            {
-                border = child as RectTransform;
-                break;
-            }
-        }
-
-        if (border == null)
-        {
-            Debug.LogError("[DelayedHealthBar] PblobBorderHealthBar not found as child!");
-            return;
-        }
-
-        // Read the border's dimensions
-        fullWidth = border.sizeDelta.x;  // 566.23
-        float barHeight = border.sizeDelta.y;  // 100
-
-        // Create the foreground fill bar
-        var fgGO = new GameObject("HealthFill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        fgGO.transform.SetParent(transform, false);
-
-        foreground = fgGO.GetComponent<RectTransform>();
-
-        // Same anchors/pivot as border so it sits in the exact same spot
-        foreground.anchorMin = border.anchorMin;
-        foreground.anchorMax = border.anchorMax;
-        foreground.pivot = new Vector2(0f, 0.5f); // Left-anchored pivot for width scaling
-
-        // Position: border center offset, adjusted for left-pivot
-        // Border is center-pivoted at (-15, 139), so left edge = -15 - fullWidth/2
-        foreground.anchoredPosition = new Vector2(
-            border.anchoredPosition.x - fullWidth / 2f,
-            border.anchoredPosition.y
-        );
-
-        foreground.sizeDelta = new Vector2(fullWidth, barHeight);
-
-        var img = fgGO.GetComponent<Image>();
-        img.color = BarColor;
-
-        // Ensure fill bar renders BEHIND the border frame
-        foreground.SetAsFirstSibling();
-
-        Debug.Log($"[DelayedHealthBar] Built — width={fullWidth:F0} height={barHeight:F0} pos={foreground.anchoredPosition}");
     }
 }

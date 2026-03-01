@@ -11,6 +11,7 @@ public class PblobController : MonoBehaviour
     [Header("Health & State")]
     public float maxHealth = Pizzard.Core.GameBalance.Bosses.Pblob.MaxHP;
     private float currentHealth;
+    public float CurrentHealth => currentHealth;
     private bool isVulnerable = false;
     public PblobState currentState = PblobState.Idle;
     private bool battleActive = false;
