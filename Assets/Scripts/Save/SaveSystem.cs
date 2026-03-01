@@ -5,6 +5,7 @@ public static class SaveSystem
 {
     private const string KEY_LANGUAGE = "Idioma";
     private const string KEY_LAST_SCENE = "LastScene";
+    private const string KEY_DEBUG_MODE = "DebugMode";
 
     // Idioma
     public static void SetLanguage(int index)
@@ -16,6 +17,18 @@ public static class SaveSystem
     public static int GetLanguage()
     {
         return PlayerPrefs.GetInt(KEY_LANGUAGE, 0);
+    }
+
+    // Debug mode
+    public static void SetDebugMode(bool enabled)
+    {
+        PlayerPrefs.SetInt(KEY_DEBUG_MODE, enabled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public static bool GetDebugMode()
+    {
+        return PlayerPrefs.GetInt(KEY_DEBUG_MODE, 0) == 1;
     }
 
     // ❌ ELIMINAR métodos de volumen - ahora lo maneja SoundManager

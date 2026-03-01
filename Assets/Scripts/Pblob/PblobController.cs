@@ -42,9 +42,7 @@ public class PblobController : MonoBehaviour
     public UnityEvent<bool> OnVulnerabilityChanged;
 
     [Header("DEBUG")]
-    public bool debugMode = true;
-    public KeyCode damageKey = KeyCode.T;
-    public KeyCode nextPhaseKey = KeyCode.P;
+    public bool debugMode = false;
 
     // References
     private PblobRhythmManager rhythmManager;
@@ -84,6 +82,8 @@ public class PblobController : MonoBehaviour
 
     private void Start()
     {
+        debugMode = SaveSystem.GetDebugMode();
+
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTransform = p.transform;
 
@@ -101,13 +101,7 @@ public class PblobController : MonoBehaviour
 
     private void Update()
     {
-        if (!debugMode) return;
-
-        if (Input.GetKeyDown(damageKey))
-            ForceTakeDamage(100f);
-
-        if (Input.GetKeyDown(nextPhaseKey))
-            ForceNextPhase();
+        // Debug keys removed — use OnGUI buttons (KILL / NEXT PHASE) when debug mode is on
     }
     public void ChangeState(PblobState newState)
     {
@@ -447,11 +441,14 @@ public class PblobController : MonoBehaviour
         float spawnRadius = Pizzard.Core.GameBalance.Bosses.Pblob.CircleSpawnRadius;
         float circleScale = Pizzard.Core.GameBalance.Bosses.Pblob.CircleScale;
 
+        // Floor platform positions: spread across bottom half, below boss
+        float floorY = Pizzard.Core.GameBalance.Bosses.Pblob.Phase2FloorY;
+        float[] xOffsets = new float[] { -spawnRadius, 0f, spawnRadius };
+
         for (int i = 0; i < 3; i++)
         {
-            float angleDeg = (i * 120f) + Random.Range(-20f, 20f);
-            float angleRad = angleDeg * Mathf.Deg2Rad;
-            Vector3 offset = new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad), 0f) * spawnRadius;
+            float xJitter = Random.Range(-0.5f, 0.5f);
+            Vector3 offset = new Vector3(xOffsets[i] + xJitter, floorY, 0f);
             GameObject newCircle = Instantiate(circlePrefab, arenaCenter + offset, Quaternion.identity);
 
             newCircle.transform.localScale = circlePrefab.transform.localScale * circleScale;

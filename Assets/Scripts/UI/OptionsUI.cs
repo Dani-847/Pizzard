@@ -17,6 +17,8 @@ public class OptionsUI : MonoBehaviour
     [Header("Botones")]
     public Button acceptButton;
     public Button botonCombinations;
+    public Button botonDebugMode;
+    public TextMeshProUGUI debugModeLabel;
 
     [Header("Referencias externas")]
     public CombinationsUI combinationsUIPanel;
@@ -41,6 +43,12 @@ public class OptionsUI : MonoBehaviour
         botonMenosVolumen.onClick.AddListener(OnClickMenosVolumen);
         botonCombinations.onClick.AddListener(OnClickCombinations);
         acceptButton.onClick.AddListener(GuardarYAceptar);
+
+        if (botonDebugMode != null)
+        {
+            botonDebugMode.onClick.AddListener(OnClickDebugMode);
+            ActualizarDebugLabel();
+        }
 
         // ----------------------------
         // IDIOMA
@@ -134,6 +142,22 @@ public class OptionsUI : MonoBehaviour
             combinationsUIPanel.MostrarPanel();
             Hide(); // Hide OptionsUI to prevent overlap
         }
+    }
+
+    // ----------------------------
+    // DEBUG MODE TOGGLE
+    // ----------------------------
+    public void OnClickDebugMode()
+    {
+        bool current = SaveSystem.GetDebugMode();
+        SaveSystem.SetDebugMode(!current);
+        ActualizarDebugLabel();
+    }
+
+    private void ActualizarDebugLabel()
+    {
+        if (debugModeLabel == null) return;
+        debugModeLabel.text = SaveSystem.GetDebugMode() ? "Debug: ON" : "Debug: OFF";
     }
 
     private void GuardarYAceptar()

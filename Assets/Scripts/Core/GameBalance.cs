@@ -105,7 +105,8 @@ namespace Pizzard.Core
                 public const float WanderRadius = 4f;
                 public const float CircleMoveSpeed = 2.5f;  // Speed at which phase 2 circles wander
                 public const float CircleScale = 1.5f;       // Scale multiplier applied at spawn
-                public const float CircleSpawnRadius = 3.5f; // Radius of 120-deg spread
+                public const float CircleSpawnRadius = 3.5f; // Horizontal spread between floor circles
+                public const float Phase2FloorY = -2.5f;     // Y offset below arenaCenter for floor platforms
                 public const float KnockbackDistance = 5f;
                 public const float KnockbackDuration = 0.4f;
 
