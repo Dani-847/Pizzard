@@ -173,7 +173,26 @@ public class PlayerAimAndCast : MonoBehaviour
             return;
         }
 
-        // 8) Ataques normales
+        // 8) T2 placed combos
+        else if (key == "queso|queso") { HandleQuesoQuesoWall(entry); return; }
+        else if (key == "queso|pepperoni") { HandleQuesoPepperoniArea(entry); return; }
+        else if (key == "queso|piña") { HandleQuesoPinaPillar(entry); return; }
+
+        // 9) T3 queso placed combos
+        else if (key == "queso|queso|queso") { HandleQuesoQuesoQuesoBlackHole(entry); return; }
+        else if (key == "queso|piña|piña") { HandleQuesoPinaPinaPillar(entry); return; }
+        else if (key == "queso|piña|queso") { HandleQuesoPinaQuesoPillar(entry); return; }
+        else if (key == "queso|piña|pepperoni") { HandleQuesoPinaPepperoniPillar(entry); return; }
+        else if (key == "queso|pepperoni|pepperoni") { HandleQuesoPepperoniPepperoniArea(entry); return; }
+        else if (key == "queso|pepperoni|piña") { HandleQuesoPepperoniPinaArea(entry); return; }
+        else if (key == "queso|pepperoni|queso") { HandleQuesoPepperoniQuesoArea(entry); return; }
+
+        // 10) T3 piña|pepperoni teleport variants
+        else if (key == "piña|pepperoni|piña") { HandleTeleportAttackVariant(entry, key); return; }
+        else if (key == "piña|pepperoni|pepperoni") { HandleTeleportAttackVariant(entry, key); return; }
+        else if (key == "piña|pepperoni|queso") { HandleTeleportAttackVariant(entry, key); return; }
+
+        // 11) Ataques normales
         HandleNormalAttack(entry);
     }
 
@@ -364,6 +383,105 @@ public class PlayerAimAndCast : MonoBehaviour
         }
 
         // ¡IMPORTANTE! Limpiar elementos
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoQuesoWall(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoQuesoWallDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPepperoniArea(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPepperoniAreaDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPinaPillar(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPinaPillarDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoQuesoQuesoBlackHole(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoQuesoQuesoDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPinaPinaPillar(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPinaPillarDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPinaQuesoPillar(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPinaPillarDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPinaPepperoniPillar(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPinaPillarDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPepperoniPepperoniArea(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPepperoniAreaDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPepperoniPinaArea(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPepperoniAreaDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleQuesoPepperoniQuesoArea(CombinationEntry entry)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        Vector3 aimDir = GetCurrentAimDirection();
+        Vector3 spawnPos = transform.position + aimDir.normalized * Pizzard.Core.GameBalance.Casting.QuesoPepperoniAreaDistance;
+        Instantiate(entry.attackPrefab, spawnPos, Quaternion.identity);
+        combiner.ClearSelectedElements();
+    }
+
+    private void HandleTeleportAttackVariant(CombinationEntry entry, string key)
+    {
+        if (entry.attackPrefab == null) { combiner.ClearSelectedElements(); return; }
+        var attack = Instantiate(entry.attackPrefab, transform.position, Quaternion.identity);
+        var component = attack.GetComponent<PineapplePepperoniAttack>();
+        if (component != null) component.Initialize(transform, this);
         combiner.ClearSelectedElements();
     }
 
