@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Pizzard.Bosses
@@ -32,6 +33,18 @@ namespace Pizzard.Bosses
         public static float PlayerSpeedMultiplier = 1f;
         private int playerMomentum = 0;
         private Coroutine momentumResetCoroutine;
+
+        // ── Prefabs ──────────────────────────────────────
+        [SerializeField] private GameObject coinBagPrefab;
+        [SerializeField] private GameObject healingCoinPrefab;
+        [SerializeField] private GameObject blackDotBarrierPrefab;
+
+        // ── Barrier tracking ──────────────────────────────
+        private List<GameObject> activeBarriers = new List<GameObject>();
+
+        // ── Coin shield state ────────────────────────────
+        private bool coinShieldActive = false;
+        private Coroutine shieldRoutine;
 
         // ── Attack routines ──────────────────────────────
         private Coroutine attackRoutine;
@@ -156,8 +169,7 @@ namespace Pizzard.Bosses
                     currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed
                         * (1f + GameBalance.Bosses.Niggel.Enrage1SpeedBonus);
                     Debug.Log("[Niggel] Enrage 1: speed increased, spawning barriers.");
-                    // Stub: barrier spawning implemented in plan 02
-                    Debug.Log("[Niggel] Spawn barriers");
+                    SpawnBarriers();
                     break;
 
                 case 2:
@@ -172,6 +184,39 @@ namespace Pizzard.Bosses
                     Debug.Log("[Niggel] Enrage 3: max speed, shield burst attacks enabled.");
                     break;
             }
+        }
+
+        /// <summary>Spawns black dot barrier rows at Enrage 1. Clears any previous barriers first.</summary>
+        private void SpawnBarriers()
+        {
+            if (blackDotBarrierPrefab == null)
+            {
+                Debug.LogWarning("[Niggel] blackDotBarrierPrefab not assigned — skipping barrier spawn.");
+                return;
+            }
+
+            // Clear existing barriers
+            foreach (var b in activeBarriers)
+                if (b != null) Destroy(b);
+            activeBarriers.Clear();
+
+            int rows = GameBalance.Bosses.Niggel.BarrierRowCount;
+            int dots = GameBalance.Bosses.Niggel.BarrierDotsPerRow;
+            float spacing = GameBalance.Bosses.Niggel.BarrierDotSpacing;
+
+            for (int r = 0; r < rows; r++)
+            {
+                float rowY = arenaCenter.y + (r - rows / 2f) * 2f;
+                for (int d = 0; d < dots; d++)
+                {
+                    float dotX = arenaCenter.x + (d - dots / 2f) * spacing;
+                    GameObject dot = Instantiate(blackDotBarrierPrefab,
+                        new Vector3(dotX, rowY, 0f), Quaternion.identity);
+                    activeBarriers.Add(dot);
+                }
+            }
+
+            Debug.Log($"[Niggel] Spawned {activeBarriers.Count} barrier dots.");
         }
 
         private float GetDashCooldown()
@@ -207,7 +252,7 @@ namespace Pizzard.Bosses
         }
 
         // ────────────────────────────────────────────────
-        //  Attack stubs (implementations come in plan 02)
+        //  Attack routines
         // ────────────────────────────────────────────────
 
         private void StartAttackRoutine()
@@ -227,27 +272,141 @@ namespace Pizzard.Bosses
                         : GameBalance.Bosses.Niggel.BaseAttackInterval;
 
                 yield return new WaitForSeconds(interval);
-                if (!isDead && isActive) Attack1_ThrowMoney();
+                if (isDead || !isActive) break;
+
+                // Enrage 3: sometimes do coin shield instead of regular attack
+                if (enrageLevel >= 3 && !coinShieldActive && Random.value < 0.35f)
+                {
+                    if (shieldRoutine != null) StopCoroutine(shieldRoutine);
+                    shieldRoutine = StartCoroutine(CoinShieldRoutine());
+                    continue;
+                }
+
+                // Enrage 2+: sometimes fire a healing coin toward the player
+                if (enrageLevel >= 2 && Random.value < 0.3f)
+                {
+                    FireHealingCoin();
+                    continue;
+                }
+
+                // Default: throw a coin bag
+                yield return StartCoroutine(Attack1_ThrowMoney());
             }
         }
 
-        private void Attack1_ThrowMoney()
+        /// <summary>Throws a coin bag projectile at the player's current position.</summary>
+        private IEnumerator Attack1_ThrowMoney()
         {
-            // Stub — full coin bag projectile implementation in plan 02
-            Debug.Log("[Niggel Attack 1] Stub: ThrowMoney — implementation in plan 02.");
+            if (coinBagPrefab == null || playerTransform == null) yield break;
+
+            Vector2 dir = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            GameObject bag = Instantiate(coinBagPrefab, transform.position, Quaternion.Euler(0f, 0f, angle));
+
+            // Tint yellow
+            var bagSr = bag.GetComponent<SpriteRenderer>();
+            if (bagSr != null) bagSr.color = Color.yellow;
+
+            // Override velocity — speed scales with enrage
+            var bagRb = bag.GetComponent<Rigidbody2D>();
+            float spd = enrageLevel >= 1
+                ? GameBalance.Bosses.Niggel.Enrage1CoinBagSpeed
+                : GameBalance.Bosses.Niggel.CoinBagSpeed;
+            if (bagRb != null) bagRb.velocity = dir * spd;
         }
 
+        /// <summary>Dashes toward the player's current position, clamped to arena bounds.</summary>
         private IEnumerator Attack2_RichDash()
         {
-            // Stub — full dash implementation in plan 02
             isDashing = true;
-            Debug.Log("[Niggel Attack 2] Stub: RichDash — implementation in plan 02.");
-            yield return new WaitForSeconds(GameBalance.Bosses.Niggel.DashDuration);
+
+            Vector2 dashDir = playerTransform != null
+                ? ((Vector2)playerTransform.position - (Vector2)transform.position).normalized
+                : Vector2.right;
+
+            Vector3 rawTarget = transform.position + (Vector3)(dashDir * GameBalance.Bosses.Niggel.DashDistance);
+            rawTarget.x = Mathf.Clamp(rawTarget.x, arenaCenter.x - arenaClampX, arenaCenter.x + arenaClampX);
+            rawTarget.y = Mathf.Clamp(rawTarget.y, arenaCenter.y - arenaClampY, arenaCenter.y + arenaClampY);
+
+            float elapsed = 0f;
+            Vector3 startPos = transform.position;
+            float duration = GameBalance.Bosses.Niggel.DashDuration;
+
+            while (elapsed < duration)
+            {
+                transform.position = Vector3.Lerp(startPos, rawTarget, elapsed / duration);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            transform.position = rawTarget;
             isDashing = false;
         }
 
+        /// <summary>Fires a healing coin toward the player. Called from AttackLoop at Enrage 2+.</summary>
+        private void FireHealingCoin()
+        {
+            if (healingCoinPrefab == null || playerTransform == null) return;
+
+            Vector2 dir = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            GameObject hc = Instantiate(healingCoinPrefab, transform.position, Quaternion.Euler(0f, 0f, angle));
+
+            var hcRb = hc.GetComponent<Rigidbody2D>();
+            if (hcRb != null) hcRb.velocity = dir * GameBalance.Bosses.Niggel.HealingCoinSpeed;
+
+            var hcp = hc.GetComponent<HealingCoinProjectile>();
+            if (hcp != null) hcp.boss = this;
+        }
+
+        /// <summary>Charge visual then burst coin bag projectiles in all directions. Enrage 3.</summary>
+        private IEnumerator CoinShieldRoutine()
+        {
+            coinShieldActive = true;
+
+            // Charge visual: pulse yellow <-> cyan
+            Color original = spriteRenderer != null ? spriteRenderer.color : Color.white;
+            float chargeTime = GameBalance.Bosses.Niggel.ShieldChargeDuration;
+            float t = 0f;
+            while (t < chargeTime)
+            {
+                t += Time.deltaTime;
+                if (spriteRenderer != null)
+                    spriteRenderer.color = Color.Lerp(Color.yellow, Color.cyan, Mathf.PingPong(t * 3f, 1f));
+                yield return null;
+            }
+            if (spriteRenderer != null) spriteRenderer.color = original;
+
+            // Burst N projectiles evenly in a full circle
+            if (coinBagPrefab != null)
+            {
+                int count = GameBalance.Bosses.Niggel.ShieldBurstCount;
+                float burstSpeed = GameBalance.Bosses.Niggel.Enrage1CoinBagSpeed;
+
+                for (int i = 0; i < count; i++)
+                {
+                    float angleDeg = (360f / count) * i;
+                    float angleRad = angleDeg * Mathf.Deg2Rad;
+                    Vector2 dir = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+
+                    GameObject proj = Instantiate(coinBagPrefab, transform.position,
+                        Quaternion.Euler(0f, 0f, angleDeg));
+
+                    var projRb = proj.GetComponent<Rigidbody2D>();
+                    if (projRb != null) projRb.velocity = dir * burstSpeed;
+
+                    // Orange tint to distinguish burst projectiles
+                    var projSr = proj.GetComponent<SpriteRenderer>();
+                    if (projSr != null) projSr.color = new Color(1f, 0.5f, 0f);
+                }
+            }
+
+            coinShieldActive = false;
+        }
+
         // Steal mechanic replaced by CoinVault design — see TakeDamage()
-        // Attack3_StealStats() is removed per plan 01 spec (RESEARCH.md Pitfall 1).
+        // Attack3_StealStats() removed per plan 01 spec (RESEARCH.md Pitfall 1).
 
         // ────────────────────────────────────────────────
         //  Death
@@ -261,6 +420,12 @@ namespace Pizzard.Bosses
             if (attackRoutine != null) StopCoroutine(attackRoutine);
             if (momentumResetCoroutine != null) StopCoroutine(momentumResetCoroutine);
             if (dashCoroutine != null) StopCoroutine(dashCoroutine);
+            if (shieldRoutine != null) StopCoroutine(shieldRoutine);
+
+            // Destroy all active barrier dots
+            foreach (var b in activeBarriers)
+                if (b != null) Destroy(b);
+            activeBarriers.Clear();
 
             // Reset momentum multipliers so player returns to baseline after fight
             PlayerDamageMultiplier = 1f;
