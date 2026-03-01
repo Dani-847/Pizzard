@@ -3,110 +3,273 @@ using UnityEngine;
 
 namespace Pizzard.Bosses
 {
-    using Progression;
+    using Core;
 
     /// <summary>
     /// Boss 4: Niggel Worthington (The Rich Guy).
-    /// Steals currency and health from the player, buffing his own speed or damage resistance.
+    /// Uses a CoinVault HP system with one-way enrage thresholds and a player momentum system.
+    /// Plans 02 and 03 add attack implementations on top of this foundation.
     /// </summary>
     public class NiggelController : BossBase
     {
-        [Header("Niggel Settings")]
-        [SerializeField] private float attackInterval = Core.GameBalance.Bosses.Niggel.AttackInterval;
-        [SerializeField] private float stealRange = Core.GameBalance.Bosses.Niggel.StealRange;
-        [SerializeField] private int currencyStealAmount = Core.GameBalance.Bosses.Niggel.CurrencyStealAmount;
-        
-        [Header("Buffs")]
-        public float speedMultiplier = 1.0f;
+        // ── CoinVault (HP) ──────────────────────────────
+        private int coinVault;
+        private int enrageLevel = 0;
 
-        private Transform playerTransform; // Needs to be assigned or found dynamically
+        // ── Movement ────────────────────────────────────
+        [SerializeField] private float currentMoveSpeed;
+        private bool isDashing = false;
+        private Coroutine dashCoroutine;
+        private float dashCooldownTimer = 0f;
+
+        // ── Arena bounds (mirrors PblobController pattern) ──
+        [SerializeField] private Vector2 arenaCenter = Vector2.zero;
+        [SerializeField] private float arenaClampX = 7f;
+        [SerializeField] private float arenaClampY = 4f;
+
+        // ── Momentum (player side — static so other scripts can read) ──
+        public static float PlayerDamageMultiplier = 1f;
+        public static float PlayerSpeedMultiplier = 1f;
+        private int playerMomentum = 0;
+        private Coroutine momentumResetCoroutine;
+
+        // ── Attack routines ──────────────────────────────
+        private Coroutine attackRoutine;
+        private bool isActive = false;
+
+        // ── References ───────────────────────────────────
+        [SerializeField] private Transform playerTransform;
+        private Rigidbody2D rb;
+        private SpriteRenderer spriteRenderer;
+
+        // ── Public accessors ─────────────────────────────
+        public int CurrentCoinVault => coinVault;
+        public int CoinVaultMax => GameBalance.Bosses.Niggel.CoinVaultMax;
+        public int EnrageLevel => enrageLevel;
+
+        // ────────────────────────────────────────────────
+        //  Unity lifecycle
+        // ────────────────────────────────────────────────
 
         protected override void Awake()
         {
-            base.Awake();
-            
-            // Temporary auto-find for the Prototype structure
-            var playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
+            // Do NOT call base.Awake() — we manage currentHealth ourselves via coinVault sync.
+            rb = GetComponent<Rigidbody2D>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            if (playerTransform == null)
             {
-                playerTransform = playerObj.transform;
+                var playerObj = GameObject.FindGameObjectWithTag("Player");
+                if (playerObj != null) playerTransform = playerObj.transform;
             }
 
-            StartCoroutine(AttackRoutine());
+            // CoinVault init
+            coinVault = GameBalance.Bosses.Niggel.CoinVaultMax;
+            currentHealth = coinVault;
+            maxHealth = GameBalance.Bosses.Niggel.CoinVaultMax;
+
+            currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed;
+            dashCooldownTimer = GameBalance.Bosses.Niggel.BaseDashCooldown;
+
+            isActive = true;
+            StartAttackRoutine();
         }
 
-        private IEnumerator AttackRoutine()
+        private void Update()
         {
-            while (!isDead)
+            if (!isActive || isDead) return;
+
+            // Move toward player
+            if (playerTransform != null)
             {
-                yield return new WaitForSeconds(attackInterval);
-                PerformAttack();
+                Vector2 target = Vector2.MoveTowards(transform.position, playerTransform.position,
+                    currentMoveSpeed * Time.deltaTime);
+                transform.position = new Vector3(
+                    Mathf.Clamp(target.x, arenaCenter.x - arenaClampX, arenaCenter.x + arenaClampX),
+                    Mathf.Clamp(target.y, arenaCenter.y - arenaClampY, arenaCenter.y + arenaClampY),
+                    transform.position.z);
+            }
+
+            // Dash cooldown
+            if (!isDashing)
+            {
+                dashCooldownTimer -= Time.deltaTime;
+                if (dashCooldownTimer <= 0f)
+                {
+                    dashCooldownTimer = GetDashCooldown();
+                    if (dashCoroutine != null) StopCoroutine(dashCoroutine);
+                    dashCoroutine = StartCoroutine(Attack2_RichDash());
+                }
             }
         }
 
-        private void PerformAttack()
-        {
-            int attackType = Random.Range(1, 4);
+        // ────────────────────────────────────────────────
+        //  HP / Damage
+        // ────────────────────────────────────────────────
 
-            switch (attackType)
+        public override void TakeDamage(int amount)
+        {
+            if (isDead) return;
+
+            coinVault = Mathf.Max(0, coinVault - amount);
+            currentHealth = coinVault; // BossBase sync for BossHealthBarUI
+
+            OnPlayerHitNiggel();
+            CheckEnrageThresholds();
+
+            if (coinVault <= 0) Die();
+        }
+
+        /// <summary>
+        /// Heals Niggel's CoinVault without reverting enrage level.
+        /// Called by healing coin attacks (Enrage 2+).
+        /// </summary>
+        public void HealCoinVault(int amount)
+        {
+            coinVault = Mathf.Min(coinVault + amount, GameBalance.Bosses.Niggel.CoinVaultMax);
+            currentHealth = coinVault; // BossBase sync
+            // Do NOT call CheckEnrageThresholds — thresholds are strictly one-way.
+        }
+
+        // ────────────────────────────────────────────────
+        //  Enrage state machine (one-way)
+        // ────────────────────────────────────────────────
+
+        private void CheckEnrageThresholds()
+        {
+            if (enrageLevel < 1 && coinVault <= GameBalance.Bosses.Niggel.Enrage1Threshold)
+                EnterEnrage(1);
+            else if (enrageLevel < 2 && coinVault <= GameBalance.Bosses.Niggel.Enrage2Threshold)
+                EnterEnrage(2);
+            else if (enrageLevel < 3 && coinVault <= GameBalance.Bosses.Niggel.Enrage3Threshold)
+                EnterEnrage(3);
+        }
+
+        private void EnterEnrage(int level)
+        {
+            enrageLevel = level;
+            Debug.Log($"[Niggel] Entered enrage level {level}. CoinVault={coinVault}");
+
+            switch (level)
             {
                 case 1:
-                    Attack1_ThrowMoney();
+                    currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed
+                        * (1f + GameBalance.Bosses.Niggel.Enrage1SpeedBonus);
+                    Debug.Log("[Niggel] Enrage 1: speed increased, spawning barriers.");
+                    // Stub: barrier spawning implemented in plan 02
+                    Debug.Log("[Niggel] Spawn barriers");
                     break;
+
                 case 2:
-                    Attack2_RichDash();
+                    dashCooldownTimer = GameBalance.Bosses.Niggel.Enrage2DashCooldown;
+                    Debug.Log("[Niggel] Enrage 2: dash cooldown reduced, healing coins enabled.");
                     break;
+
                 case 3:
-                    Attack3_StealStats();
+                    currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed
+                        * (1f + GameBalance.Bosses.Niggel.Enrage3SpeedBonus);
+                    dashCooldownTimer = GameBalance.Bosses.Niggel.Enrage3DashCooldown;
+                    Debug.Log("[Niggel] Enrage 3: max speed, shield burst attacks enabled.");
                     break;
+            }
+        }
+
+        private float GetDashCooldown()
+        {
+            if (enrageLevel >= 3) return GameBalance.Bosses.Niggel.Enrage3DashCooldown;
+            if (enrageLevel >= 2) return GameBalance.Bosses.Niggel.Enrage2DashCooldown;
+            return GameBalance.Bosses.Niggel.BaseDashCooldown;
+        }
+
+        // ────────────────────────────────────────────────
+        //  Player momentum
+        // ────────────────────────────────────────────────
+
+        private void OnPlayerHitNiggel()
+        {
+            playerMomentum = Mathf.Min(playerMomentum + 1, GameBalance.Bosses.Niggel.MaxMomentum);
+            ApplyMomentumToPlayer();
+            if (momentumResetCoroutine != null) StopCoroutine(momentumResetCoroutine);
+            momentumResetCoroutine = StartCoroutine(MomentumResetTimer());
+        }
+
+        private IEnumerator MomentumResetTimer()
+        {
+            yield return new WaitForSeconds(GameBalance.Bosses.Niggel.MomentumResetDelay);
+            playerMomentum = 0;
+            ApplyMomentumToPlayer();
+        }
+
+        private void ApplyMomentumToPlayer()
+        {
+            PlayerDamageMultiplier = 1f + (playerMomentum * GameBalance.Bosses.Niggel.MomentumDamagePerStack);
+            PlayerSpeedMultiplier = 1f + (playerMomentum * GameBalance.Bosses.Niggel.MomentumSpeedPerStack);
+        }
+
+        // ────────────────────────────────────────────────
+        //  Attack stubs (implementations come in plan 02)
+        // ────────────────────────────────────────────────
+
+        private void StartAttackRoutine()
+        {
+            if (attackRoutine != null) StopCoroutine(attackRoutine);
+            attackRoutine = StartCoroutine(AttackLoop());
+        }
+
+        private IEnumerator AttackLoop()
+        {
+            while (!isDead && isActive)
+            {
+                float interval = enrageLevel >= 2
+                    ? GameBalance.Bosses.Niggel.Enrage2AttackInterval
+                    : enrageLevel >= 1
+                        ? GameBalance.Bosses.Niggel.Enrage1AttackInterval
+                        : GameBalance.Bosses.Niggel.BaseAttackInterval;
+
+                yield return new WaitForSeconds(interval);
+                if (!isDead && isActive) Attack1_ThrowMoney();
             }
         }
 
         private void Attack1_ThrowMoney()
         {
-            Debug.Log("[Niggel Attack 1] Throwing heavy bags of coins at the player.");
-            // Instantiate coin bag projectiles
+            // Stub — full coin bag projectile implementation in plan 02
+            Debug.Log("[Niggel Attack 1] Stub: ThrowMoney — implementation in plan 02.");
         }
 
-        private void Attack2_RichDash()
+        private IEnumerator Attack2_RichDash()
         {
-            Debug.Log($"[Niggel Attack 2] Dashing across the room with Speed Multiplier: {speedMultiplier}");
-            // Move via Rigidbody / Transform interpolation
+            // Stub — full dash implementation in plan 02
+            isDashing = true;
+            Debug.Log("[Niggel Attack 2] Stub: RichDash — implementation in plan 02.");
+            yield return new WaitForSeconds(GameBalance.Bosses.Niggel.DashDuration);
+            isDashing = false;
         }
 
-        private void Attack3_StealStats()
+        // Steal mechanic replaced by CoinVault design — see TakeDamage()
+        // Attack3_StealStats() is removed per plan 01 spec (RESEARCH.md Pitfall 1).
+
+        // ────────────────────────────────────────────────
+        //  Death
+        // ────────────────────────────────────────────────
+
+        protected override void Die()
         {
-            Debug.Log("[Niggel Attack 3] Attempting to steal stats from the player!");
-            
-            if (playerTransform == null) return;
+            isDead = true;
+            isActive = false;
 
-            float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
-            if (distanceToPlayer <= stealRange)
-            {
-                bool stoleCurrency = false;
+            if (attackRoutine != null) StopCoroutine(attackRoutine);
+            if (momentumResetCoroutine != null) StopCoroutine(momentumResetCoroutine);
+            if (dashCoroutine != null) StopCoroutine(dashCoroutine);
 
-                if (ProgressionManager.Instance != null && ProgressionManager.Instance.BossCurrency >= currencyStealAmount)
-                {
-                    // Force-spend currency to 'steal' it without purchasing anything
-                    ProgressionManager.Instance.SpendCurrency(currencyStealAmount);
-                    stoleCurrency = true;
-                    Debug.Log($"[Niggel] Stole {currencyStealAmount} currency! Buffing Speed!");
-                    
-                    // Buff Niggel
-                    speedMultiplier += Core.GameBalance.Bosses.Niggel.SpeedBuffPerSteal;
-                }
-                
-                if (!stoleCurrency)
-                {
-                    // Fallback to stealing health if currency is low
-                    Debug.Log("[Niggel] Player is broke! Stealing Health instead!");
-                    // playerTransform.GetComponent<PlayerHealth>().TakeDamage(1); 
-                }
-            }
-            else
-            {
-                Debug.Log("[Niggel] Player was outside steal range. Attack missed.");
-            }
+            // Reset momentum multipliers so player returns to baseline after fight
+            PlayerDamageMultiplier = 1f;
+            PlayerSpeedMultiplier = 1f;
+            playerMomentum = 0;
+
+            if (rb != null) rb.velocity = Vector2.zero;
+
+            base.Die(); // Awards currency and fires OnBossDefeated via BossBase
         }
     }
 }
