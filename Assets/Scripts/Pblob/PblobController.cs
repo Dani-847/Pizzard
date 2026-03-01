@@ -257,14 +257,9 @@ public class PblobController : MonoBehaviour
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
         
-        // The grid has an array-sizing problem earlier which shifted coordinates. 
-        // Now that it's 23x6 and 1.0 size:
+        // User explicitly requested -3.3 y coordinate for the player's snap location
         Vector3 gridCenter = gridSpawnPoint != null ? gridSpawnPoint.transform.position : arenaCenter + new Vector3(0, gridOffset, 0);
-        float compactGridHeight = 6f;
-        float compactTileSize = 1.0f;
-        // Half the height (3 tiles) times the size (1.0 bounds) is 2.5 units down from center.
-        float botYOffset = -(compactGridHeight - 1f) * compactTileSize / 2f; 
-        Vector3 playerTarget = gridCenter + new Vector3(0, botYOffset, 0);
+        Vector3 playerTarget = new Vector3(gridCenter.x, -3.3f, 0f);
 
         // Disable player movement + freeze physics during cinematic
         Pizzard.Player.PlayerController pm = playerTransform != null ? playerTransform.GetComponent<Pizzard.Player.PlayerController>() : null;
