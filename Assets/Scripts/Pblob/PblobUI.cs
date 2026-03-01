@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,9 +8,8 @@ public class PblobUI : MonoBehaviour
     public DelayedHealthBar healthBar;
     
     [Header("Optional UI Elements")]
-    public Text healthText; // Para mostrar "1000/1000"
-    public GameObject bossNameDisplay;
-    public Text phase2TimerText; // Reference to the Phase 2 text under the Boss Bar
+    public TextMeshProUGUI bossNameText;
+    public TextMeshProUGUI phase2TimerText;
     
     private PblobController boss;
     private float maxHealth;
@@ -47,18 +47,8 @@ public class PblobUI : MonoBehaviour
     
     void UpdateHealthBar(float healthPercentage)
     {
-        // Actualizar el sistema de doble barra
         if (healthBar != null)
-        {
             healthBar.SetHealth(healthPercentage);
-        }
-        
-        // Actualizar texto de salud (opcional)
-        if (healthText != null)
-        {
-            int currentHP = Mathf.RoundToInt(healthPercentage * maxHealth);
-            healthText.text = $"{currentHP}/{maxHealth}";
-        }
     }
     
     void Update()
