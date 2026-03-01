@@ -32,8 +32,7 @@ public class PblobGridTile : MonoBehaviour
         var col = GetComponent<BoxCollider2D>();
         if (col == null) col = gameObject.AddComponent<BoxCollider2D>();
         col.isTrigger = true;
-        // Make the tile collider slightly smaller so you have to actually step inside it, not just brush the edge
-        col.size = new Vector2(0.8f, 0.8f);
+        col.size = new Vector2(1f, 1f);
 
         SetColor(Color.gray);
     }

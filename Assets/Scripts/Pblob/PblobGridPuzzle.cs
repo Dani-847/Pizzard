@@ -20,10 +20,10 @@ public class PblobGridPuzzle : MonoBehaviour
         if (isGenerating) return;
         isGenerating = true;
 
-        // Make grid tiles 2.0f to match player size, spanning 20 world units (10 columns * 2)
-        gridWidth = 10;
-        gridHeight = 5;
-        tileSize = 2.0f;
+        // Make grid tiles 1.0f, spanning a 23x6 manual grid layout
+        gridWidth = 23;
+        gridHeight = 6;
+        tileSize = 1.0f;
 
         if (grid != null)
         {
@@ -43,7 +43,6 @@ public class PblobGridPuzzle : MonoBehaviour
                 pos.y -= (gridHeight - 1) * tileSize / 2f;
 
                 GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
-                tile.transform.localScale = new Vector3(tileSize, tileSize, 1f);
                 
                 // Keep them invisible/gray at first
                 PblobGridTile gt = tile.GetComponent<PblobGridTile>();

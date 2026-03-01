@@ -252,17 +252,17 @@ public class PblobController : MonoBehaviour
 
         float gridOffset  = Pizzard.Core.GameBalance.Bosses.Pblob.GridSpawnOffsetY;  // e.g. -5
         Vector3 bossStart   = transform.position;
-        // User requested boss to be exactly at Y=5 during phase 3 transition
-        Vector3 bossTarget  = new Vector3(arenaCenter.x, 5f, 0f);
+        // User requested boss to be exactly at Y=4.3 during phase 3 transition
+        Vector3 bossTarget  = new Vector3(arenaCenter.x, 4.3f, 0f);
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
         
         // The grid has an array-sizing problem earlier which shifted coordinates. 
-        // Now that it's 10x5 and 2.0 size:
+        // Now that it's 23x6 and 1.0 size:
         Vector3 gridCenter = gridSpawnPoint != null ? gridSpawnPoint.transform.position : arenaCenter + new Vector3(0, gridOffset, 0);
-        float compactGridHeight = 5f;
-        float compactTileSize = 2.0f;
-        // Half the height (2.5 tiles) times the size (2.0 bounds) is 5.0 units down from center.
+        float compactGridHeight = 6f;
+        float compactTileSize = 1.0f;
+        // Half the height (3 tiles) times the size (1.0 bounds) is 2.5 units down from center.
         float botYOffset = -(compactGridHeight - 1f) * compactTileSize / 2f; 
         Vector3 playerTarget = gridCenter + new Vector3(0, botYOffset, 0);
 
