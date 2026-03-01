@@ -137,7 +137,7 @@ Plans:
 ### Phase 19: Boss 2 — Niggel Worthington AI
 **Status**: ⬚ In Progress (1/3 plans complete)
 **Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Niggel`
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 - [x] 19-01-PLAN.md — GameBalance constants + NiggelController core (CoinVault HP, enrage state machine, momentum)
