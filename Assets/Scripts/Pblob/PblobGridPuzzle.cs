@@ -27,6 +27,11 @@ public class PblobGridPuzzle : MonoBehaviour
 
         grid = new GameObject[gridWidth, gridHeight];
         
+        // Make grid highly compact and span full width
+        gridWidth = 40;
+        gridHeight = 5;
+        tileSize = 0.5f;
+        
         // Spawn tiles
         for (int x = 0; x < gridWidth; x++)
         {
@@ -38,6 +43,7 @@ public class PblobGridPuzzle : MonoBehaviour
                 pos.y -= (gridHeight - 1) * tileSize / 2f;
 
                 GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
+                tile.transform.localScale = new Vector3(tileSize, tileSize, 1f);
                 
                 // Keep them invisible/gray at first
                 PblobGridTile gt = tile.GetComponent<PblobGridTile>();

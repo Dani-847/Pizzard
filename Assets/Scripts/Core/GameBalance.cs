@@ -116,7 +116,7 @@ namespace Pizzard.Core
 
                 // Phase 3
                 public const float Phase3MoveSpeed = 6f;    // Boss chase speed in enrage
-                public const float GridSpawnOffsetY = -5f;  // World-units below arenaCenter for grid spawn
+                public const float GridSpawnOffsetY = -2.5f;  // Adjusted to place bottom grid row exactly at Y=-3.5
             }
 
             public static class Heckiel

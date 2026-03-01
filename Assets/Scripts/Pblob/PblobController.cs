@@ -256,9 +256,12 @@ public class PblobController : MonoBehaviour
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
         
-        // Match the player exactly to the bottom row of the grid. User requested world y = -3.5f
+        // Match the player exactly to the bottom row of the grid.
         Vector3 gridCenter = gridSpawnPoint != null ? gridSpawnPoint.transform.position : arenaCenter + new Vector3(0, gridOffset, 0);
-        Vector3 playerTarget = new Vector3(gridCenter.x, -3.5f, 0f);
+        float compactGridHeight = 5f;
+        float compactTileSize = 0.5f;
+        float botYOffset = -(compactGridHeight - 1f) * compactTileSize / 2f; 
+        Vector3 playerTarget = gridCenter + new Vector3(0, botYOffset, 0);
 
         // Disable player movement + freeze physics during cinematic
         Pizzard.Player.PlayerController pm = playerTransform != null ? playerTransform.GetComponent<Pizzard.Player.PlayerController>() : null;

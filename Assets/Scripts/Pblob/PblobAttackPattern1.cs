@@ -164,7 +164,10 @@ public class PblobAttackPattern1 : PblobAttackPattern
                     spawnPos.x = Mathf.Clamp(spawnPos.x, c.x - cx, c.x + cx);
                     spawnPos.y = Mathf.Clamp(spawnPos.y, c.y - cy, c.y + cy);
                 }
-                GameObject hairball = Instantiate(hairballPrefab, spawnPos, point.rotation);
+                
+                // Shoot in a fully random 360-degree direction instead of the point's forward
+                Quaternion randomRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+                GameObject hairball = Instantiate(hairballPrefab, spawnPos, randomRotation);
 
                 float selectedSpeed = speedVariations[Random.Range(0, speedVariations.Length)];
 
