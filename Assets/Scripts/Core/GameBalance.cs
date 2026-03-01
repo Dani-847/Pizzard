@@ -132,6 +132,57 @@ namespace Pizzard.Core
 
             public static class Niggel
             {
+                // ── CoinVault (HP system) ──
+                public const int CoinVaultMax = 200;
+                public const int Enrage1Threshold = 150;
+                public const int Enrage2Threshold = 100;
+                public const int Enrage3Threshold = 50;
+
+                // ── Movement ──
+                public const float BaseMoveSpeed = 2.5f;
+                public const float Enrage1SpeedBonus = 0.1f;
+                public const float Enrage3SpeedBonus = 0.2f;
+
+                // ── Dash ──
+                public const float BaseDashCooldown = 20f;
+                public const float Enrage2DashCooldown = 12f;
+                public const float Enrage3DashCooldown = 8f;
+                public const float DashDistance = 5f;
+                public const float DashDuration = 0.25f;
+
+                // ── Coin bag (Attack 1) ──
+                public const float CoinBagSpeed = 3f;
+                public const float Enrage1CoinBagSpeed = 5f;
+                public const float CoinBagDamage = 1f;
+
+                // ── Healing coin (Enrage 2+) ──
+                public const float HealingCoinSpeed = 7f;
+                public const int HealingCoinAmount = 30;
+                public const float HealingCoinCooldown = 8f;
+
+                // ── Coin shield burst (Enrage 3) ──
+                public const float ShieldCooldown = 8f;
+                public const float ShieldChargeDuration = 1.5f;
+                public const int ShieldBurstCount = 8;
+                public const float ShieldBurstDamage = 2f;
+
+                // ── Black dot barriers (Enrage 1) ──
+                public const int BarrierRowCount = 3;
+                public const int BarrierDotsPerRow = 5;
+                public const float BarrierDotSpacing = 0.8f;
+
+                // ── Momentum (player side) ──
+                public const int MaxMomentum = 5;
+                public const float MomentumResetDelay = 4f;
+                public const float MomentumDamagePerStack = 0.05f;
+                public const float MomentumSpeedPerStack = 0.03f;
+
+                // ── Attack timing ──
+                public const float BaseAttackInterval = 3f;
+                public const float Enrage1AttackInterval = 2.5f;
+                public const float Enrage2AttackInterval = 2f;
+
+                // ── Legacy constants (kept for backward compatibility) ──
                 public const float AttackInterval = 3f;
                 public const float StealRange = 2.5f;
                 public const int CurrencyStealAmount = 10;
