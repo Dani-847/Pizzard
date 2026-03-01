@@ -97,7 +97,7 @@ namespace Pizzard.Core
                     case GameState.Dialogue: valid = (newState == GameState.Shop); break;
                     case GameState.Shop: valid = (newState == GameState.PreBossDialogue || newState == GameState.Combat); break; // Fallback to combat if dialogue missing
                     case GameState.PreBossDialogue: valid = (newState == GameState.Combat); break;
-                    case GameState.Combat: valid = (newState == GameState.PostBossDialogue || newState == GameState.Shop); break; // Fallback to shop if dialogue missing
+                    case GameState.Combat: valid = (newState == GameState.PostBossDialogue || newState == GameState.Shop || newState == GameState.MainMenu); break;
                     case GameState.PostBossDialogue: valid = (newState == GameState.Shop || newState == GameState.MainMenu); break;
                     default: valid = false; break; // Block transitions from unhandled states
                 }

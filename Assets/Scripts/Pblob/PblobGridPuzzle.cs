@@ -6,9 +6,9 @@ public class PblobGridPuzzle : MonoBehaviour
 {
     [Header("Prefabs & Config")]
     public GameObject tilePrefab;
-    public int gridWidth = 7;
-    public int gridHeight = 7;
-    public float tileSize = 1.5f;
+    public int gridWidth = 20;
+    public int gridHeight = 5;
+    public float tileSize = 1.0f;
 
     [Header("State")]
     private GameObject[,] grid;
@@ -33,8 +33,9 @@ public class PblobGridPuzzle : MonoBehaviour
             for (int y = 0; y < gridHeight; y++)
             {
                 Vector3 pos = startWorldPos + new Vector3(x * tileSize, y * tileSize, 0);
-                // Center the grid offset horizontally
-                pos.x -= (gridWidth * tileSize) / 2f;
+                // Center the grid around startWorldPos
+                pos.x -= (gridWidth - 1) * tileSize / 2f;
+                pos.y -= (gridHeight - 1) * tileSize / 2f;
 
                 GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
                 

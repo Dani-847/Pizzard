@@ -49,6 +49,10 @@ public class CharacterProjectile : MonoBehaviour
             Debug.Log($"Proyectil aliado ignorado por aliado: {other.tag}");
             return;
         }
+
+        // Ignorar los círculos del Phase 2 de P'blob — no deben bloquear hechizos
+        if (other.gameObject.layer == LayerMask.NameToLayer("BossCircle"))
+            return;
         
         // Dañar al BOSS
         if (other.CompareTag("Boss"))

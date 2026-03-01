@@ -27,6 +27,18 @@ public class PblobAttackPattern1 : PblobAttackPattern
     private PblobRhythmManager rhythmManager;
     private int lastProcessedBeat = -1;
 
+    protected override void Start()
+    {
+        base.Start();
+        if (mustachePoints != null)
+        {
+            foreach (var point in mustachePoints)
+            {
+                if (point != null) point.SetParent(null);
+            }
+        }
+    }
+
     public override void StartPattern()
     {
         if (isPatternActive) return;
@@ -142,7 +154,17 @@ public class PblobAttackPattern1 : PblobAttackPattern
             var point = mustachePoints[i];
             if (point != null && hairballPrefab != null)
             {
-                GameObject hairball = Instantiate(hairballPrefab, point.position, point.rotation);
+                // Clamp spawn position to arena bounds so hairballs never appear through walls
+                Vector3 spawnPos = point.position;
+                if (bossController != null)
+                {
+                    Vector3 c = bossController.ArenaCenter;
+                    float cx = bossController.ArenaClampX;
+                    float cy = bossController.ArenaClampY;
+                    spawnPos.x = Mathf.Clamp(spawnPos.x, c.x - cx, c.x + cx);
+                    spawnPos.y = Mathf.Clamp(spawnPos.y, c.y - cy, c.y + cy);
+                }
+                GameObject hairball = Instantiate(hairballPrefab, spawnPos, point.rotation);
 
                 float selectedSpeed = speedVariations[Random.Range(0, speedVariations.Length)];
 
@@ -173,29 +195,14 @@ public class PblobAttackPattern1 : PblobAttackPattern
                     }
                 }
 
-                // ✅ NUEVO: Predictive Aiming (Disparo Predictivo) para hacer la pelea más competitiva
-                Vector3 targetPos = player.transform.position;
-                Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-                if (playerRb != null && playerRb.velocity.magnitude > 0.1f)
-                {
-                    // Prever dónde estará el jugador basándose en su velocidad, distancia y velocidad del proyectil
-                    float distance = Vector3.Distance(point.position, targetPos);
-                    float timeToHit = distance / selectedSpeed;
-                    
-                    // factor 0.7f para que no sea *demasiado* perfecto e injusto
-                    targetPos += (Vector3)playerRb.velocity * (timeToHit * 0.7f); 
-                }
-
-                Vector3 direction = (targetPos - point.position).normalized;
-                
+                // Hairballs are static obstacles — freeze in place
                 Rigidbody2D rb = hairball.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
-                    rb.velocity = direction * selectedSpeed;
+                    rb.velocity = Vector2.zero;
+                    rb.isKinematic = true;
                 }
 
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                hairball.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
         }
     }

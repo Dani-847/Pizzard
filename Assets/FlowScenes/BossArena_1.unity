@@ -320,6 +320,54 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!1 &641320096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 641320098}
+  - component: {fileID: 641320097}
+  m_Layer: 0
+  m_Name: PblobGridPuzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &641320097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641320096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef3093a9fb503454698260f3e2be51ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilePrefab: {fileID: 5016027419011158540, guid: e869013a39de91c49bbe691a5d6266e0, type: 3}
+  gridWidth: 10
+  gridHeight: 3
+  tileSize: 1.85
+--- !u!4 &641320098
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641320096}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1411765525
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -462,6 +510,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8020307610992647026, guid: a22527fe562cf3146a0c763a7f17b8ad, type: 3}
+      propertyPath: m_Radius
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8460767401694941113, guid: a22527fe562cf3146a0c763a7f17b8ad, type: 3}
+      propertyPath: gridPuzzle
+      value: 
+      objectReference: {fileID: 641320097}
+    - target: {fileID: 8460767401694941113, guid: a22527fe562cf3146a0c763a7f17b8ad, type: 3}
+      propertyPath: arenaClampX
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8460767401694941113, guid: a22527fe562cf3146a0c763a7f17b8ad, type: 3}
+      propertyPath: arenaClampY
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -562,3 +626,4 @@ SceneRoots:
   - {fileID: 233624322}
   - {fileID: 521262000}
   - {fileID: 1598986891}
+  - {fileID: 641320098}

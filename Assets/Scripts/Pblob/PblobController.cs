@@ -68,9 +68,9 @@ public class PblobController : MonoBehaviour
         float halfWidth  = b.extents.x * Mathf.Abs(scale.x);
         float halfHeight = b.extents.y * Mathf.Abs(scale.y);
 
-        // Shrink by 1 unit to keep boss visually inside the walls
-        arenaClampX = Mathf.Max(0.5f, halfWidth - 1f);
-        arenaClampY = Mathf.Max(0.5f, halfHeight - 1f);
+        // Shrink by 1 unit to keep boss visually inside the walls — always positive
+        arenaClampX = Mathf.Max(1f, halfWidth - 1f);
+        arenaClampY = Mathf.Max(1f, halfHeight - 1f);
 
         // Use tilemap world center as arena center if it's near origin
         Vector3 worldCenter = tilemap.transform.TransformPoint(b.center);
@@ -146,8 +146,7 @@ public class PblobController : MonoBehaviour
                 if (gridPuzzle == null) gridPuzzle = FindObjectOfType<PblobGridPuzzle>();
                 if (gridPuzzle != null)
                 {
-                    Vector3 spawnPos = arenaCenter + new Vector3(0, Pizzard.Core.GameBalance.Bosses.Pblob.GridSpawnOffsetY, 0);
-                    gridPuzzle.GenerateGrid(spawnPos);
+                    gridPuzzle.GenerateGrid(new Vector3(0f, 0.39f, 0f));
                 }
                 else
                 {
@@ -259,11 +258,13 @@ public class PblobController : MonoBehaviour
         Vector3 bossTarget  = arenaCenter + new Vector3(0, Mathf.Abs(gridOffset) - 2f, 0); // top
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
-        Vector3 playerTarget = arenaCenter + new Vector3(0, gridOffset + 1f, 0); // bottom (inside grid)
+        Vector3 playerTarget = new Vector3(0f, -3.24f, 0f);
 
-        // Disable player movement during cinematic
+        // Disable player movement + freeze physics during cinematic
         Pizzard.Player.PlayerController pm = playerTransform != null ? playerTransform.GetComponent<Pizzard.Player.PlayerController>() : null;
+        Rigidbody2D playerRb = playerTransform != null ? playerTransform.GetComponent<Rigidbody2D>() : null;
         if (pm != null) pm.enabled = false;
+        if (playerRb != null) { playerRb.velocity = Vector2.zero; playerRb.isKinematic = true; }
 
         while (elapsed < duration)
         {
@@ -275,7 +276,11 @@ public class PblobController : MonoBehaviour
             yield return null;
         }
 
+        // Snap to exact target
+        if (playerTransform != null) playerTransform.position = playerTarget;
+
         // Re-enable player after brief grid-reveal delay
+        if (playerRb != null) playerRb.isKinematic = false;
         if (pm != null)
             StartCoroutine(ReenablePlayerAfter(pm, 2f));
 
@@ -290,7 +295,7 @@ public class PblobController : MonoBehaviour
 
     private IEnumerator Phase3CombatRoutine()
     {
-        MakeVulnerable(); // Permanently vulnerable
+        // Vulnerability is contact-based (OnTriggerEnter2D/Exit2D), not automatic
 
         // Use phase-3-specific pattern if available, else pure chase
         if (attackPatterns != null && attackPatterns.Length > 1 && attackPatterns[1] != null)
@@ -357,27 +362,25 @@ public class PblobController : MonoBehaviour
                     phase2TimerActive = false;
                     Debug.Log("⏳ Phase 2 Time Out! Checking penalty...");
 
-                    bool inGreen = false;
-                    foreach (var c in activeCircles)
-                    {
-                        var controller = c.GetComponent<PblobCircleController>();
-                        if (controller != null && controller.type == PblobCircleController.CircleType.Green && controller.playerInside)
-                        {
-                            inGreen = true;
-                            break;
-                        }
-                    }
-
-                    if (!inGreen)
+                    if (!isVulnerable) // player was not standing in green circle
                     {
                         int penaltyDamage = Pizzard.Core.GameBalance.Bosses.Pblob.Phase2TimeoutDamage;
                         Debug.Log($"❌ Player failed to stand in the Green circle! Taking {penaltyDamage} damage.");
+                        if (playerTransform == null)
+                        {
+                            var p = GameObject.FindGameObjectWithTag("Player");
+                            if (p != null) playerTransform = p.transform;
+                        }
                         if (playerTransform != null)
                         {
-                            var playerHealth = playerTransform.GetComponent<Pizzard.Player.PlayerHealth>();
-                            if (playerHealth != null)
+                            var playerHP = playerTransform.GetComponent<PlayerHPController>();
+                            if (playerHP != null) 
                             {
-                                playerHealth.TakeDamage(penaltyDamage);
+                                // Force invulnerability to 0 so penalty always applies
+                                var timerField = typeof(PlayerHPController).GetField("invulnerabilityTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                                if (timerField != null) timerField.SetValue(playerHP, 0f);
+                                
+                                playerHP.RecibirDaño(penaltyDamage);
                             }
                         }
                     }
@@ -440,12 +443,11 @@ public class PblobController : MonoBehaviour
             types[rnd] = temp;
         }
 
-        // Only ignore collisions between BossCircle and the Projectile layer
+        // Ignore spells/enemies hitting circles — player (Default layer 0) must NOT be ignored
         int bossCircleLayer = LayerMask.NameToLayer("BossCircle");
         if (bossCircleLayer >= 0)
         {
-            // Ignore collisions between circles and all projectile/spell layers
-            foreach (string layerName in new[] { "Projectile", "Default", "Player", "Enemy", "EnemyProjectile" })
+            foreach (string layerName in new[] { "PlayerProjectiles", "EnemyProjectiles", "Wall" })
             {
                 int l = LayerMask.NameToLayer(layerName);
                 if (l >= 0) Physics2D.IgnoreLayerCollision(bossCircleLayer, l, true);
@@ -573,6 +575,9 @@ public class PblobController : MonoBehaviour
     }
 
     public bool IsVulnerable() { return isVulnerable; }
+    public Vector3 ArenaCenter => arenaCenter;
+    public float ArenaClampX => Mathf.Abs(arenaClampX);
+    public float ArenaClampY => Mathf.Abs(arenaClampY);
 
     public void MakeVulnerable()
     {
@@ -614,6 +619,19 @@ public class PblobController : MonoBehaviour
         {
             Pizzard.Core.GameFlowManager.Instance.AvanzarFase();
         }
+    }
+
+    // --- PHASE 3 CONTACT VULNERABILITY ---
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (currentState == PblobState.Phase3_Combat && collision.gameObject.CompareTag("Player"))
+            MakeVulnerable();
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (currentState == PblobState.Phase3_Combat && collision.gameObject.CompareTag("Player"))
+            MakeInvulnerable();
     }
 
     // --- GUI (debug overlay) ---

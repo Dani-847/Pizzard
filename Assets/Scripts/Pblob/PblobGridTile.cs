@@ -8,13 +8,32 @@ public class PblobGridTile : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Coroutine damageCoroutine;
     private Pizzard.Player.PlayerController playerMove;
-    private Pizzard.Player.PlayerHealth playerHealth;
+    private PlayerHPController playerHealth;
 
     private float originalSpeed;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Generate a solid square sprite if none assigned
+        if (spriteRenderer != null && spriteRenderer.sprite == null)
+        {
+            const int SIZE = 64;
+            Texture2D tex = new Texture2D(SIZE, SIZE, TextureFormat.RGBA32, false);
+            Color[] px = new Color[SIZE * SIZE];
+            for (int i = 0; i < px.Length; i++) px[i] = Color.white;
+            tex.SetPixels(px);
+            tex.Apply();
+            spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, SIZE, SIZE), new Vector2(0.5f, 0.5f), (float)SIZE);
+        }
+
+        var col = GetComponent<BoxCollider2D>();
+        if (col == null) col = gameObject.AddComponent<BoxCollider2D>();
+        col.isTrigger = true;
+        // Make the tile collider slightly smaller so you have to actually step inside it, not just brush the edge
+        col.size = new Vector2(0.8f, 0.8f);
+
         SetColor(Color.gray);
     }
 
@@ -29,20 +48,17 @@ public class PblobGridTile : MonoBehaviour
         if (collision.CompareTag("Player") && !isSafePath)
         {
             playerMove = collision.GetComponent<Pizzard.Player.PlayerController>();
-            playerHealth = collision.GetComponent<Pizzard.Player.PlayerHealth>();
+            playerHealth = collision.GetComponent<PlayerHPController>();
 
             // Apply slow debuff
             if (playerMove != null)
             {
                 originalSpeed = playerMove.moveSpeed;
-                playerMove.moveSpeed = GameBalance.Player.MoveSpeed * 0.5f; // Slow down
+                playerMove.moveSpeed = GameBalance.Player.MoveSpeed * 0.5f;
             }
 
-            // Start ticking damage
             if (playerHealth != null)
-            {
                 damageCoroutine = StartCoroutine(DamageTickRoutine());
-            }
         }
     }
 
@@ -72,9 +88,7 @@ public class PblobGridTile : MonoBehaviour
         while (true)
         {
             if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damage);
-            }
+                playerHealth.RecibirDaño(damage);
             yield return new WaitForSeconds(tickRate);
         }
     }
