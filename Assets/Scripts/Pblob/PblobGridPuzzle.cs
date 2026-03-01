@@ -20,10 +20,10 @@ public class PblobGridPuzzle : MonoBehaviour
         if (isGenerating) return;
         isGenerating = true;
 
-        // Make grid highly compact and span full width
-        gridWidth = 40;
+        // Make grid tiles 2.0f to match player size, spanning 20 world units (10 columns * 2)
+        gridWidth = 10;
         gridHeight = 5;
-        tileSize = 0.5f;
+        tileSize = 2.0f;
 
         if (grid != null)
         {
