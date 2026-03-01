@@ -116,7 +116,7 @@ namespace Pizzard.Core
 
                 // Phase 3
                 public const float Phase3MoveSpeed = 6f;    // Boss chase speed in enrage
-                public const float GridSpawnOffsetY = -2.0f;  // You can adjust this slightly to perfectly map to your visual 'gridgoeshere' setup
+                public const float GridSpawnOffsetY = 0.2f;  // You can adjust this slightly to perfectly map to your visual 'gridgoeshere' setup
             }
 
             public static class Heckiel
