@@ -1,9 +1,9 @@
 # ROADMAP.md
 
-> **Current Phase**: 16 — Language System Completion
-> **Milestone**: v1.0 (Full Loop & 4 Bosses)
-> **Phases Complete**: 1–15 (including 13.1 Mana + 13.2 GameBalance + 14 Dialogue + 15 Boss Loop)
-> **Phases Remaining**: 16–30
+> **Current Phase**: 19 — Boss 2 Niggel Worthington AI
+> **Milestone**: v1.0 (Full Loop, 2 Bosses, Spell Polish, End Screen)
+> **Phases Complete**: 1–18 (including 13.1 Mana + 13.2 GameBalance + 14 Dialogue + 15 Boss Loop + 16 Language + 17 UI Polish + 18 P'blob)
+> **Phases Remaining**: 19–24
 
 ---
 
@@ -135,12 +135,12 @@ Plans:
 ---
 
 ### Phase 19: Boss 2 — Niggel Worthington AI
-**Status**: ⬚ Planned
+**Status**: ⬚ In Progress (1/3 plans complete)
 **Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Niggel`
 **Plans:** 3 plans
 
 Plans:
-- [ ] 19-01-PLAN.md — GameBalance constants + NiggelController core (CoinVault HP, enrage state machine, momentum)
+- [x] 19-01-PLAN.md — GameBalance constants + NiggelController core (CoinVault HP, enrage state machine, momentum)
 - [ ] 19-02-PLAN.md — Attack coroutines + projectile scripts + black dot barriers
 - [ ] 19-03-PLAN.md — NiggelCoinMeterUI HUD + scene wiring in BossArena_2 + human verification
 
@@ -176,69 +176,9 @@ Plans:
 
 ---
 
-### Phase 20: Boss 3 — Pomodoro Paganini AI
+### Phase 20: Spell Polish — Tier 1 (Single Element)
 **Status**: ⬚ Not Started
-**Dependencies**: `GameBalance.Bosses.Pomodoro`
-
-**Objective**: Full Pomodoro Paganini (The Oven) boss fight.
-
-**Current State**: `PomodoroController` exists with attack interval coroutine and two stubbed attack types.
-
-**Design**:
-- Stationary boss — giant oven that cannot be directly damaged.
-- Only takes damage from reflected projectiles (pong mechanic).
-- Fires slow, heavy projectiles player must dash into to reflect.
-- Also fires undodgeable AoE ground hazards to force movement.
-
-**Pizza Pong Mechanic**:
-- Boss fires "deflectable" pizza projectiles.
-- Player uses Cheese Shield or dash to bounce them back.
-- Reflected projectiles gain speed each bounce.
-- After 3 bounces, projectile explodes dealing massive damage to boss.
-
-**Element Matching (advanced)**:
-- Boss fires element-colored projectiles.
-- Matching the correct shield element doubles reflect damage.
-- Wrong element still reflects but at base damage.
-
-**Implementation**:
-- Need: deflectable projectile prefab with bounce counter, AoE hazard prefab.
-- `BlockStandardAttack()` already shows immunity feedback.
-
-**Verify**: Pong mechanic, bounce counting, and element matching.
-
----
-
-### Phase 21: Boss 4 — Hec'kiel AI & Patterns
-**Status**: ⬚ Not Started
-**Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Heckiel`
-
-**Objective**: Full Hec'kiel boss fight.
-
-**Current State**: `HeckielController` exists with attack interval timer, phase transition at 50% HP, and stubbed attack methods.
-
-**Design**:
-- Elemental dragon that reflects the last element it was hit by.
-- Phase 1: Random attacks with element mixing.
-- Phase 2 (at 50% HP): Dragon splits into two attacking heads — each fires independently, must destroy both.
-
-**Attacks**:
-1. Random element projectiles (fire/ice/wind themed visuals).
-2. Reflect last element — copies player's spell back.
-3. Combine elements — mixes reflected + random into new attack.
-
-**Implementation**:
-- `RegisterElementHit()` already tracks last element.
-- Need: projectile prefabs, split animation, dual-head controller.
-- Phase 2 needs second head GameObject with synced attack timing.
-
-**Verify**: Phase transition, element tracking, and split mechanic.
-
----
-
-### Phase 22: Spell Polish — Tier 1 (Single Element)
-**Status**: ⬚ Not Started
-**Dependencies**: Boss fights complete for testing context
+**Dependencies**: Phase 19
 
 **Objective**: Polish and complete all 3 Tier 1 single-element spells.
 
@@ -257,9 +197,9 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 
 ---
 
-### Phase 23: Spell Polish — Tier 2 (Two-Element Combos)
+### Phase 21: Spell Polish — Tier 2 (Two-Element Combos)
 **Status**: ⬚ Not Started
-**Dependencies**: Phase 22
+**Dependencies**: Phase 20
 
 **Objective**: Polish all 9 two-element combinations (order matters).
 
@@ -281,9 +221,9 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 
 ---
 
-### Phase 24: Spell Polish — Tier 3 (Three-Element Combos)
+### Phase 22: Spell Polish — Tier 3 (Three-Element Combos)
 **Status**: ⬚ Not Started
-**Dependencies**: Phase 23
+**Dependencies**: Phase 21
 
 **Objective**: Polish and complete all Tier 3 three-element combinations.
 
@@ -306,34 +246,9 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 
 ---
 
-### Phase 25: Tutorial System
+### Phase 23: Save System Polish
 **Status**: ⬚ Not Started
-**Dependencies**: Phase 15 (bossIndex check)
-
-**Objective**: Interactive tutorial teaching basic mechanics.
-
-**Requirements**:
-- Triggers on first playthrough (`bossIndex == 0`, no save).
-- Teaches: movement (WASD), dash (Space), aiming (mouse), casting (click).
-- Step-by-step: each mechanic highlighted with prompt overlay.
-- Freezes game until player completes the action.
-- Shows element selection tutorial before Shop 1.
-- Teaches potion usage (Q key) and mana bar explanation.
-- Skippable for returning players (check save file).
-
-**Implementation**:
-- `TutorialManager` singleton with step queue.
-- `TutorialOverlay` UI: highlight area + instruction text.
-- Input detection per step to auto-advance.
-- Save `tutorialComplete` flag.
-
-**Verify**: Each tutorial step flows correctly. Screenshot overlays.
-
----
-
-### Phase 26: Save System Polish
-**Status**: ⬚ Not Started
-**Dependencies**: Phase 25 (tutorialComplete flag)
+**Dependencies**: Phase 19
 
 **Objective**: Harden the save/load system.
 
@@ -355,132 +270,68 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 
 ---
 
-### Phase 27: Audio & SFX
+### Phase 24: End Screen & Final Polish
 **Status**: ⬚ Not Started
-**Dependencies**: Phases 18-24 (all combat content must exist)
+**Dependencies**: Phases 19–23
 
-**Objective**: Complete audio system.
+**Objective**: End screen sequence after Boss 2 + final balance/bug pass before v1.0 release.
 
-**Requirements**:
-- `SoundManager` singleton (already exists) — verify DontDestroyOnLoad.
-- Music tracks: menu theme, shop theme, per-boss battle music (4 tracks).
-- Music transitions: crossfade between scenes.
-- Volume control: master, music, SFX sliders in Options (save to prefs).
-
-**SFX** (minimum):
-- Spell cast (per element type), spell impact (per element type).
-- Shield reflect, boss hit / boss defeat.
-- Player damage / player death.
-- UI: button click, purchase confirm, error buzz.
-- Potion use, dialogue advance (typewriter click).
-
-**Implementation**:
-- AudioClip references on SoundManager or per-prefab AudioSource.
-- Placeholder sounds acceptable — structure must support easy replacement.
-- Volume settings persisted via PlayerPrefs or SaveData.
-
-**Verify**: Every interaction has audio feedback.
-
----
-
-### Phase 28: Credits & Endgame
-**Status**: ⬚ Not Started
-**Dependencies**: Phase 15 (boss loop), Phase 16 (localization)
-
-**Objective**: Endgame sequence and credits.
-
-**Requirements**:
-- After Boss 4 defeated: final dialogue with Raberto.
-- Magical pizza reward animation/scene.
-- Credits roll: scrolling text with team names.
+**End Screen**:
+- After Boss 2 (Niggel) defeated: final short dialogue with Raberto.
+- Victory screen: "You did it!" with pizza reward visual.
+- Scrolling credits: team names, auto-scroll with TMP text.
 - "Return to Menu" button after credits.
-- Save file marks game as complete (`bossIndex = 4`).
-- On "Continue" from menu with complete save: offer New Game+ or replay.
-
-**Implementation**:
-- `CreditsScene` with auto-scrolling TMP text.
-- `EndgameManager` handles pizza reward sequence.
-- Credits text from localization JSON (supports EN/ES).
-
-**Verify**: Full endgame flow: Boss4 → dialogue → reward → credits → menu.
-
----
-
-### Phase 29: Controller Support
-**Status**: ⬚ Not Started
-**Dependencies**: Phase 17 (UI polished first)
-
-**Objective**: Full Xbox/gamepad controller support.
-
-**Requirements**:
-- All menus navigable with D-pad/left stick.
-- Button prompts change based on detected input device.
-- Combat: right stick for aiming, triggers for casting.
-- Element selection: bumpers to cycle, A to confirm.
-- Shop: D-pad navigation, A to buy, B to back.
-- Dialogue: A to advance. Pause menu: Start button.
-
-**Implementation**:
-- Unity Input System already in use (`InputActions` asset).
-- Add gamepad bindings to all existing InputActions.
-- UI navigation: EventSystem + explicit navigation on Selectable components.
-- Input icon swapper: detects keyboard vs gamepad, shows correct icons.
-
-**Edge Cases**:
-- Hot-swap between keyboard and controller mid-gameplay.
-- No cursor visible in controller mode.
-- Mouse movement re-enables cursor.
-
-**Verify**: Play entire game start-to-finish using ONLY controller.
-
----
-
-### Phase 30: Final Polish & Balancing
-**Status**: ⬚ Not Started
-**Dependencies**: ALL previous phases complete
-
-**Objective**: Final pass — bugs, balance, performance. Last phase before release.
+- Save file marks game as complete (`bossIndex = 2`).
 
 **Bug Sweep**:
-- Play full loop 3 times, document every issue.
+- Play full loop (Menu → Shop → Boss 1 → Shop → Boss 2 → Credits) 3 times.
 - Fix all blocking bugs (crashes, softlocks, progression breaks).
 - Fix all visual bugs (Z-order, clipping, missing sprites).
 
 **Balance Pass** (all via `GameBalance.cs`):
-- Boss HP: ensure each boss takes 2-5 minutes.
+- Boss HP: each boss should take 2–5 minutes.
 - Spell costs: mana shouldn't run out in <10 seconds of sustained casting.
-- Potion economy: 3 potions should be enough for first boss, tight for later.
-- Token economy: player should feel progression pressure but not stuck.
-- Damage values: player shouldn't one-shot bosses or vice versa.
-
-**Performance**:
-- Profile with Unity Profiler.
-- Fix any frame drops below 60fps.
-- Object pooling for frequently spawned projectiles.
-- Reduce GC allocations in hot paths.
+- Potion economy: 3 potions enough for Boss 1, tight for Boss 2.
+- Damage values: no one-shotting in either direction.
 
 **Build**:
 - Create Windows standalone build.
 - Test build outside editor.
 - Verify save file paths work in build.
 
+**Verify**: Full loop end-to-end: Menu → Boss 1 → Shop → Boss 2 → Credits → Menu.
+
+---
+
+---
+
+## Deferred — v2.0
+
+The following phases are scoped out of v1.0 and planned for a future v2.0 update.
+
+| Phase (v2.0) | Name | Notes |
+|---|---|---|
+| v2-01 | Boss 3 — Pomodoro Paganini AI | Pong mechanic, deflectable projectiles, AoE hazards |
+| v2-02 | Boss 4 — Hec'kiel AI & Patterns | Elemental dragon, phase split, dual-head controller |
+| v2-03 | Tutorial System | First-playthrough interactive tutorial, TutorialManager |
+| v2-04 | Audio & SFX | SoundManager, music tracks, full SFX pass |
+| v2-05 | Credits & Full Endgame | Boss 4 endgame, localized credits, New Game+ |
+| v2-06 | Controller Support | Xbox/gamepad full support, input icon swapper |
+
 ---
 
 ## Phase Dependency Graph
 
 ```
-13 ✅ ─→ 14 ─→ 15 ─→ 16 ─→ 17
-                │              │
-                ├→ 18 ─→ 19 ─→ 20 ─→ 21
-                │                         │
-                ├→ 25 ─→ 26              │
-                │                         ├→ 22 ─→ 23 ─→ 24
-                │                         │
-                ├→ 28                    ├→ 27
-                │
-                └→ 29 (after 17)
-
-All ─→ 30 (final)
+13 ✅ ─→ 14 ─→ 15 ─→ 16 ✅ ─→ 17 ✅ ─→ 18 ✅ ─→ 19
+                                                      │
+                                              ┌───────┘
+                                              │
+                                              ├→ 20 ─→ 21 ─→ 22
+                                              │
+                                              ├→ 23
+                                              │
+                                              └→ 24 (end screen + polish, all complete)
 ```
 
 ---

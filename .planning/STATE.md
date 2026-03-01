@@ -3,19 +3,21 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-01T00:00:00.000Z"
+last_updated: "2026-03-01T05:26:38Z"
 progress:
-  total_phases: 30
+  total_phases: 24
   completed_phases: 18
-  total_plans: 28
-  completed_plans: 28
+  total_plans: 29
+  completed_plans: 29
 ---
 
 ## CURRENT STATE
 
-- **Position**: Phase 18 — Complete ✅ (Boss 1 P'blob)
-- **Tasks In Progress:** None. All 5 plans complete, UAT partially done (tests 1-4 pass, 5-11 pending).
-- **Next Phase To Plan:** Phase 19: Boss 2 — Hec'kiel AI & Patterns
+- **Position**: Phase 19 — In Progress (Boss 2 Niggel Worthington AI) — Plan 01 complete
+- **Tasks In Progress:** Phase 19 Plan 02 (Attack implementations)
+- **Next Phase To Plan:** Phase 20: Spell Polish — Tier 1
+
+**Scope Change (2026-03-01):** v1.0 scoped to 24 phases (was 30). Phases 20 (Pomodoro), 21 (Heckiel), 25 (Tutorial), 27 (Audio), 28 (Credits/Endgame), 29 (Controller) deferred to v2.0. Phase 30 converted to Phase 24: End Screen & Final Polish (2-boss loop).
 
 ## Last Session Summary
 
@@ -48,9 +50,12 @@ Phase 15 — Complete ✅: 2 plans, 5 tasks total
 - GameState.Credits enum value preserved — Phase 28 will reintroduce endgame credits
 - DeathUI darkOverlay and deathImage are optional (null-guarded) SerializeFields
 - Unity Editor script approach for batch LocalizedText wiring — run Tools/Wire Localization once from Unity Editor (Phase 16)
+- Niggel uses CoinVault HP (int, starts at 200); syncs to BossBase.currentHealth for BossHealthBarUI compatibility (Phase 19)
+- Niggel enrage levels (0-3) are one-way — CheckEnrageThresholds() called only in TakeDamage(), never in HealCoinVault() (Phase 19)
+- NiggelController.PlayerDamageMultiplier and PlayerSpeedMultiplier are public static fields for cross-script momentum reads (Phase 19)
 
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Phase 18 all plans complete. UAT tests 1-4 pass. Pending UAT: Phase 2 timer penalty, Phase 3 grid, contact vulnerability, health bar, pause, death flow.
+Stopped at: Phase 19 Plan 01 complete — NiggelController foundation (CoinVault, enrage, momentum). Plan 02 (attacks) is next.
 Resume file: none
