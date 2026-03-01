@@ -151,18 +151,30 @@ namespace Pizzard.Core
                         if (ui.tiendaUI != null) ui.tiendaUI.Show(this);
                         break;
                     case GameState.Combat:
-                        // Enable HUD elements during boss fights
+                        // Enable standard HUD elements
                         Transform elementsUI = uiParent.Find("Elementos");
-                        Transform bossUI = uiParent.Find("PblobUI"); // Boss proto name
                         Transform playerHP = uiParent.Find("HealthUI");
                         Transform potionUI = uiParent.Find("PotionUI");
                         Transform manaUI = uiParent.Find("ManaUI");
                         
                         if (elementsUI) elementsUI.gameObject.SetActive(true);
-                        if (bossUI) bossUI.gameObject.SetActive(true);
                         if (playerHP) playerHP.gameObject.SetActive(true);
                         if (potionUI) potionUI.gameObject.SetActive(true);
                         if (manaUI) manaUI.gameObject.SetActive(true);
+
+                        // Enable boss-specific UI
+                        if (currentBossIndex == 1)
+                        {
+                            Transform bossUI = uiParent.Find("PblobUI");
+                            if (bossUI) bossUI.gameObject.SetActive(true);
+                        }
+                        else if (currentBossIndex == 2)
+                        {
+                            Transform niggelBossUI = uiParent.Find("NiggelBossUI");
+                            Transform coinMeterUI = uiParent.Find("CoinMeterUI");
+                            if (niggelBossUI) niggelBossUI.gameObject.SetActive(true);
+                            if (coinMeterUI) coinMeterUI.gameObject.SetActive(true);
+                        }
                         break;
                     case GameState.Credits:
                         // Credits removed — kept enum for future. No UI changes.
@@ -172,6 +184,22 @@ namespace Pizzard.Core
 
             // Force unpause when transitioning states
             Time.timeScale = 1f;
+
+            // Before loading combat scene, snapshot wand palette so it survives the scene reload.
+            // EquipableObject is a MonoBehaviour in the Shop scene and gets destroyed on unload.
+            // PlayerEquip lives in BossArena scenes only — read wand elements from EquipSelectorUI instead.
+            if (newState == GameState.Combat && Progression.SaveManager.Instance != null)
+            {
+                var selector = FindObjectOfType<EquipSelectorUI>(true);
+                if (selector?.availableEquipables != null)
+                {
+                    int tier = Progression.SaveManager.Instance.CurrentSave.wandTier;
+                    var wand = selector.availableEquipables.Find(e => e.tier == tier);
+                    if (wand?.elements != null && wand.elements.Count > 0)
+                        Progression.SaveManager.Instance.CurrentSave.pendingWandElements =
+                            new System.Collections.Generic.List<ElementType>(wand.elements);
+                }
+            }
 
             if (!string.IsNullOrEmpty(targetScene))
             {

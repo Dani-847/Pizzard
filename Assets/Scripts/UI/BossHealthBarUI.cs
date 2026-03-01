@@ -68,10 +68,19 @@ namespace Pizzard.UI
 
         void Update()
         {
-            if (trackedBoss != null)
+            // Retry finding the boss each frame if not found yet (boss scene may load after OnEnable)
+            if (trackedBoss == null)
             {
-                UpdateBar();
+                trackedBoss = FindObjectOfType<BossBase>();
+                if (trackedBoss != null)
+                {
+                    cachedMaxHealth = trackedBoss.MaxHealthPublic;
+                    UpdateBossName();
+                }
             }
+
+            if (trackedBoss != null)
+                UpdateBar();
         }
 
         void UpdateBar()

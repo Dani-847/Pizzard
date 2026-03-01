@@ -90,18 +90,30 @@ public class PlayerEquip : MonoBehaviour
 
         if (CurrentWandTier > 0)
         {
+            EquipableObject equip = null;
+
+            // Primary: EquipSelectorUI exists in the Shop scene
             var selector = FindObjectOfType<EquipSelectorUI>(true);
-            
             if (selector != null && selector.availableEquipables != null)
+                equip = selector.availableEquipables.Find(e => e.tier == CurrentWandTier);
+
+            // Fallback for boss scenes: EquipableObjects are destroyed with the Shop scene.
+            // Reconstruct a temporary wand from the palette saved before scene load.
+            if (equip == null)
             {
-                // Auto-equip the wand corresponding to the current highest tier achieved
-                var equip = selector.availableEquipables.Find(e => e.tier == CurrentWandTier);
-                if (equip != null)
-                {
-                    EquipObject(equip);
-                    Debug.Log($"[PlayerEquip] Auto-equipped wand: {equip.displayName}");
-                }
+                var save = Pizzard.Progression.SaveManager.Instance?.CurrentSave;
+                var palette = save?.pendingWandElements;
+                var tempGO = new GameObject("_TempWand_Tier" + CurrentWandTier);
+                var tempEquip = tempGO.AddComponent<EquipableObject>();
+                tempEquip.tier = CurrentWandTier;
+                if (palette != null && palette.Count > 0)
+                    tempEquip.elements = new List<ElementType>(palette);
+                equip = tempEquip;
+                Debug.Log($"[PlayerEquip] Created temp wand (Tier {CurrentWandTier}, {tempEquip.elements.Count} elements) for boss scene.");
             }
+
+            EquipObject(equip);
+            Debug.Log($"[PlayerEquip] Auto-equipped wand: {equip.displayName}");
         }
         else
         {

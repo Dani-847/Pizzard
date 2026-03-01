@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Pizzard.Bosses
 {
@@ -49,6 +50,7 @@ namespace Pizzard.Bosses
         // ── Attack routines ──────────────────────────────
         private Coroutine attackRoutine;
         private bool isActive = false;
+        private bool hasStarted = false;  // idle until player gives any input
 
         // ── References ───────────────────────────────────
         [SerializeField] private Transform playerTransform;
@@ -84,12 +86,51 @@ namespace Pizzard.Bosses
             currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed;
             dashCooldownTimer = GameBalance.Bosses.Niggel.BaseDashCooldown;
 
-            isActive = true;
-            StartAttackRoutine();
+            isActive = false;  // starts idle — activates on first player input
+            hasStarted = false;
+        }
+
+        private void Start()
+        {
+            AutoDetectArenaBounds();
+        }
+
+        /// <summary>Auto-calibrate arena clamp from the scene Tilemap, same approach as PblobController.</summary>
+        private void AutoDetectArenaBounds()
+        {
+            Tilemap tilemap = FindObjectOfType<Tilemap>();
+            if (tilemap == null) return;
+
+            tilemap.CompressBounds();
+            Bounds b = tilemap.localBounds;
+            Vector3 scale = tilemap.transform.lossyScale;
+            float halfWidth  = b.extents.x * Mathf.Abs(scale.x);
+            float halfHeight = b.extents.y * Mathf.Abs(scale.y);
+
+            arenaClampX = Mathf.Max(1f, halfWidth - 1f);
+            arenaClampY = Mathf.Max(1f, halfHeight - 1f);
+
+            Vector3 worldCenter = tilemap.transform.TransformPoint(b.center);
+            if (Vector3.Distance(worldCenter, arenaCenter) < 20f)
+                arenaCenter = worldCenter;
+
+            Debug.Log($"[Niggel] Arena bounds auto-detected: ±{arenaClampX:F1}x ±{arenaClampY:F1}y  center={arenaCenter}");
         }
 
         private void Update()
         {
+            // Idle: wait for any player input to start the fight
+            if (!hasStarted)
+            {
+                if (Input.anyKeyDown)
+                {
+                    hasStarted = true;
+                    isActive = true;
+                    StartAttackRoutine();
+                }
+                return;
+            }
+
             if (!isActive || isDead) return;
 
             // Move toward player

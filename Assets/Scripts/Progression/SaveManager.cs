@@ -14,6 +14,9 @@ namespace Pizzard.Progression
         public float manaMax = GameBalance.Mana.MaxMana;
         public int bossIndex = 1;
         public string languageSetting = "en";
+        // In-memory only: carries the wand element palette across scene loads (Shop → Boss).
+        // Not written to disk. Populated by GameFlowManager before loading a combat scene.
+        [NonSerialized] public List<ElementType> pendingWandElements = new List<ElementType>();
     }
 
     /// <summary>
