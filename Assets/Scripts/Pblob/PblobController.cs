@@ -258,7 +258,12 @@ public class PblobController : MonoBehaviour
         Vector3 bossTarget  = arenaCenter + new Vector3(0, Mathf.Abs(gridOffset) - 2f, 0); // top
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
-        Vector3 playerTarget = gridSpawnPoint != null ? gridSpawnPoint.transform.position : arenaCenter + new Vector3(0, gridOffset + 1f, 0);
+        
+        // Match the player exactly to the bottom center of the grid.
+        Vector3 gridCenter = gridSpawnPoint != null ? gridSpawnPoint.transform.position : arenaCenter + new Vector3(0, gridOffset, 0);
+        // Grid height is 5, tileSize is 1. The bottom row is y = 0. Offset is height/2 * tileSize.
+        float botYOffset = -(5f - 1f) * 1.0f / 2f; 
+        Vector3 playerTarget = gridCenter + new Vector3(0, botYOffset, 0);
 
         // Disable player movement + freeze physics during cinematic
         Pizzard.Player.PlayerController pm = playerTransform != null ? playerTransform.GetComponent<Pizzard.Player.PlayerController>() : null;
@@ -301,18 +306,9 @@ public class PblobController : MonoBehaviour
         if (attackPatterns != null && attackPatterns.Length > 1 && attackPatterns[1] != null)
             attackPatterns[1].StartPattern();
 
-        float speed = Pizzard.Core.GameBalance.Bosses.Pblob.Phase3MoveSpeed;
-
         while (currentState == PblobState.Phase3_Combat)
         {
-            if (playerTransform != null)
-            {
-                transform.position = Vector3.MoveTowards(
-                    transform.position,
-                    playerTransform.position,
-                    speed * Time.deltaTime
-                );
-            }
+            // Boss remains static in the center while vulnerable
             yield return null;
         }
 

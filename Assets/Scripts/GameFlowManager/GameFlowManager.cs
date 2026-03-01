@@ -308,6 +308,9 @@ namespace Pizzard.Core
             }
             yield return null; // Wait one more frame for UI init
             
+            var deathUI = FindObjectOfType<DeathUI>(true);
+            if (deathUI != null) deathUI.OcultarPantallaMuerte();
+
             var dialog = FindObjectOfType<DialogUI>(true);
             if (dialog != null)
             {
