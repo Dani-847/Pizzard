@@ -6,16 +6,16 @@ status: in_progress
 last_updated: "2026-03-01T05:26:38Z"
 progress:
   total_phases: 24
-  completed_phases: 22
+  completed_phases: 20
   total_plans: 29
   completed_plans: 29
 ---
 
 ## CURRENT STATE
 
-- **Position**: Phase 22 — COMPLETE ✅ (2026-03-01, spell polish phases 20-22 all deferred to Phase 24)
+- **Position**: Phase 20 — COMPLETE ✅ (2026-03-01, deferred to Phase 24)
 - **Tasks In Progress:** None
-- **Next Phase To Plan:** Phase 23: Save System Polish
+- **Next Phase To Plan:** Phase 21: Spell Polish — Tier 2 (missing combo implementations)
 
 **Scope Change (2026-03-01):** v1.0 scoped to 24 phases (was 30). Phases 20 (Pomodoro), 21 (Heckiel), 25 (Tutorial), 27 (Audio), 28 (Credits/Endgame), 29 (Controller) deferred to v2.0. Phase 30 converted to Phase 24: End Screen & Final Polish (2-boss loop).
 
