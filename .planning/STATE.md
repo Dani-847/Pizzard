@@ -13,8 +13,8 @@ progress:
 
 ## CURRENT STATE
 
-- **Position**: Phase 19 — In Progress (Boss 2 Niggel Worthington AI) — Plan 02 complete
-- **Tasks In Progress:** Phase 19 Plan 03 (if any) — or Phase 20
+- **Position**: Phase 19 — In Progress (Boss 2 Niggel Worthington AI) — Plan 03 complete (awaiting human verify checkpoint)
+- **Tasks In Progress:** Phase 19 Plan 03 — checkpoint:human-verify (Play mode test)
 - **Next Phase To Plan:** Phase 20: Spell Polish — Tier 1
 
 **Scope Change (2026-03-01):** v1.0 scoped to 24 phases (was 30). Phases 20 (Pomodoro), 21 (Heckiel), 25 (Tutorial), 27 (Audio), 28 (Credits/Endgame), 29 (Controller) deferred to v2.0. Phase 30 converted to Phase 24: End Screen & Final Polish (2-boss loop).
@@ -55,10 +55,12 @@ Phase 15 — Complete ✅: 2 plans, 5 tasks total
 - NiggelController.PlayerDamageMultiplier and PlayerSpeedMultiplier are public static fields for cross-script momentum reads (Phase 19)
 - Attack1_ThrowMoney is an IEnumerator (not void) for consistency with coroutine AttackLoop pattern (Phase 19 Plan 02)
 - CoinShieldBurst inlined into CoinShieldRoutine — avoids GetComponent overhead, keeps all attack logic in NiggelController (Phase 19 Plan 02)
-- BlackDotBarrier requires "BossBarrier" layer created in Unity Editor (Edit > Project Settings > Tags and Layers) (Phase 19 Plan 02)
+- BlackDotBarrier requires "BossBarrier" layer — added to TagManager.asset at index 11 (Phase 19 Plan 03)
+- NiggelCoinMeterUI uses FindObjectOfType lazy-init pattern — no direct scene reference needed (Phase 19 Plan 03)
+- NiggelArenaSetup Editor script automates all BossArena_2 wiring — run Tools/Pizzard/Setup Niggel Arena once (Phase 19 Plan 03)
 
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Phase 19 Plan 02 complete — Niggel attack implementations (coin bag, dash, healing coin, coin shield, barriers). Plan 03 next (if exists) or Phase 20.
+Stopped at: Phase 19 Plan 03 — checkpoint:human-verify — NiggelCoinMeterUI + arena setup tool built. Run Tools/Pizzard/Setup Niggel Arena in Unity, then Play test BossArena_2.
 Resume file: none
