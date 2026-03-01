@@ -29,19 +29,24 @@ public class PlayerHPController : MonoBehaviour
     /// <summary>
     /// Inicializa vidaActual y actualiza la UI.
     /// </summary>
-    void Start()
+void Start()
     {
-        if (hpUI == null)
-            hpUI = FindObjectOfType<CharacterHPUI>(true);
-
         if (playerSprite == null)
             playerSprite = GetComponentInChildren<SpriteRenderer>();
-
         vidaActual = vidaMaxima;
-        if (hpUI != null)
-            hpUI.ActualizarUI(vidaActual);
         if (potionSystem != null)
             potionSystem.playerHP = this;
+        // Delay 1 frame so DontDestroyOnLoad duplicate canvases are destroyed before search
+        StartCoroutine(InitHPUI());
+    }
+
+    private System.Collections.IEnumerator InitHPUI()
+    {
+        yield return null;
+        if (hpUI == null)
+            hpUI = FindObjectOfType<CharacterHPUI>(true);
+        if (hpUI != null)
+            hpUI.ActualizarUI(vidaActual);
     }
 
     private float invulnerabilityTimer = 0f;
