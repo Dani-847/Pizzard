@@ -198,7 +198,7 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 ---
 
 ### Phase 21: Spell Polish — Tier 2 (Two-Element Combos)
-**Status**: ⬚ Not Started
+**Status**: ✅ Complete — VFX/SFX and GameBalance verify deferred to Phase 24
 **Dependencies**: Phase 20
 
 **Objective**: Polish all 9 two-element combinations (order matters).
@@ -222,7 +222,7 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 ---
 
 ### Phase 22: Spell Polish — Tier 3 (Three-Element Combos)
-**Status**: ⬚ Not Started
+**Status**: ✅ Complete — VFX/SFX and GameBalance verify deferred to Phase 24
 **Dependencies**: Phase 21
 
 **Objective**: Polish and complete all Tier 3 three-element combinations.
