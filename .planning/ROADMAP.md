@@ -177,7 +177,7 @@ Plans:
 ---
 
 ### Phase 20: Spell Polish — Tier 1 (Single Element)
-**Status**: ⬚ Not Started
+**Status**: ✅ Complete — VFX/SFX and GameBalance verify deferred to Phase 24
 **Dependencies**: Phase 19
 
 **Objective**: Polish and complete all 3 Tier 1 single-element spells.
@@ -295,6 +295,8 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 - Spell costs: mana shouldn't run out in <10 seconds of sustained casting.
 - Potion economy: 3 potions enough for Boss 1, tight for Boss 2.
 - Damage values: no one-shotting in either direction.
+- Verify all Tier 1 spell damage, mana costs, and status effect values (Queso, Pepperoni, Piña) match GameBalance.Spells.*.
+- Verify all Tier 2 combo spell values match GameBalance.
 
 **Sprite Pass**:
 - Replace all placeholder/missing sprites with final art for: player, bosses (Pblob, Niggel), projectiles, UI elements, and backgrounds.
