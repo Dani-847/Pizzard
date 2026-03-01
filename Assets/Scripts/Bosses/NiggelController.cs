@@ -166,7 +166,8 @@ namespace Pizzard.Bosses
             if (isDead) return;
 
             coinVault = Mathf.Max(0, coinVault - amount);
-            currentHealth = coinVault; // BossBase sync for BossHealthBarUI
+            currentHealth = coinVault;
+            Debug.Log($"[Niggel] TakeDamage({amount}) → CoinVault={coinVault}/{GameBalance.Bosses.Niggel.CoinVaultMax}");
 
             OnPlayerHitNiggel();
             CheckEnrageThresholds();
@@ -453,7 +454,25 @@ namespace Pizzard.Bosses
         //  Death
         // ────────────────────────────────────────────────
 
-        protected override void Die()
+        // ── Debug overlay ───────────────────────────────────────────────
+
+        private void OnGUI()
+        {
+            if (!Application.isPlaying) return;
+            GUILayout.BeginArea(new Rect(10, 10, 280, 180));
+            GUI.Box(new Rect(0, 0, 280, 180), "");
+            GUILayout.Label($"=== NIGGEL DEBUG ===");
+            GUILayout.Label($"CoinVault: {coinVault} / {GameBalance.Bosses.Niggel.CoinVaultMax}");
+            GUILayout.Label($"Enrage: {enrageLevel}  Dead: {isDead}  Active: {isActive}");
+            GUILayout.Label($"Momentum: {playerMomentum}  DmgMult: {PlayerDamageMultiplier:F2}x");
+            GUILayout.Label($"CoinShield: {coinShieldActive}  HasStarted: {hasStarted}");
+            if (GUILayout.Button("Deal 50 dmg")) TakeDamage(50);
+            if (GUILayout.Button("Kill")) TakeDamage(coinVault + 1);
+            GUILayout.EndArea();
+        }
+
+        
+protected override void Die()
         {
             isDead = true;
             isActive = false;

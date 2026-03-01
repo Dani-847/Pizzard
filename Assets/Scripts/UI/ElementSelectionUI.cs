@@ -41,7 +41,18 @@ public class ElementSelectionUI : MonoBehaviour
     /// Called by ShopUI when wandTier changes (e.g., after purchasing a wand upgrade).
     /// Updates the number of active element slots IMMEDIATELY.
     /// </summary>
-    public void RefreshFromWandTier(int newTier)
+    /// <summary>
+    /// Called when a new wand is purchased — updates currentWand so elements go to the right object.
+    /// </summary>
+    public void SwitchToWand(EquipableObject newWand, int maxTier)
+    {
+        currentWand = newWand;
+        maxAllowedTier = maxTier;
+        RefreshVisuals();
+    }
+
+    
+public void RefreshFromWandTier(int newTier)
     {
         maxAllowedTier = newTier;
         RefreshVisuals();

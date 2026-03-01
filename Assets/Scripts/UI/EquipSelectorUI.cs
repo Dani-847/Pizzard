@@ -108,7 +108,7 @@ public class EquipSelectorUI : MonoBehaviour
             if (elementUI != null)
             {
                 elementUI.gameObject.SetActive(true);
-                elementUI.RefreshFromWandTier(equip.tier);
+                elementUI.SwitchToWand(equip, equip.tier);
             }
         }
 

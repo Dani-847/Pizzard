@@ -57,12 +57,10 @@ public class CharacterProjectile : MonoBehaviour
         // Dañar al BOSS
         if (other.CompareTag("Boss"))
         {
-            PblobController boss = other.GetComponent<PblobController>();
+            Pizzard.Bosses.BossBase boss = other.GetComponent<Pizzard.Bosses.BossBase>();
             if (boss != null)
             {
-                // Always call TakeDamage — it handles vulnerability checks internally
-                // and logs "Boss no vulnerable" when blocked
-                boss.TakeDamage(damage);
+                boss.TakeDamage((int)damage);
                 Debug.Log($"@{GetType().Name} golpe al boss: {damage} de daño");
             }
             Destroy(gameObject);
