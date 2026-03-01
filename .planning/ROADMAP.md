@@ -197,56 +197,71 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 
 ---
 
-### Phase 21: Spell Polish — Tier 2 (Two-Element Combos)
+### Phase 21: Spell Completion — All Combos (T2 + T3)
 **Status**: ⬚ Not Started
 **Dependencies**: Phase 20
 
-**Objective**: Polish all 9 two-element combinations (order matters).
+**Objective**: Implement all missing T2 and T3 spell combinations and verify all existing ones work correctly. No VFX/SFX — mechanics only. All values from `GameBalance.Spells.*`.
 
-**Combos**:
+**Missing T2 (4 to implement):**
 
-| Key | Name | Mechanic |
-|-----|------|----------|
-| queso\|pepperoni | CheesePepperoniWall | Burning wall that reflects + applies burn |
-| queso\|piña | PineappleCheese | Absorbing projectile that grows + explodes |
-| pepperoni\|queso | PepperoniQueso sticky | Sticks to boss, burns, scales damage |
-| pepperoni\|piña | PepperoniPiña bomb | Timed explosion with AoE |
-| piña\|queso | Piña+Queso variant | (verify what exists) |
-| piña\|pepperoni | PineapplePepperoni | Teleport + explosion at destination |
-| pepperoni\|pepperoni | Fire trail | Projectile leaves burning trail |
-| queso\|queso | Static shield variant | (verify — may be Tier 3) |
-| piña\|piña | Splitter | Splits into 4 diagonal sub-projectiles |
+| Key | Mechanic |
+|-----|----------|
+| `queso\|queso` | Wall on ground — damages + reflects projectiles, has HP |
+| `queso\|pepperoni` | Ground area — applies burn on contact, damage scales with time |
+| `queso\|piña` | Pillar — ticking damage in an area |
+| `pepperoni\|queso` | Sticky projectile — burn + more damage the longer it sticks (2s) |
 
-**For Each**: Verify implementation exists, matches GameBalance values, add VFX/SFX, test mana cost.
+**Existing T2 (5 to verify):**
+
+| Key | Mechanic |
+|-----|----------|
+| `piña\|piña` | Splitter — explodes into smaller sub-projectiles |
+| `piña\|queso` | Absorbing projectile that grows + explodes |
+| `piña\|pepperoni` | Teleport + explosion at destination |
+| `pepperoni\|piña` | Catapult that explodes and applies burn |
+| `pepperoni\|pepperoni` | Projectile leaves fire trail, burn on impact |
+
+**Missing T3 (16 to implement):**
+
+| Key | Mechanic |
+|-----|----------|
+| `piña\|piña\|piña` | Explodes → sub-projectiles each also explode |
+| `piña\|piña\|queso` | Explodes → sub-projectiles absorb incoming projectiles |
+| `piña\|piña\|pepperoni` | Explodes → sub-projectiles apply burn |
+| `piña\|queso\|piña` | Absorbing projectile — damage = absorbed count |
+| `piña\|queso\|queso` | Absorbing projectile — becomes a cone |
+| `piña\|queso\|pepperoni` | Absorbing projectile — burn stacks = absorbed count |
+| `piña\|pepperoni\|piña` | Dual projectiles damage en route → teleport → explosion |
+| `piña\|pepperoni\|pepperoni` | Same → bigger explosion |
+| `piña\|pepperoni\|queso` | Same → explosion reflects projectiles |
+| `queso\|queso\|queso` | Black hole — absorbs projectiles, returns at ×1.5 damage |
+| `queso\|piña\|piña` | Pillar — bigger area, more damage |
+| `queso\|piña\|queso` | Pillar — more HP, slows projectiles |
+| `queso\|piña\|pepperoni` | Pillar — ticking damage + burn stacks, bonus per stack |
+| `queso\|pepperoni\|pepperoni` | Ground area — double burn stacks |
+| `queso\|pepperoni\|piña` | Ground area — burn + DoT |
+| `queso\|pepperoni\|queso` | Ground area — larger radius |
+
+**Existing T3 (9 to verify):**
+
+| Key | Status |
+|-----|--------|
+| `pepperoni\|pepperoni\|pepperoni` | Verify |
+| `pepperoni\|pepperoni\|piña` | Verify |
+| `pepperoni\|pepperoni\|queso` | Verify |
+| `pepperoni\|piña\|pepperoni` | Verify |
+| `pepperoni\|piña\|piña` | Verify |
+| `pepperoni\|piña\|queso` | Verify |
+| `pepperoni\|queso\|pepperoni` | Verify |
+| `pepperoni\|queso\|piña` | Verify |
+| `pepperoni\|queso\|queso` | Verify |
+| `queso\|queso\|piña` | Verify |
+| `queso\|queso\|pepperoni` | Verify |
 
 ---
 
-### Phase 22: Spell Polish — Tier 3 (Three-Element Combos)
-**Status**: ⬚ Not Started
-**Dependencies**: Phase 21
-
-**Objective**: Polish and complete all Tier 3 three-element combinations.
-
-**Key Combos** (most have implementations):
-- `pepperoni|pepperoni|pepperoni` — Dire trail spawner
-- `pepperoni|pepperoni|piña` — Rotating pepperoni spawner
-- `pepperoni|pepperoni|queso` — Area fire trail spawner
-- `pepperoni|piña|pepperoni` — Catapult + fire trail explosion
-- `pepperoni|piña|piña` — Enhanced explosion
-- `pepperoni|piña|queso` — Enhanced fire trail projectile
-- `pepperoni|queso|pepperoni` — Long sticky burn
-- `pepperoni|queso|piña` — Sticky spawning children
-- `pepperoni|queso|queso` — Long duration sticky
-- `queso|queso|piña` — Static cheese shield
-- `queso|queso|pepperoni` — Cheese pepperoni wall (already Tier 2 combo?)
-- `queso|queso|queso` — Triple shield (define mechanic)
-- `piña|piña|piña` — Triple split (define mechanic)
-
-**For Each**: Verify implementation exists, create missing ones, all values from `GameBalance.Spells.*`, add VFX + SFX, balance high mana cost / high impact. 27 total permutations (3³). Focus on distinct gameplay feel per combo.
-
----
-
-### Phase 23: Save System Polish
+### Phase 22: Save System Polish
 **Status**: ⬚ Not Started
 **Dependencies**: Phase 19
 
@@ -270,9 +285,9 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 
 ---
 
-### Phase 24: End Screen & Final Polish
+### Phase 23: End Screen & Final Polish
 **Status**: ⬚ Not Started
-**Dependencies**: Phases 19–23
+**Dependencies**: Phases 19–22
 
 **Objective**: End screen sequence after Boss 2 + final balance/bug pass before v1.0 release.
 
