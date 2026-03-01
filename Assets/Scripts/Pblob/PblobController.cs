@@ -247,7 +247,11 @@ public class PblobController : MonoBehaviour
         if (playerTransform == null)
         {
             var p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) playerTransform = p.transform;
+            if (p != null) 
+            {
+                var pmRoot = p.GetComponentInParent<Pizzard.Player.PlayerController>();
+                playerTransform = pmRoot != null ? pmRoot.transform : p.transform.root;
+            }
         }
 
         float elapsed = 0f;
@@ -305,6 +309,14 @@ public class PblobController : MonoBehaviour
         // Use phase-3-specific pattern if available, else pure chase
         if (attackPatterns != null && attackPatterns.Length > 1 && attackPatterns[1] != null)
             attackPatterns[1].StartPattern();
+
+        // Ensure boss cannot be pushed by player collision
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.isKinematic = true;
+        }
 
         while (currentState == PblobState.Phase3_Combat)
         {

@@ -118,8 +118,8 @@ public class DialogUI : MonoBehaviour
 
         if (dialogPanel != null)
             dialogPanel.SetActive(false);
-        else
-            gameObject.SetActive(false);
+            
+        gameObject.SetActive(false);
     }
 
     /// <summary>
