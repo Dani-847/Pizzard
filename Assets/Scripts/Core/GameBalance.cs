@@ -59,6 +59,26 @@ namespace Pizzard.Core
                 { "queso|queso|piña", 25f },
                 { "queso|queso|queso", 28f },
                 { "piña|piña|piña", 30f },
+
+                // T2 missing combos
+                { "queso|queso", 22f },
+
+                // T3 piña variants
+                { "piña|piña|queso", 26f },
+                { "piña|piña|pepperoni", 26f },
+                { "piña|queso|piña", 28f },
+                { "piña|queso|queso", 28f },
+                { "piña|queso|pepperoni", 28f },
+                { "piña|pepperoni|piña", 30f },
+                { "piña|pepperoni|pepperoni", 32f },
+
+                // T3 queso variants
+                { "queso|piña|piña", 28f },
+                { "queso|piña|queso", 30f },
+                { "queso|piña|pepperoni", 30f },
+                { "queso|pepperoni|pepperoni", 28f },
+                { "queso|pepperoni|piña", 28f },
+                { "queso|pepperoni|queso", 26f },
             };
 
             public static float GetSpellCost(string comboKey)
@@ -428,6 +448,158 @@ namespace Pizzard.Core
                 public const float BurnEffectDuration = 7f;
                 public const int BurnInitialStacks = 2;
             }
+
+            // ── T2 Missing combos ──────────────────────────────────────
+            public static class QuesoQueso
+            {
+                public const float WallDuration = 6f;
+                public const float WallHP = 60f;
+                public const float TickDamage = 4f;
+                public const float TickInterval = 0.5f;
+                public const float ReflectionSpeedMultiplier = 1.2f;
+                public const float ReflectionCooldown = 0.3f;
+            }
+            public static class QuesoPepperoni
+            {
+                public const float AreaDuration = 5f;
+                public const float TickDamage = 5f;
+                public const float TickInterval = 0.4f;
+                public const float BurnDuration = 2f;
+                public const int BurnStacks = 1;
+                public const float DamageScalePerSecond = 0.5f;
+            }
+            public static class QuesoPina
+            {
+                public const float PillarDuration = 5f;
+                public const float TickDamage = 6f;
+                public const float TickInterval = 0.5f;
+                public const float Radius = 1.5f;
+            }
+            public static class PepperoniQueso
+            {
+                public const float StickDuration = 2f;
+                public const float BaseDamage = 8f;
+                public const float DamagePerSecondStuck = 5f;
+                public const float BurnDuration = 2f;
+                public const int BurnStacks = 1;
+            }
+
+            // ── T3 piña|piña variants ──────────────────────────────────
+            public static class PinaPinaPina
+            {
+                public const float SubExplosionRadius = 0.8f;
+                public const float SubExplosionDamage = 8f;
+            }
+            public static class PinaPinaQueso
+            {
+                public const float SubRadius = 0.5f;
+                public const float SubAbsorbRadius = 1.2f;
+            }
+            public static class PinaPinaPepperoni
+            {
+                public const float BurnDuration = 2f;
+                public const int BurnStacks = 2;
+            }
+
+            // ── T3 piña|queso absorbing variants ──────────────────────
+            public static class PinaQuesoPina
+            {
+                public const float DamagePerAbsorbed = 12f;
+            }
+            public static class PinaQuesoQueso
+            {
+                public const float ConeRadius = 2.5f;
+                public const float ConeHalfAngle = 45f;
+                public const float ConeDamage = 15f;
+            }
+            public static class PinaQuesoPepperoni
+            {
+                public const float BurnDurationPerStack = 1.5f;
+            }
+
+            // ── T3 piña|pepperoni teleport variants ───────────────────
+            public static class PinaPepperoniPina
+            {
+                public const float ExplosionRadius = 2f;
+                public const float ExplosionDamage = 20f;
+            }
+            public static class PinaPepperoniPepperoni
+            {
+                public const float ExplosionRadius = 3f;
+                public const float ExplosionDamage = 30f;
+            }
+            public static class PinaPepperoniQueso
+            {
+                public const float ExplosionRadius = 2f;
+                public const float ExplosionDamage = 20f;
+                public const float ReflectionSpeedMultiplier = 1.2f;
+            }
+
+            // ── T3 queso variants — pillars ───────────────────────────
+            public static class QuesoPinaPina
+            {
+                public const float Radius = 2.5f;
+                public const float TickDamage = 10f;
+                public const float TickInterval = 0.4f;
+                public const float Duration = 5f;
+            }
+            public static class QuesoPinaQueso
+            {
+                public const float Radius = 1.5f;
+                public const float TickDamage = 6f;
+                public const float TickInterval = 0.5f;
+                public const float Duration = 7f;
+                public const float HP = 100f;
+                public const float ProjectileSlowMultiplier = 0.5f;
+            }
+            public static class QuesoPinaPepperoni
+            {
+                public const float Radius = 1.5f;
+                public const float TickDamage = 5f;
+                public const float TickInterval = 0.4f;
+                public const float Duration = 5f;
+                public const float BurnDuration = 2f;
+                public const int BurnStacksPerTick = 1;
+                public const float BonusDamagePerStack = 2f;
+            }
+
+            // ── T3 queso variants — ground areas ──────────────────────
+            public static class QuesoPepperoniPepperoni
+            {
+                public const float AreaDuration = 5f;
+                public const float TickDamage = 5f;
+                public const float TickInterval = 0.4f;
+                public const int BurnStacks = 2;
+                public const float BurnDuration = 2f;
+            }
+            public static class QuesoPepperoniPina
+            {
+                public const float AreaDuration = 5f;
+                public const float TickDamage = 5f;
+                public const float TickInterval = 0.4f;
+                public const float BurnDuration = 2f;
+                public const int BurnStacks = 1;
+                public const float DoTDamage = 3f;
+                public const float DoTInterval = 0.5f;
+            }
+            public static class QuesoPepperoniQueso
+            {
+                public const float AreaDuration = 5f;
+                public const float Radius = 3f;
+                public const float TickDamage = 5f;
+                public const float TickInterval = 0.4f;
+                public const float BurnDuration = 2f;
+                public const int BurnStacks = 1;
+            }
+
+            // ── T3 queso|queso|queso black hole ───────────────────────
+            public static class QuesoQuesoQueso
+            {
+                public const float AbsorbDuration = 4f;
+                public const float AbsorbRadius = 3f;
+                public const float ReturnDamageMultiplier = 1.5f;
+                public const float ReturnProjectileSpeed = 10f;
+            }
         }
 
         // ──────────────────────────────────────────────
@@ -450,6 +622,10 @@ namespace Pizzard.Core
             public const float StaticShieldDistance = 2f;
             public const float WallDistance = 2.5f;
             public const float CatapultMinDistance = 2f;
+            public const float QuesoQuesoWallDistance = 2.5f;
+            public const float QuesoPepperoniAreaDistance = 2f;
+            public const float QuesoPinaPillarDistance = 2f;
+            public const float QuesoQuesoQuesoDistance = 2f;
         }
     }
 }
