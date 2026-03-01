@@ -258,7 +258,7 @@ public class PblobController : MonoBehaviour
         Vector3 bossTarget  = arenaCenter + new Vector3(0, Mathf.Abs(gridOffset) - 2f, 0); // top
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
-        Vector3 playerTarget = new Vector3(0f, -3.24f, 0f);
+        Vector3 playerTarget = arenaCenter + new Vector3(0, gridOffset + 1f, 0);
 
         // Disable player movement + freeze physics during cinematic
         Pizzard.Player.PlayerController pm = playerTransform != null ? playerTransform.GetComponent<Pizzard.Player.PlayerController>() : null;
@@ -622,10 +622,20 @@ public class PblobController : MonoBehaviour
     }
 
     // --- PHASE 3 CONTACT VULNERABILITY ---
+    // --- PHASE 3 CONTACT VULNERABILITY ---
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (currentState == PblobState.Phase3_Combat && collision.gameObject.CompareTag("Player"))
-            MakeVulnerable();
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (currentState == PblobState.Phase3_Grid)
+            {
+                FinishGridPuzzle();
+            }
+            if (currentState == PblobState.Phase3_Combat)
+            {
+                MakeVulnerable();
+            }
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
