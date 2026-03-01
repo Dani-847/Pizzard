@@ -512,7 +512,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8020307610992647026, guid: a22527fe562cf3146a0c763a7f17b8ad, type: 3}
       propertyPath: m_Radius
-      value: 1.5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8460767401694941113, guid: a22527fe562cf3146a0c763a7f17b8ad, type: 3}
       propertyPath: gridPuzzle

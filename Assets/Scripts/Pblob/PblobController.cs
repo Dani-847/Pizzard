@@ -256,10 +256,12 @@ public class PblobController : MonoBehaviour
 
         Vector3 playerStart  = playerTransform != null ? playerTransform.position : Vector3.zero;
         
-        // Match the player exactly to the bottom row of the grid.
+        // The grid has an array-sizing problem earlier which shifted coordinates. 
+        // Now that it's 40x5 and 0.5 size:
         Vector3 gridCenter = gridSpawnPoint != null ? gridSpawnPoint.transform.position : arenaCenter + new Vector3(0, gridOffset, 0);
         float compactGridHeight = 5f;
         float compactTileSize = 0.5f;
+        // Half the height (2.5 tiles) times the size (0.5 bounds) is 1.25 units down from center.
         float botYOffset = -(compactGridHeight - 1f) * compactTileSize / 2f; 
         Vector3 playerTarget = gridCenter + new Vector3(0, botYOffset, 0);
 

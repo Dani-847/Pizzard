@@ -20,17 +20,17 @@ public class PblobGridPuzzle : MonoBehaviour
         if (isGenerating) return;
         isGenerating = true;
 
+        // Make grid highly compact and span full width
+        gridWidth = 40;
+        gridHeight = 5;
+        tileSize = 0.5f;
+
         if (grid != null)
         {
             DestroyGrid();
         }
 
         grid = new GameObject[gridWidth, gridHeight];
-        
-        // Make grid highly compact and span full width
-        gridWidth = 40;
-        gridHeight = 5;
-        tileSize = 0.5f;
         
         // Spawn tiles
         for (int x = 0; x < gridWidth; x++)
