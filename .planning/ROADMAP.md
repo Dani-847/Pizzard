@@ -134,30 +134,39 @@ Plans:
 
 ---
 
-### Phase 19: Boss 2 — Hec'kiel AI & Patterns
+### Phase 19: Boss 2 — Niggel Worthington AI
 **Status**: ⬚ Not Started
-**Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Heckiel`
+**Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Niggel`
 
-**Objective**: Full Hec'kiel boss fight.
+**Objective**: Full Niggel Worthington (The Rich Guy) boss fight.
 
-**Current State**: `HeckielController` exists with attack interval timer, phase transition at 50% HP, and stubbed attack methods.
+**Current State**: `NiggelController` exists with attack interval, steal mechanic (range check + currency theft + speed buff), and 3 stubbed attacks.
 
 **Design**:
-- Elemental dragon that reflects the last element it was hit by.
-- Phase 1: Random attacks with element mixing.
-- Phase 2 (at 50% HP): Dragon splits into two attacking heads — each fires independently, must destroy both.
+- Mobile boss that steals currency and buffs himself.
+- Gets faster with each successful steal (`speedMultiplier`).
+- Has toy soldiers as minions.
 
 **Attacks**:
-1. Random element projectiles (fire/ice/wind themed visuals).
-2. Reflect last element — copies player's spell back.
-3. Combine elements — mixes reflected + random into new attack.
+1. Throw Money — coin bag projectiles.
+2. Rich Dash — high-speed dash across room (uses `speedMultiplier`).
+3. Steal Stats — if close enough, steals currency or HP.
+
+**Buff/Debuff System**:
+- Each steal gives Niggel +0.2x speed (`GameBalance.Bosses.Niggel.SpeedBuffPerSteal`).
+- Player gets debuffed: slightly slower, slightly weaker.
+- Defeating Niggel restores all stolen stats/currency.
+
+**Minions**:
+- Toy soldiers spawn at intervals.
+- They don't deal much damage but body-block player spells.
+- Must be cleared to reach Niggel effectively.
 
 **Implementation**:
-- `RegisterElementHit()` already tracks last element.
-- Need: projectile prefabs, split animation, dual-head controller.
-- Phase 2 needs second head GameObject with synced attack timing.
+- Need: coin bag projectile prefab, minion prefab, dash trail VFX.
+- Steal mechanic already functional — add visual feedback.
 
-**Verify**: Phase transition, element tracking, and split mechanic.
+**Verify**: Steal mechanic, speed scaling, and minion spawning.
 
 ---
 
@@ -194,39 +203,30 @@ Plans:
 
 ---
 
-### Phase 21: Boss 4 — Niggel Worthington AI
+### Phase 21: Boss 4 — Hec'kiel AI & Patterns
 **Status**: ⬚ Not Started
-**Dependencies**: `GameBalance.Bosses.Niggel`
+**Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Heckiel`
 
-**Objective**: Full Niggel Worthington (The Rich Guy) boss fight.
+**Objective**: Full Hec'kiel boss fight.
 
-**Current State**: `NiggelController` exists with attack interval, steal mechanic (range check + currency theft + speed buff), and 3 stubbed attacks.
+**Current State**: `HeckielController` exists with attack interval timer, phase transition at 50% HP, and stubbed attack methods.
 
 **Design**:
-- Mobile boss that steals currency and buffs himself.
-- Gets faster with each successful steal (`speedMultiplier`).
-- Has toy soldiers as minions.
+- Elemental dragon that reflects the last element it was hit by.
+- Phase 1: Random attacks with element mixing.
+- Phase 2 (at 50% HP): Dragon splits into two attacking heads — each fires independently, must destroy both.
 
 **Attacks**:
-1. Throw Money — coin bag projectiles.
-2. Rich Dash — high-speed dash across room (uses `speedMultiplier`).
-3. Steal Stats — if close enough, steals currency or HP.
-
-**Buff/Debuff System**:
-- Each steal gives Niggel +0.2x speed (`GameBalance.Bosses.Niggel.SpeedBuffPerSteal`).
-- Player gets debuffed: slightly slower, slightly weaker.
-- Defeating Niggel restores all stolen stats/currency.
-
-**Minions**:
-- Toy soldiers spawn at intervals.
-- They don't deal much damage but body-block player spells.
-- Must be cleared to reach Niggel effectively.
+1. Random element projectiles (fire/ice/wind themed visuals).
+2. Reflect last element — copies player's spell back.
+3. Combine elements — mixes reflected + random into new attack.
 
 **Implementation**:
-- Need: coin bag projectile prefab, minion prefab, dash trail VFX.
-- Steal mechanic already functional — add visual feedback.
+- `RegisterElementHit()` already tracks last element.
+- Need: projectile prefabs, split animation, dual-head controller.
+- Phase 2 needs second head GameObject with synced attack timing.
 
-**Verify**: Steal mechanic, speed scaling, and minion spawning.
+**Verify**: Phase transition, element tracking, and split mechanic.
 
 ---
 
