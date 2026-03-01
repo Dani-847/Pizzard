@@ -37,7 +37,7 @@ public class PblobGridPuzzle : MonoBehaviour
         {
             for (int y = 0; y < gridHeight; y++)
             {
-                Vector3 pos = startWorldPos + new Vector3(x * tileSize, y * tileSize, 0);
+                Vector3 pos = startWorldPos + new Vector3(x * tileSize, y * tileSize, 5f);
                 // Center the grid around startWorldPos
                 pos.x -= (gridWidth - 1) * tileSize / 2f;
                 pos.y -= (gridHeight - 1) * tileSize / 2f;

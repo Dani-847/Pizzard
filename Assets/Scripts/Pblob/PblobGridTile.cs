@@ -27,6 +27,10 @@ public class PblobGridTile : MonoBehaviour
             tex.Apply();
             // Create sprite with PPU equal to SIZE so it perfectly equates to 1x1 Unity World Units
             spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, SIZE, SIZE), new Vector2(0.5f, 0.5f), pixelsPerUnit: SIZE, 0, SpriteMeshType.FullRect);
+        
+            // Force rendering behind the player
+            spriteRenderer.sortingLayerName = "Background";
+            spriteRenderer.sortingOrder = -5;
         }
 
         var col = GetComponent<BoxCollider2D>();
