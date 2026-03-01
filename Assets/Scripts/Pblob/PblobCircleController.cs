@@ -41,8 +41,8 @@ public class PblobCircleController : MonoBehaviour
             sr.sprite = Sprite.Create(tex, new Rect(0, 0, SIZE, SIZE), new Vector2(0.5f, 0.5f), (float)SIZE / 2f);
         }
 
-        // Render above the arena tilemap
-        sr.sortingOrder = 15;
+        // Render below the boss/player (floor effect)
+        sr.sortingOrder = -2;
 
         // ---- Collider: make it a trigger so player walks inside ----
         var col = GetComponent<CircleCollider2D>();

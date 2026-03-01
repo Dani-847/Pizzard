@@ -143,6 +143,7 @@ public class PblobController : MonoBehaviour
                 break;
             case PblobState.Phase3_Grid:
                 MakeInvulnerable();
+                if (gridPuzzle == null) gridPuzzle = FindObjectOfType<PblobGridPuzzle>();
                 if (gridPuzzle != null)
                 {
                     Vector3 spawnPos = arenaCenter + new Vector3(0, Pizzard.Core.GameBalance.Bosses.Pblob.GridSpawnOffsetY, 0);
@@ -243,6 +244,13 @@ public class PblobController : MonoBehaviour
 
     private IEnumerator Phase3TransitionRoutine()
     {
+        // Re-find player in case it wasn't ready at Start()
+        if (playerTransform == null)
+        {
+            var p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) playerTransform = p.transform;
+        }
+
         float elapsed = 0f;
         float duration = 1.5f;
 
@@ -434,9 +442,15 @@ public class PblobController : MonoBehaviour
 
         // Only ignore collisions between BossCircle and the Projectile layer
         int bossCircleLayer = LayerMask.NameToLayer("BossCircle");
-        int projLayer = LayerMask.NameToLayer("Projectile");
-        if (bossCircleLayer >= 0 && projLayer >= 0)
-            Physics2D.IgnoreLayerCollision(bossCircleLayer, projLayer, true);
+        if (bossCircleLayer >= 0)
+        {
+            // Ignore collisions between circles and all projectile/spell layers
+            foreach (string layerName in new[] { "Projectile", "Default", "Player", "Enemy", "EnemyProjectile" })
+            {
+                int l = LayerMask.NameToLayer(layerName);
+                if (l >= 0) Physics2D.IgnoreLayerCollision(bossCircleLayer, l, true);
+            }
+        }
 
         float spawnRadius = Pizzard.Core.GameBalance.Bosses.Pblob.CircleSpawnRadius;
         float circleScale = Pizzard.Core.GameBalance.Bosses.Pblob.CircleScale;
