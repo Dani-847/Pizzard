@@ -296,6 +296,10 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 - Potion economy: 3 potions enough for Boss 1, tight for Boss 2.
 - Damage values: no one-shotting in either direction.
 
+**Sprite Pass**:
+- Replace all placeholder/missing sprites with final art for: player, bosses (Pblob, Niggel), projectiles, UI elements, and backgrounds.
+- Verify no missing sprite references (pink squares) anywhere in the full loop.
+
 **Build**:
 - Create Windows standalone build.
 - Test build outside editor.
