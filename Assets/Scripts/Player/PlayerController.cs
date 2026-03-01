@@ -137,7 +137,8 @@ namespace Pizzard.Player
         {
             if (rb == null) return;
             
-            float currentSpeed = isDashing ? moveSpeed * dashSpeedMultiplier : moveSpeed;
+            float baseSpeed = moveSpeed * Pizzard.Bosses.NiggelController.PlayerSpeedMultiplier;
+            float currentSpeed = isDashing ? baseSpeed * dashSpeedMultiplier : baseSpeed;
             rb.velocity = movementInput * currentSpeed;
         }
     }

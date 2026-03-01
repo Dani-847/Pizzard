@@ -11,13 +11,9 @@ GameObject:
   - component: {fileID: 267326276644630009}
   - component: {fileID: 1245036755921972128}
   - component: {fileID: 8020307610992647026}
-  - component: {fileID: 8460767401694941113}
-  - component: {fileID: 8119186634493984726}
-  - component: {fileID: 3363831982042869686}
-  - component: {fileID: 2080116304107643075}
-  - component: {fileID: 3349158012242296273}
-  - component: {fileID: 6637818891723941349}
   - component: {fileID: 9141943449515027294}
+  - component: {fileID: 7833658022088078377}
+  - component: {fileID: 3061431650415384494}
   m_Layer: 0
   m_Name: Niggel
   m_TagString: Boss
@@ -128,150 +124,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &8460767401694941113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257718434660003001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f61283fab988704c9dc5a3cb26fa165, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 1000
-  currentPhase: 1
-  maxPhases: 3
-  attackPatterns:
-  - {fileID: 8119186634493984726}
-  - {fileID: 3363831982042869686}
-  vulnerableWindowDuration: 3
-  patternDuration: 10.5
-  phase2Door: {fileID: 0}
-  phase2Unlocked: 0
-  OnBossBattleStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnBossDefeated:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPhaseCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPhaseTransition:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPhase2Unlocked:
-    m_PersistentCalls:
-      m_Calls: []
-  OnHealthChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnVulnerabilityChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPhaseChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  debugMode: 1
-  damageKey: 116
-  toggleVulnerableKey: 118
-  nextPhaseKey: 112
-  unlockPhase2Key: 50
---- !u!114 &8119186634493984726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257718434660003001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49f9d52fce6be4e4685504d52accaa94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hairballPrefab: {fileID: 3311247647011576406, guid: 5769c02ec8edb08409af271c476203bc, type: 3}
-  mustachePoints:
-  - {fileID: 1591833054569752790}
-  - {fileID: 7783690594326507605}
-  - {fileID: 3754131204356798334}
-  - {fileID: 5121023936406964536}
-  - {fileID: 1567938783439584525}
-  - {fileID: 6250405201703827621}
-  speedVariations:
-  - 5
-  - 7
-  - 10
-  useRhythm: 1
-  beatsBetweenShots: 1
-  startingBeat: 1
-  enableBouncing: 1
-  bounceCount: 3
-  bounceSpeedMultiplier: 0.95
-  activeMustachePoints: 4
---- !u!114 &3363831982042869686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257718434660003001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b674bf85b83a3274ca7febb8c7201d1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isEnabled: 0
-  movementCirclePrefab: {fileID: 0}
-  numberOfCircles: 3
-  circleMovementSpeed: 2
---- !u!114 &2080116304107643075
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257718434660003001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80353c72204f38444a9026c11b51ba2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isEnabled: 0
---- !u!114 &3349158012242296273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257718434660003001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 314b8ae7a70787848af046f81f569a08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthBar: {fileID: 0}
-  healthText: {fileID: 0}
-  bossNameDisplay: {fileID: 0}
---- !u!114 &6637818891723941349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257718434660003001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2f0029a98734ce458b58207c48e3d49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bpm: 17.15
-  beatThreshold: 0
-  beatsPerMeasure: 4
-  beatIndicator: {fileID: 0}
-  beatColor: {r: 1, g: 0, b: 0, a: 1}
-  offBeatColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &9141943449515027294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,6 +136,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e2e381414f98b4a8bf37159713c805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7833658022088078377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257718434660003001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6b52700ed7605e4a8c874d78a43cbe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  bossCurrencyReward: 150
+  OnBossDefeated:
+    m_PersistentCalls:
+      m_Calls: []
+  currentMoveSpeed: 0
+  arenaCenter: {x: 0, y: 0}
+  arenaClampX: 7
+  arenaClampY: 4
+  coinBagPrefab: {fileID: 0}
+  healingCoinPrefab: {fileID: 0}
+  blackDotBarrierPrefab: {fileID: 0}
+  playerTransform: {fileID: 0}
+--- !u!50 &3061431650415384494
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257718434660003001}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1649815310915807334
 GameObject:
   m_ObjectHideFlags: 0

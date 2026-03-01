@@ -287,6 +287,8 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 - Play full loop (Menu → Shop → Boss 1 → Shop → Boss 2 → Credits) 3 times.
 - Fix all blocking bugs (crashes, softlocks, progression breaks).
 - Fix all visual bugs (Z-order, clipping, missing sprites).
+- **Project structure audit**: verify every script, prefab, and asset is in its correct folder (no stray files in root `Assets/`, correct subfolders under `Scripts/`, `Prefabs/`, etc.).
+- **Scene tree hygiene**: audit all boss arena scenes for duplicate GameObjects, leftover debug objects, or misplaced UI canvases. Ensure no scene has its own UIManager canvas (all HUD must live in the persistent MainMenu canvas). Verify no DontDestroyOnLoad conflicts.
 
 **Balance Pass** (all via `GameBalance.cs`):
 - Boss HP: each boss should take 2–5 minutes.

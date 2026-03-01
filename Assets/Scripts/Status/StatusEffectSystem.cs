@@ -93,11 +93,20 @@ public class StatusEffectSystem : MonoBehaviour
             // Aplicar daño al objetivo según su tipo
             if (gameObject.CompareTag("Boss"))
             {
-                PblobController boss = GetComponent<PblobController>();
-                if (boss != null && boss.IsVulnerable())
+                Pizzard.Bosses.BossBase bossBase = GetComponent<Pizzard.Bosses.BossBase>();
+                if (bossBase != null)
                 {
-                    boss.TakeDamage(damage);
+                    bossBase.TakeDamage((int)damage);
                     Debug.Log($"{gameObject.name} recibe {damage} de daño por picante ({stacks} cargas)");
+                }
+                else
+                {
+                    PblobController boss = GetComponent<PblobController>();
+                    if (boss != null && boss.IsVulnerable())
+                    {
+                        boss.TakeDamage(damage);
+                        Debug.Log($"{gameObject.name} recibe {damage} de daño por picante ({stacks} cargas)");
+                    }
                 }
             }
             else if (gameObject.CompareTag("Player"))

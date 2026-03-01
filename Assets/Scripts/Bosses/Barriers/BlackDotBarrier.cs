@@ -13,38 +13,32 @@ using UnityEngine;
 /// </summary>
 public class BlackDotBarrier : MonoBehaviour
 {
-    private void Awake()
-    {
-        int barrierLayer = LayerMask.NameToLayer("BossBarrier");
-        int playerLayer = LayerMask.NameToLayer("Default");
-        int playerProjLayer = LayerMask.NameToLayer("PlayerProjectiles");
-        int enemyProjLayer = LayerMask.NameToLayer("EnemyProjectile");
-
-        if (barrierLayer < 0)
-        {
-            Debug.LogWarning("[BlackDotBarrier] 'BossBarrier' layer not found. " +
-                             "Create it in Edit > Project Settings > Tags and Layers.");
-            return;
-        }
-
-        // Player walks through freely
-        if (playerLayer >= 0)
-            Physics2D.IgnoreLayerCollision(barrierLayer, playerLayer, true);
-
-        // Enemy projectiles pass through (don't block Niggel's own shots)
-        if (enemyProjLayer >= 0)
-            Physics2D.IgnoreLayerCollision(barrierLayer, enemyProjLayer, true);
-
-        // PlayerProjectiles DO collide — handled by OnTriggerEnter2D below
-        // (layer collision between BossBarrier and PlayerProjectiles must remain enabled)
-    }
+private void Awake() { }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Destroy any player spell that contacts this barrier
-        if (other.gameObject.layer == LayerMask.NameToLayer("PlayerProjectiles"))
+        // Destroy any player spell that contacts this barrier, and the barrier itself
+        if (other.gameObject.layer == LayerMask.NameToLayer("PlayerProjectiles") || other.CompareTag("CharacterProjectile"))
         {
             Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+        else if (other.CompareTag("Player"))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("PlayerProjectiles") || collision.collider.CompareTag("CharacterProjectile"))
+        {
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+        }
+        else if (collision.collider.CompareTag("Player"))
+        {
+            Destroy(gameObject);
         }
     }
 }

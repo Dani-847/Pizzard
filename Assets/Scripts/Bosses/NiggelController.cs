@@ -52,6 +52,11 @@ namespace Pizzard.Bosses
         private bool isActive = false;
         private bool hasStarted = false;  // idle until player gives any input
 
+        // ── Last-stand invulnerability (triggered at ≤20 HP) ──────────────
+        private bool lastStandActive = false;
+        private bool lastStandUsed   = false;
+        private Coroutine lastStandCoroutine;
+
         // ── References ───────────────────────────────────
         [SerializeField] private Transform playerTransform;
         private Rigidbody2D rb;
@@ -66,7 +71,7 @@ namespace Pizzard.Bosses
         //  Unity lifecycle
         // ────────────────────────────────────────────────
 
-        protected override void Awake()
+protected override void Awake()
         {
             // Do NOT call base.Awake() — we manage currentHealth ourselves via coinVault sync.
             rb = GetComponent<Rigidbody2D>();
@@ -80,11 +85,15 @@ namespace Pizzard.Bosses
 
             // CoinVault init
             coinVault = GameBalance.Bosses.Niggel.CoinVaultMax;
-            currentHealth = coinVault;
+            currentHealth = coinVault; // sync BossBase
             maxHealth = GameBalance.Bosses.Niggel.CoinVaultMax;
 
             currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed;
             dashCooldownTimer = GameBalance.Bosses.Niggel.BaseDashCooldown;
+
+            // Token contamination fix: BossBase.Die() awards bossCurrencyReward to ProgressionManager
+            // (shop tokens). Niggel's token reward is handled by GameFlowManager.AvanzarFase().
+            bossCurrencyReward = 0;
 
             isActive = false;  // starts idle — activates on first player input
             hasStarted = false;
@@ -133,6 +142,9 @@ namespace Pizzard.Bosses
 
             if (!isActive || isDead) return;
 
+            // Progressive speed — scales continuously from BaseMoveSpeed (full HP) to MaxMoveSpeed (0 HP)
+            currentMoveSpeed = GetProgressiveSpeed();
+
             // Move toward player
             if (playerTransform != null)
             {
@@ -172,7 +184,15 @@ namespace Pizzard.Bosses
             OnPlayerHitNiggel();
             CheckEnrageThresholds();
 
-            if (coinVault <= 0) Die();
+            // Last-stand: trigger 3s invulnerability at ≤20 HP (once per fight)
+            if (!lastStandUsed && coinVault <= 20 && coinVault > 0)
+            {
+                lastStandUsed = true;
+                if (lastStandCoroutine != null) StopCoroutine(lastStandCoroutine);
+                lastStandCoroutine = StartCoroutine(LastStandRoutine());
+            }
+
+            if (coinVault <= 0 && !lastStandActive) Die();
         }
 
         /// <summary>
@@ -208,10 +228,9 @@ namespace Pizzard.Bosses
             switch (level)
             {
                 case 1:
-                    currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed
-                        * (1f + GameBalance.Bosses.Niggel.Enrage1SpeedBonus);
-                    Debug.Log("[Niggel] Enrage 1: speed increased, spawning barriers.");
-                    SpawnBarriers();
+                    Debug.Log("[Niggel] Enrage 1: starting diagonal barrier spawns (speed is now progressive).");
+                    if (randomBarrierCoroutine != null) StopCoroutine(randomBarrierCoroutine);
+                    randomBarrierCoroutine = StartCoroutine(BarrierSpawnLoop());
                     break;
 
                 case 2:
@@ -220,45 +239,87 @@ namespace Pizzard.Bosses
                     break;
 
                 case 3:
-                    currentMoveSpeed = GameBalance.Bosses.Niggel.BaseMoveSpeed
-                        * (1f + GameBalance.Bosses.Niggel.Enrage3SpeedBonus);
                     dashCooldownTimer = GameBalance.Bosses.Niggel.Enrage3DashCooldown;
-                    Debug.Log("[Niggel] Enrage 3: max speed, shield burst attacks enabled.");
+                    Debug.Log("[Niggel] Enrage 3: max speed, shield burst attacks enabled, moving homing barriers start.");
                     break;
             }
         }
 
-        /// <summary>Spawns black dot barrier rows at Enrage 1. Clears any previous barriers first.</summary>
-        private void SpawnBarriers()
+        private Coroutine randomBarrierCoroutine;
+
+        private IEnumerator BarrierSpawnLoop()
         {
-            if (blackDotBarrierPrefab == null)
+            while (!isDead && isActive)
             {
-                Debug.LogWarning("[Niggel] blackDotBarrierPrefab not assigned — skipping barrier spawn.");
-                return;
-            }
-
-            // Clear existing barriers
-            foreach (var b in activeBarriers)
-                if (b != null) Destroy(b);
-            activeBarriers.Clear();
-
-            int rows = GameBalance.Bosses.Niggel.BarrierRowCount;
-            int dots = GameBalance.Bosses.Niggel.BarrierDotsPerRow;
-            float spacing = GameBalance.Bosses.Niggel.BarrierDotSpacing;
-
-            for (int r = 0; r < rows; r++)
-            {
-                float rowY = arenaCenter.y + (r - rows / 2f) * 2f;
-                for (int d = 0; d < dots; d++)
+                if (enrageLevel < 3)
                 {
-                    float dotX = arenaCenter.x + (d - dots / 2f) * spacing;
-                    GameObject dot = Instantiate(blackDotBarrierPrefab,
-                        new Vector3(dotX, rowY, 0f), Quaternion.identity);
-                    activeBarriers.Add(dot);
+                    // Enrage 1 and 2: wait 5s, spawn 2 random diagonal barriers
+                    yield return new WaitForSeconds(5f);
+                    if (isDead || !isActive) break;
+                    SpawnRandomDiagonalBarrier();
+                    SpawnRandomDiagonalBarrier();
+                }
+                else
+                {
+                    // Enrage 3: wait 2.5s, spawn homing barrier
+                    yield return new WaitForSeconds(2.5f);
+                    if (isDead || !isActive) break;
+                    SpawnHomingBarrier();
                 }
             }
+        }
 
-            Debug.Log($"[Niggel] Spawned {activeBarriers.Count} barrier dots.");
+private void SpawnRandomDiagonalBarrier()
+        {
+            if (blackDotBarrierPrefab == null) return;
+            
+            GameObject package = new GameObject("DiagonalBarrier");
+            float startX = arenaCenter.x + Random.Range(-7f, 7f);
+            float startY = arenaCenter.y + Random.Range(-3f, 3f);
+            package.transform.position = new Vector3(startX, startY, 0f);
+            
+            float angle = Random.Range(0f, 360f);
+            package.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+            int dots = 15;
+            float spacing = 0.2f;
+            for (int d = 0; d < dots; d++)
+            {
+                float offsetX = (d - dots / 2f) * spacing;
+                GameObject dot = Instantiate(blackDotBarrierPrefab, package.transform.position + package.transform.right * offsetX, Quaternion.identity, package.transform);
+                dot.transform.localScale *= 0.5f;
+                activeBarriers.Add(dot);
+            }
+            
+            Destroy(package, 15f);
+        }
+
+private void SpawnHomingBarrier()
+        {
+            if (blackDotBarrierPrefab == null || playerTransform == null) return;
+            
+            GameObject package = new GameObject("HomingBarrier");
+            
+            Vector3 spawnDir = (Vector3)Random.insideUnitCircle.normalized;
+            package.transform.position = playerTransform.position + spawnDir * 12f;
+            
+            Vector3 toPlayer = playerTransform.position - package.transform.position;
+            float angle = Mathf.Atan2(toPlayer.y, toPlayer.x) * Mathf.Rad2Deg;
+            package.transform.rotation = Quaternion.Euler(0, 0, angle + 90f);
+
+            int dots = 20;
+            float spacing = 0.2f;
+            for (int d = 0; d < dots; d++)
+            {
+                float offsetX = (d - dots / 2f) * spacing;
+                GameObject dot = Instantiate(blackDotBarrierPrefab, package.transform.position + package.transform.right * offsetX, Quaternion.identity, package.transform);
+                dot.transform.localScale *= 0.5f;
+                activeBarriers.Add(dot);
+            }
+            
+            var mover = package.AddComponent<Pizzard.Bosses.Barriers.BarrierPackageMover>();
+            mover.velocity = toPlayer.normalized * 5f;
+            mover.lifetime = 12f;
         }
 
         private float GetDashCooldown()
@@ -403,7 +464,7 @@ namespace Pizzard.Bosses
         }
 
         /// <summary>Charge visual then burst coin bag projectiles in all directions. Enrage 3.</summary>
-        private IEnumerator CoinShieldRoutine()
+private IEnumerator CoinShieldRoutine()
         {
             coinShieldActive = true;
 
@@ -420,8 +481,8 @@ namespace Pizzard.Bosses
             }
             if (spriteRenderer != null) spriteRenderer.color = original;
 
-            // Burst N projectiles evenly in a full circle
-            if (coinBagPrefab != null)
+            // Burst healing coins evenly in a full circle — they heal Niggel on impact
+            if (healingCoinPrefab != null)
             {
                 int count = GameBalance.Bosses.Niggel.ShieldBurstCount;
                 float burstSpeed = GameBalance.Bosses.Niggel.Enrage1CoinBagSpeed;
@@ -432,19 +493,34 @@ namespace Pizzard.Bosses
                     float angleRad = angleDeg * Mathf.Deg2Rad;
                     Vector2 dir = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
 
-                    GameObject proj = Instantiate(coinBagPrefab, transform.position,
+                    GameObject proj = Instantiate(healingCoinPrefab, transform.position,
                         Quaternion.Euler(0f, 0f, angleDeg));
+
+                    // Wire boss reference — coin heals Niggel AND deals 1 damage to player
+                    var hcp = proj.GetComponent<HealingCoinProjectile>();
+                    if (hcp != null) { hcp.boss = this; hcp.dealsDamageOnHit = true; }
 
                     var projRb = proj.GetComponent<Rigidbody2D>();
                     if (projRb != null) projRb.velocity = dir * burstSpeed;
 
-                    // Orange tint to distinguish burst projectiles
+                    // Pulsate orange tint to distinguish burst coins from regular healing coins
                     var projSr = proj.GetComponent<SpriteRenderer>();
-                    if (projSr != null) projSr.color = new Color(1f, 0.5f, 0f);
+                    if (projSr != null) StartCoroutine(PulsateCoin(projSr, proj));
                 }
             }
 
             coinShieldActive = false;
+        }
+
+        private IEnumerator PulsateCoin(SpriteRenderer sr, GameObject coin)
+        {
+            float t = 0f;
+            while (coin != null && sr != null)
+            {
+                sr.color = Color.Lerp(Color.yellow, new Color(1f, 0.4f, 0f), Mathf.PingPong(t * 4f, 1f));
+                t += Time.deltaTime;
+                yield return null;
+            }
         }
 
         // Steal mechanic replaced by CoinVault design — see TakeDamage()
@@ -496,5 +572,46 @@ protected override void Die()
 
             base.Die(); // Awards currency and fires OnBossDefeated via BossBase
         }
-    }
+    
+
+private float GetProgressiveSpeed()
+        {
+            float hpRatio = (float)coinVault / GameBalance.Bosses.Niggel.CoinVaultMax;
+            return Mathf.Lerp(GameBalance.Bosses.Niggel.MaxMoveSpeed, GameBalance.Bosses.Niggel.BaseMoveSpeed, hpRatio);
+        }
+
+
+private IEnumerator LastStandRoutine()
+        {
+            lastStandActive = true;
+            Debug.Log("[Niggel] Last stand! 3s invulnerability.");
+
+            // Run at 2× current speed during last-stand
+            float savedVault = coinVault;
+            float slowSpeed  = GetProgressiveSpeed() * 2f;
+
+            float elapsed = 0f;
+            float duration = 3f;
+            Color redFlash = new Color(1f, 0.1f, 0.1f);
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                // Pulsate red
+                if (spriteRenderer != null)
+                    spriteRenderer.color = Color.Lerp(Color.white, redFlash, Mathf.PingPong(elapsed * 6f, 1f));
+                // Force minimum speed while active
+                currentMoveSpeed = slowSpeed;
+                // Absorb all damage dealt during this window
+                coinVault = Mathf.Max(1, coinVault);
+                currentHealth = coinVault;
+                yield return null;
+            }
+
+            if (spriteRenderer != null) spriteRenderer.color = Color.white;
+            lastStandActive = false;
+            // After invuln ends, check if already dead
+            if (coinVault <= 0) Die();
+        }
+}
 }

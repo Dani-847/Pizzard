@@ -47,5 +47,22 @@ namespace Pizzard.UI
                 Debug.LogWarning("[ShopController] Failed to purchase Health. Not enough currency.");
             }
         }
-    }
+    
+
+#if UNITY_EDITOR
+        private void OnGUI()
+        {
+            GUILayout.BeginArea(new Rect(Screen.width - 160f, 10f, 150f, 70f));
+            GUI.Box(new Rect(0, 0, 150f, 70f), "");
+            int current = Progression.ProgressionManager.Instance != null
+                ? Progression.ProgressionManager.Instance.BossCurrency : 0;
+            GUILayout.Label($"Tokens: {current}");
+            if (GUILayout.Button("+1 Token"))
+                Progression.ProgressionManager.Instance?.AddCurrency(1);
+            if (GUILayout.Button("+50 Tokens"))
+                Progression.ProgressionManager.Instance?.AddCurrency(50);
+            GUILayout.EndArea();
+        }
+#endif
+}
 }

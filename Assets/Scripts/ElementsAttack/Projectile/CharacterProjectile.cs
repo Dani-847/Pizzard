@@ -41,12 +41,9 @@ public class CharacterProjectile : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"CharacterProjectile collision con: {other.name} (Tag: {other.tag})");
-
         // NO dañar al jugador ni aliados
         if (other.CompareTag("Player") || other.CompareTag("CharacterProjectile"))
         {
-            Debug.Log($"Proyectil aliado ignorado por aliado: {other.tag}");
             return;
         }
 
@@ -57,11 +54,24 @@ public class CharacterProjectile : MonoBehaviour
         // Dañar al BOSS
         if (other.CompareTag("Boss"))
         {
+            float dmgMultiplier = 1f;
+            if (other.GetComponent<Pizzard.Bosses.NiggelController>() != null)
+                dmgMultiplier = Pizzard.Bosses.NiggelController.PlayerDamageMultiplier;
+
             Pizzard.Bosses.BossBase boss = other.GetComponent<Pizzard.Bosses.BossBase>();
             if (boss != null)
             {
-                boss.TakeDamage((int)damage);
-                Debug.Log($"@{GetType().Name} golpe al boss: {damage} de daño");
+                boss.TakeDamage((int)(damage * dmgMultiplier));
+                Debug.Log($"@{GetType().Name} golpe al boss: {damage * dmgMultiplier} de daño");
+            }
+            else
+            {
+                PblobController pblob = other.GetComponent<PblobController>();
+                if (pblob != null)
+                {
+                    pblob.TakeDamage(damage * dmgMultiplier);
+                    Debug.Log($"@{GetType().Name} golpe al Pblob: {damage * dmgMultiplier} de daño");
+                }
             }
             Destroy(gameObject);
             return;
@@ -71,8 +81,26 @@ public class CharacterProjectile : MonoBehaviour
         if (other.CompareTag("CastPoint") || other.CompareTag("Weapon"))
             return;
 
-        // Para cualquier otra colisión, destruir el proyectil
-        Debug.Log($"@{GetType().Name} impact con: {other.name} - Destruyendo");
+        // Ignore Tilemaps and Background/Ground elements that could block spells meant for bosses
+        if (other.GetComponent<UnityEngine.Tilemaps.TilemapCollider2D>() != null)
+            return;
+
+        // Ignorar otros triggers (zonas, áreas de efecto) para que el hechizo no se destruya en el aire
+        if (other.isTrigger)
+        {
+            // Except for Niggel's Black Dot Barriers!
+            if (other.GetComponent<BlackDotBarrier>() != null)
+            {
+                // Let the barrier's own collision handle the destruction
+                return;
+            }
+            
+            // Otherwise ignore triggers
+            return;
+        }
+
+        // Para cualquier otra colisión sólida, destruir el proyectil
+        Debug.Log($"[{GetType().Name}] Impactó objeto sólido NO trigger: {other.name}, Destruyendo.");
         Destroy(gameObject);
     }
 }

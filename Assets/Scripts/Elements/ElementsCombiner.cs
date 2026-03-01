@@ -16,25 +16,21 @@ public class ElementsCombiner : MonoBehaviour
     void Start()
     {
         if (playerEquip == null)
-        {
             playerEquip = FindObjectOfType<PlayerEquip>();
-        }
 
         if (elementsUI == null)
         {
             elementsUI = FindObjectOfType<ElementsUI>();
+            if (elementsUI == null)
+                Debug.LogWarning("[ElementsCombiner] ElementsUI not found at Start (may be inactive — will retry).");
         }
 
         if (elementsRegister == null)
-        {
             elementsRegister = FindObjectOfType<ElementsRegister>();
-        }
 
         // Si no asignaste database directamente, intenta usar la que tenga elementsUI (si existe)
         if (database == null && elementsUI != null)
-        {
             database = elementsUI.database;
-        }
     }
 
     public void OnSelectElement1(InputAction.CallbackContext context)
@@ -60,9 +56,26 @@ public class ElementsCombiner : MonoBehaviour
     public float spamCostMultiplier = 1.0f;
     private float spamResetTimer = 0f;
     public float spamResetDelay = 3.0f; // Seconds before combo counter resets
+    private float elementsUIRetryTimer = 0f; // Retry finding ElementsUI every 0.5s if null
 
     private void Update()
     {
+        // Retry finding ElementsUI if it was inactive at Start (activated later by GameFlowManager)
+        if (elementsUI == null)
+        {
+            elementsUIRetryTimer -= Time.unscaledDeltaTime;
+            if (elementsUIRetryTimer <= 0f)
+            {
+                elementsUIRetryTimer = 0.5f;
+                elementsUI = FindObjectOfType<ElementsUI>();
+                if (elementsUI != null)
+                {
+                    if (database == null) database = elementsUI.database;
+                    Debug.Log("[ElementsCombiner] ElementsUI found on retry.");
+                }
+            }
+        }
+
         if (spamResetTimer > 0)
         {
             spamResetTimer -= Time.deltaTime;
@@ -152,7 +165,7 @@ public class ElementsCombiner : MonoBehaviour
                 // Registrar la combinación si existe en la database
                 elementsRegister.RegistrarCombinacion(combinationKey);
             }
-            else if (entry == null && elementCount <= 2) // Solo log para combinaciones pequeñas
+            else if (entry == null && elementCount <= 2) // Solo log para combinaciones pequenas
             {
                 Debug.LogWarning("No se encontró la combinación en la base de datos: " + combinationKey);
             }

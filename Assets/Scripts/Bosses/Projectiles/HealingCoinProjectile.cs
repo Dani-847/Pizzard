@@ -1,4 +1,5 @@
 using UnityEngine;
+using Pizzard.Player;
 
 /// <summary>
 /// Niggel Enrage 2+ attack. A fast coin projectile that heals Niggel's CoinVault
@@ -15,10 +16,13 @@ public class HealingCoinProjectile : EnemyProjectile
     private readonly Color baseColor = Color.yellow;
     private readonly Color pulseColor = new Color(1f, 0.5f, 0f); // orange
 
+    /// <summary>Set to true for shield-burst coins — they heal Niggel AND damage the player.</summary>
+    public bool dealsDamageOnHit = false;
+
     protected override void Start()
     {
         base.Start();
-        damage = 0f; // healing coin does NOT damage player
+        damage = 0f; // default: no player damage (overridden in OnTriggerEnter2D when dealsDamageOnHit)
         sr = GetComponent<SpriteRenderer>();
     }
 
@@ -35,6 +39,11 @@ public class HealingCoinProjectile : EnemyProjectile
         if (other.CompareTag("Player"))
         {
             boss?.HealCoinVault(Pizzard.Core.GameBalance.Bosses.Niggel.HealingCoinAmount);
+            if (dealsDamageOnHit)
+            {
+                var health = other.GetComponent<PlayerHealth>();
+                if (health != null) health.TakeDamage(1);
+            }
             Destroy(gameObject);
             return;
         }

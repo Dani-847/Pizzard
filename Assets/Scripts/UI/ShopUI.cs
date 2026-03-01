@@ -348,4 +348,21 @@ public class ShopUI : MonoBehaviour
         RefreshTokens();
         UpdateWandButtonUI();
     }
+
+
+#if UNITY_EDITOR
+    private void OnGUI()
+    {
+        int tokens = Pizzard.Progression.ProgressionManager.Instance != null
+            ? Pizzard.Progression.ProgressionManager.Instance.BossCurrency : 0;
+        GUILayout.BeginArea(new Rect(Screen.width - 170f, 10f, 160f, 80f));
+        GUI.Box(new Rect(0, 0, 160f, 80f), "");
+        GUILayout.Label($"Tokens: {tokens}");
+        if (GUILayout.Button("+1 Token"))
+            Pizzard.Progression.ProgressionManager.Instance?.AddCurrency(1);
+        if (GUILayout.Button("+50 Tokens"))
+            Pizzard.Progression.ProgressionManager.Instance?.AddCurrency(50);
+        GUILayout.EndArea();
+    }
+#endif
 }

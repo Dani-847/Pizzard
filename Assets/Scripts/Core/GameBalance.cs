@@ -138,10 +138,9 @@ namespace Pizzard.Core
                 public const int Enrage2Threshold = 100;
                 public const int Enrage3Threshold = 50;
 
-                // ── Movement ──
-                public const float BaseMoveSpeed = 2.5f;
-                public const float Enrage1SpeedBonus = 0.1f;
-                public const float Enrage3SpeedBonus = 0.2f;
+                // ── Movement (progressive: interpolates from slow→fast as HP drops) ──
+                public const float BaseMoveSpeed = 1.5f;   // speed at full HP
+                public const float MaxMoveSpeed  = 5.5f;   // speed at 0 HP
 
                 // ── Dash ──
                 public const float BaseDashCooldown = 20f;
@@ -174,8 +173,8 @@ namespace Pizzard.Core
                 // ── Momentum (player side) ──
                 public const int MaxMomentum = 5;
                 public const float MomentumResetDelay = 4f;
-                public const float MomentumDamagePerStack = 0.05f;
-                public const float MomentumSpeedPerStack = 0.03f;
+                public const float MomentumDamagePerStack = 0.1f;  // Increased to make buff obvious (max 50% extra damage)
+                public const float MomentumSpeedPerStack = 0.08f;  // Increased to make buff obvious (max 40% extra speed)
 
                 // ── Attack timing ──
                 public const float BaseAttackInterval = 3f;

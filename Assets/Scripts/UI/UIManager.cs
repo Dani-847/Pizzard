@@ -46,13 +46,21 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            // Fallback: hide everything except menu
+            // Fallback: hide everything
             HideAllUIs();
             foreach (Transform child in transform)
             {
                 child.gameObject.SetActive(false);
             }
-            if (menuUI != null) menuUI.Show();
+
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name.StartsWith("BossArena"))
+            {
+                ForceApplyUIForState(GameState.Combat);
+            }
+            else
+            {
+                if (menuUI != null) menuUI.Show();
+            }
         }
     }
 
@@ -82,18 +90,31 @@ public class UIManager : MonoBehaviour
                 if (dialogUI != null) dialogUI.gameObject.SetActive(true);
                 break;
             case GameState.Combat:
-                // Enable HUD elements
+                // Enable standard HUD
                 Transform elementsUI = transform.Find("Elementos");
-                Transform bossUI = transform.Find("PblobUI");
                 Transform playerHP = transform.Find("HealthUI");
                 Transform potionUI = transform.Find("PotionUI");
                 Transform manaUI = transform.Find("ManaUI");
                 
                 if (elementsUI) elementsUI.gameObject.SetActive(true);
-                if (bossUI) bossUI.gameObject.SetActive(true);
                 if (playerHP) playerHP.gameObject.SetActive(true);
                 if (potionUI) potionUI.gameObject.SetActive(true);
                 if (manaUI) manaUI.gameObject.SetActive(true);
+
+                // Boss-specific HUD
+                int bossIdx = GameFlowManager.Instance != null ? GameFlowManager.Instance.currentBossIndex : 1;
+                if (bossIdx == 1)
+                {
+                    Transform bossUI = transform.Find("PblobUI");
+                    if (bossUI) bossUI.gameObject.SetActive(true);
+                }
+                else if (bossIdx == 2)
+                {
+                    Transform niggelBossUI = transform.Find("NiggelBossUI");
+                    Transform coinMeterUI = transform.Find("CoinMeterUI");
+                    if (niggelBossUI) niggelBossUI.gameObject.SetActive(true);
+                    if (coinMeterUI) coinMeterUI.gameObject.SetActive(true);
+                }
                 break;
         }
         

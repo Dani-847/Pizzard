@@ -107,21 +107,14 @@ namespace Pizzard.Progression
                 CurrentSave.bossIndex = GameFlowManager.Instance.currentBossIndex;
             }
             
-            if (ProgressionManager.Instance != null)
-            {
-                CurrentSave.tokens = ProgressionManager.Instance.BossCurrency;
-            }
+            // Tokens are per-run — intentionally not persisted to disk.
         }
 
         private void ApplySaveDataToGame()
         {
             // Pushes loaded SaveData out into the wild
             // GameFlowManager.currentBossIndex is read-only usually, so we let the IniciarJuego / Continuar handle it
-            if (ProgressionManager.Instance != null)
-            {
-                // Overwrite the in-memory currency with loaded JSON
-                ProgressionManager.Instance.SetCurrencyFromSave(CurrentSave.tokens);
-            }
+            // Tokens are per-run — start fresh every load, do not read from save.
 
             var playerEquip = FindObjectOfType<PlayerEquip>(true);
             if (playerEquip != null)

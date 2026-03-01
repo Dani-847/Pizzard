@@ -25,7 +25,6 @@ public class DelayedHealthBar : MonoBehaviour
     private void BuildBar()
     {
         var rt = GetComponent<RectTransform>();
-        fullWidth = rt.sizeDelta.x;
 
         // --- Background (static, dark) ---
         var bgGO = new GameObject("HealthBg", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
@@ -43,11 +42,11 @@ public class DelayedHealthBar : MonoBehaviour
         foreground = fgGO.GetComponent<RectTransform>();
         // Anchor to left-stretch so we only change width (mirrors ManaUI bottom-stretch)
         foreground.anchorMin = new Vector2(0f, 0f);
-        foreground.anchorMax = new Vector2(0f, 1f);
+        foreground.anchorMax = new Vector2(1f, 1f); // Start at 100% full stretch
         foreground.pivot     = new Vector2(0f, 0.5f);
         foreground.offsetMin = Vector2.zero;
         foreground.offsetMax = Vector2.zero;
-        foreground.sizeDelta = new Vector2(fullWidth, 0f);
+        // removed sizeDelta override so it freely stretches to its anchors
         fgGO.GetComponent<Image>().color = BarColor;
 
         // Hide the parent Image so only the two children render
@@ -60,7 +59,8 @@ public class DelayedHealthBar : MonoBehaviour
     {
         ratio = Mathf.Clamp01(ratio);
         if (foreground == null) return;
-        foreground.sizeDelta = new Vector2(fullWidth * ratio, foreground.sizeDelta.y);
+        // Dynamically reduce the right-anchor to shrink the bar
+        foreground.anchorMax = new Vector2(ratio, 1f);
     }
 
     public void SetHealth(float current, float max)
