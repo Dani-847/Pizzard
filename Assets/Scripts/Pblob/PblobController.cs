@@ -15,6 +15,7 @@ public class PblobController : MonoBehaviour
     private bool isVulnerable = false;
     public PblobState currentState = PblobState.Idle;
     private bool battleActive = false;
+    private Animator animator;
 
     [Header("Attack Patterns")]
     public PblobAttackPattern[] attackPatterns;
@@ -53,6 +54,7 @@ public class PblobController : MonoBehaviour
     {
         currentHealth = maxHealth;
         arenaCenter = transform.position; // Store original spawn as center
+        animator = GetComponent<Animator>();
     }
 
     // Auto-detect arena bounds from the Tilemap if present
@@ -106,6 +108,8 @@ public class PblobController : MonoBehaviour
     private void Update()
     {
         // Debug keys removed — use OnGUI buttons (KILL / NEXT PHASE) when debug mode is on
+        if (animator != null)
+            animator.SetBool("isAttacking", battleActive && isVulnerable);
     }
     public void ChangeState(PblobState newState)
     {

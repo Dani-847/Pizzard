@@ -139,7 +139,7 @@ public class ShopUI : MonoBehaviour
         else
         {
             btnUpgradeWand.interactable = (tokens > 0);
-            string nextWandName = currentTier == 1 ? "Tier 2 Wand" : "Tier 3 Wand";
+            string nextWandName = currentTier >= 2 ? "Tier 3 Wand" : "Tier " + (currentTier + 1) + " Wand";
             if (txtUpgradeWand != null)
             {
                 int nextTier = currentTier + 1;

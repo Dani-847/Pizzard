@@ -19,8 +19,13 @@
     { "key": "shop_token_count", "value": "Fichas: {0}" },
     { "key": "shop_wand_max_level", "value": "Nivel Máximo de Varita" },
     { "key": "shop_wand_buy", "value": "Comprar siguiente varita:\n\"{0}\"" },
+    { "key": "shop_wand_tier_1", "value": "Varita de Aprendiz" },
     { "key": "shop_wand_tier_2", "value": "Varita Nivel 2" },
     { "key": "shop_wand_tier_3", "value": "Varita Nivel 3" },
+    { "key": "shop_equip_owned", "value": "Comprada" },
+    { "key": "shop_equip_buy", "value": "Comprar - 1 Ficha" },
+    { "key": "shop_equip_need_token", "value": "Necesitas Ficha" },
+    { "key": "shop_equip_locked", "value": "Bloqueada" },
     { "key": "shop_reset", "value": "Reiniciar" },
     { "key": "shop_deselect_all", "value": "Deseleccionar Todo" },
     { "key": "shop_warning_exit", "value": "Raberto: ¿Estás seguro? Te vas a enfrentar al jefe sin gastar tus fichas..." },
@@ -76,6 +81,9 @@
     { "key": "dialog_postboss4_1", "value": "Raberto: ¡ERES UN MAGO DE LA PIZZA!" },
     { "key": "dialog_postboss4_2", "value": "Raberto: ¡Lo has conseguido! ¡Has superado todos los desafíos que Pizzard's te ha ofrecido!" },
     { "key": "dialog_postboss4_3", "value": "Raberto: La Receta de Pizza Legendaria es... bueno, es más bien una metáfora. La verdadera receta fueron los amigos que hicimos por el camino." },
+
+    { "key": "victory_title", "value": "¡Enhorabuena has ganado!!!" },
+    { "key": "victory_menu", "value": "Menú" },
 
     { "key": "dialog_deathshop_1", "value": "Raberto: Uff, eso pareció doler." },
     { "key": "dialog_deathshop_2", "value": "Raberto: No te preocupes, a todo gran chef se le quema una pizza de vez en cuando. ¡Ve a gastar tus fichas e inténtalo de nuevo!" }

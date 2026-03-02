@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Pizzard.Core;
+using TMPro;
 
 /// <summary>
 /// Gestionar botones principales del menú (Jugar, Ajustes, Salir),
@@ -57,7 +58,23 @@ public class MenuUI : MonoBehaviour
     /// </summary>
     public void RefreshContinueButton()
     {
+        if (botonJugar != null)
+        {
+            var txtJugar = botonJugar.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (txtJugar != null)
+                txtJugar.text = LocalizationManager.Instance != null
+                    ? LocalizationManager.Instance.GetText("menu_play")
+                    : "Play";
+        }
+
         if (botonContinuar == null) return;
+
+        var txtCont = botonContinuar.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (txtCont != null)
+            txtCont.text = LocalizationManager.Instance != null
+                ? LocalizationManager.Instance.GetText("menu_continue")
+                : "Continue";
+
         bool hasSave = GameFlowManager.Instance != null && GameFlowManager.Instance.HasSavedGame();
         botonContinuar.gameObject.SetActive(hasSave);
     }

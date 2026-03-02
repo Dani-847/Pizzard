@@ -40,22 +40,24 @@ public class EquipSelectorUI : MonoBehaviour
             
             Button btn = buttonGO.GetComponent<Button>();
             
+            var loc = LocalizationManager.Instance;
             string labelText = equip.displayName;
             if (isOwned)
             {
-                labelText += " (Owned)";
+                labelText += " (" + (loc != null ? loc.GetText("shop_equip_owned") : "Owned") + ")";
                 btn.interactable = false;
             }
             else if (isNextTier)
             {
-                // This is the wand the player can buy next
-                labelText += tokens > 0 ? " (Buy - 1 Token)" : " (Need Token)";
+                string status = tokens > 0
+                    ? (loc != null ? loc.GetText("shop_equip_buy") : "Buy - 1 Token")
+                    : (loc != null ? loc.GetText("shop_equip_need_token") : "Need Token");
+                labelText += " (" + status + ")";
                 btn.interactable = tokens > 0;
             }
             else
             {
-                // Higher tier - locked
-                labelText += " (Locked)";
+                labelText += " (" + (loc != null ? loc.GetText("shop_equip_locked") : "Locked") + ")";
                 btn.interactable = false;
             }
             

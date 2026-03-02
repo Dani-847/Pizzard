@@ -19,8 +19,13 @@
     { "key": "shop_token_count", "value": "Tokens: {0}" },
     { "key": "shop_wand_max_level", "value": "Max Wand Level" },
     { "key": "shop_wand_buy", "value": "Buy next wand:\n\"{0}\"" },
+    { "key": "shop_wand_tier_1", "value": "Apprentice Wand" },
     { "key": "shop_wand_tier_2", "value": "Tier 2 Wand" },
     { "key": "shop_wand_tier_3", "value": "Tier 3 Wand" },
+    { "key": "shop_equip_owned", "value": "Owned" },
+    { "key": "shop_equip_buy", "value": "Buy - 1 Token" },
+    { "key": "shop_equip_need_token", "value": "Need Token" },
+    { "key": "shop_equip_locked", "value": "Locked" },
     { "key": "shop_reset", "value": "Reset" },
     { "key": "shop_deselect_all", "value": "Deselect All" },
     { "key": "shop_warning_exit", "value": "Raberto: Are you sure? You're going to face the boss without spending your tokens..." },
@@ -76,6 +81,9 @@
     { "key": "dialog_postboss4_1", "value": "Raberto: YOU ARE A PIZZA WIZARD!" },
     { "key": "dialog_postboss4_2", "value": "Raberto: You've done it! You've mastered all the challenges Pizzard's has to offer!" },
     { "key": "dialog_postboss4_3", "value": "Raberto: The Legendary Pizza Recipe is... well, it's more of a metaphor. The real recipe was the friends we made along the way." },
+
+    { "key": "victory_title", "value": "You Win!!!" },
+    { "key": "victory_menu", "value": "Menu" },
 
     { "key": "dialog_deathshop_1", "value": "Raberto: Oof, that looked like it hurt." },
     { "key": "dialog_deathshop_2", "value": "Raberto: Don't worry, every great chef burns a pizza now and then. Go spend your tokens and try again!" }
