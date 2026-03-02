@@ -202,3 +202,200 @@ MonoBehaviour:
       proyectiles y les prende fuego"
     isUnlocked: 1
     attackPrefab: {fileID: 313996111929754890, guid: b444c17b84b2e384193861ef4bc54e75, type: 3}
+  - combinationKey: pepperoni|queso
+    combinationName: Moco Pegajoso
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "Peque\xF1o moco picante que se adhiere a los enemigos."
+    isUnlocked: 1
+    attackPrefab: {fileID: 63549745061065039, guid: 130b3261e1ee5a54eaf2f9dd192b2c02, type: 3}
+  - combinationKey: "queso|pi\xF1a"
+    combinationName: Pilar Rebotante
+    resultSprite: {fileID: -2546928476294413449, guid: 530bac739ba0e8944a59eaa638061be7, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Un pilar que hace da\xF1o continuo en \xE1rea."
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: 60786292fc2688341bf66c24f1909370, type: 3}
+  - combinationKey: queso|pepperoni
+    combinationName: "\xC1rea Picante"
+    resultSprite: {fileID: 3365863265515560556, guid: 673533fc944d44046af499a88109ce18, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Un \xE1rea de queso hirviendo que escala da\xF1o cuanto m\xE1s
+      tiempo est\xE1 en ella."
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: df4925c873558e645a3c31bd44066f49, type: 3}
+  - combinationKey: queso|queso
+    combinationName: Muro de Queso
+    resultSprite: {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: Un muro de queso que refleja proyectiles y tiene vida propia.
+    isUnlocked: 1
+    attackPrefab: {fileID: 313996111929754890, guid: c11d34398610edd4e8ce2b004cb59f1f, type: 3}
+  - combinationKey: "pi\xF1a|pi\xF1a|pi\xF1a"
+    combinationName: "Pi\xF1a Explosiva M\xFAlti"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Pi\xF1a fragmentada que suelta minipi\xF1as explosivas."
+    isUnlocked: 1
+    attackPrefab: {fileID: 1842283516559737521, guid: 74d53cb5c3b5fae48a8ffcc719d3390d, type: 3}
+  - combinationKey: "pi\xF1a|pi\xF1a|queso"
+    combinationName: "Pi\xF1a Absorbequeso"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "Pi\xF1a fragmentada absorbe ataques."
+    isUnlocked: 1
+    attackPrefab: {fileID: 1842283516559737521, guid: 9ece22aabd9a2ff4d9523c505ebd95cf, type: 3}
+  - combinationKey: "pi\xF1a|pi\xF1a|pepperoni"
+    combinationName: "Pi\xF1a Llamarada"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Pi\xF1a fragmentada que quema a los enemigos."
+    isUnlocked: 1
+    attackPrefab: {fileID: 1842283516559737521, guid: be231a0f2b6dd544c9d05512b56d924a, type: 3}
+  - combinationKey: "pi\xF1a|queso|pi\xF1a"
+    combinationName: "Pi\xF1a Acumuladora"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Pi\xF1a que acumula da\xF1o por proyectiles enemigos absorbidos."
+    isUnlocked: 1
+    attackPrefab: {fileID: 6716998472701501543, guid: 637aaed4081f9ad43842b12de073040c, type: 3}
+  - combinationKey: "pi\xF1a|queso|queso"
+    combinationName: Cono Absorbente
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "Cono frontal de da\xF1o, m\xE1s fuerte si absorbi\xF3 ataques."
+    isUnlocked: 1
+    attackPrefab: {fileID: 6716998472701501543, guid: e5825738702587b4dab272352322c251, type: 3}
+  - combinationKey: "pi\xF1a|queso|pepperoni"
+    combinationName: "Pi\xF1a Quemante Acumulada"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Aplica acumulaciones de quemadura seg\xFAn ataques absorbidos."
+    isUnlocked: 1
+    attackPrefab: {fileID: 6716998472701501543, guid: c609e83937cd06940ae3d46ce5baeb9d, type: 3}
+  - combinationKey: "pi\xF1a|pepperoni|pi\xF1a"
+    combinationName: "Explosi\xF3n Telekinesica"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Teletransporte con explosi\xF3n mejorada."
+    isUnlocked: 1
+    attackPrefab: {fileID: 5032025397040957297, guid: 4b5ecffdefaffb44f96b560d4772260c, type: 3}
+  - combinationKey: "pi\xF1a|pepperoni|pepperoni"
+    combinationName: "Gran Explosi\xF3n Pi\xF1a"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Teletransporte con una explosi\xF3n gigante."
+    isUnlocked: 1
+    attackPrefab: {fileID: 5032025397040957297, guid: d0ee7cca2ffe8a2468f6949d5f3c7d02, type: 3}
+  - combinationKey: "pi\xF1a|pepperoni|queso"
+    combinationName: "Explosi\xF3n Reflectora"
+    resultSprite: {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "Teletransporte con explosi\xF3n que refleja ataques."
+    isUnlocked: 1
+    attackPrefab: {fileID: 5032025397040957297, guid: 9e28b647563d2b34cb15cc0c44e94afa, type: 3}
+  - combinationKey: "queso|pi\xF1a|pi\xF1a"
+    combinationName: Gran Pilar
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "Pilar gigante con mayor \xE1rea y da\xF1o."
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: 51a8b70faa6e12c42aae85d115b73c65, type: 3}
+  - combinationKey: "queso|pi\xF1a|queso"
+    combinationName: Pilar Resistente
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: Pilar con HP que ralentiza proyectiles enemigos.
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: b783ef10d4c3b1d43960c3d2806de604, type: 3}
+  - combinationKey: "queso|pi\xF1a|pepperoni"
+    combinationName: Pilar Ardiente
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "Pilar que aplica quemadura y escala da\xF1o por acumulaciones."
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: 72bc4ef2d17926748a96f00c2a34b98c, type: 3}
+  - combinationKey: queso|pepperoni|pepperoni
+    combinationName: "\xC1rea de Doble Quema"
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    description: "\xC1rea de fuego que aplica doble quemadura."
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: c103888ccb9b89b4bb2ace3ea710e580, type: 3}
+  - combinationKey: "queso|pepperoni|pi\xF1a"
+    combinationName: "\xC1rea Quemante y Venenosa"
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 9443afe0d6f1f754d9f6fc933f45f1d9, type: 3}
+    description: "\xC1rea que quema y aplica da\xF1o continuo separado."
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: 76626ef732f438c49a1750cc733298e4, type: 3}
+  - combinationKey: queso|pepperoni|queso
+    combinationName: "\xC1rea Grande Ardiente"
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 96f0bc79cd00ed649b0b00b8cdb67ce1, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: "\xC1rea de fuego con radio mucho mayor."
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: d675dbe3b89c1594aa84ed5b6f174d80, type: 3}
+  - combinationKey: queso|queso|queso
+    combinationName: Agujero Negro de Queso
+    resultSprite: {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    baseElementSprites:
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    - {fileID: 21300000, guid: 784d64cc831310b49a068774488c013e, type: 3}
+    description: Un agujero negro que absorbe proyectiles y los devuelve amplificados.
+    isUnlocked: 1
+    attackPrefab: {fileID: 7641837490143302726, guid: 5a6bc74e5e250934b8f05a1651b05384, type: 3}

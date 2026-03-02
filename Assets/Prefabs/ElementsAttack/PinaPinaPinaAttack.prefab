@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 7005317258755024947}
   - component: {fileID: -120977509060460979}
   - component: {fileID: 886013248362853475}
-  - component: {fileID: 8182281909103306244}
+  - component: {fileID: 7936507682752057237}
   m_Layer: 0
-  m_Name: pepperoniProyectile
+  m_Name: PinaPinaPinaAttack
   m_TagString: CharacterProjectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 6024174141228995284, guid: 69bfef294dfa147499e355c180d19421, type: 3}
-  m_Color: {r: 1, g: 0.04654569, b: 0, a: 1}
+  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Color: {r: 1, g: 0.85951865, b: 0.031372547, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -149,7 +149,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &8182281909103306244
+--- !u!114 &7936507682752057237
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,12 +158,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1842283516559737521}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdc321d85320a1044a9fb98a08f18aae, type: 3}
+  m_Script: {fileID: 11500000, guid: 50f091872cd826b4680c9c574caffd7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
   lifetime: 3
-  damage: 0
-  statusEffect: 0
-  effectDuration: 7
-  initialStacks: 2
+  damage: 10
+  smallExplodingPrefab: {fileID: 1842283516559737521, guid: e402b53101b0f3a45a159de6cdf84628, type: 3}
+  smallProjectileSpeed: 7
+  smallProjectileDamageMultiplier: 0.5
+  smallProjectileLifetime: 1
+  spawnOffset: 0.5
