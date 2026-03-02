@@ -25,9 +25,9 @@ public class PineappleCheeseProjectile : CharacterProjectile
     public GameObject impactEffect;
     public GameObject damageAreaEffect;
 
-    private bool hasImpacted = false;
-    private List<GameObject> absorbedProjectiles = new List<GameObject>();
-    private Vector3 initialScale;
+    protected bool hasImpacted = false;
+    protected List<GameObject> absorbedProjectiles = new List<GameObject>();
+    protected Vector3 initialScale;
 
     protected override void Start()
     {
@@ -49,7 +49,7 @@ public class PineappleCheeseProjectile : CharacterProjectile
         // No necesitamos Destroy aquí porque lo manejamos en Impact()
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (hasImpacted) return;
 
@@ -117,7 +117,7 @@ public class PineappleCheeseProjectile : CharacterProjectile
         base.OnTriggerEnter2D(other);
     }
 
-    private void Impact()
+    protected virtual void Impact()
     {
         if (hasImpacted) return;
         hasImpacted = true;
@@ -143,7 +143,7 @@ public class PineappleCheeseProjectile : CharacterProjectile
         Destroy(gameObject, damageDuration + 0.5f);
     }
 
-    private void ApplyImpactDamage()
+    protected virtual void ApplyImpactDamage()
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, impactRadius);
 
@@ -156,6 +156,10 @@ public class PineappleCheeseProjectile : CharacterProjectile
                 var boss = c.GetComponent<PblobController>();
                 if (boss != null)
                     boss.TakeDamage(totalDamage);
+                
+                var bossBase = c.GetComponent<Pizzard.Bosses.BossBase>();
+                if (bossBase != null)
+                    bossBase.TakeDamage((int)totalDamage);
 
                 Rigidbody2D r = c.GetComponent<Rigidbody2D>();
                 if (r != null)

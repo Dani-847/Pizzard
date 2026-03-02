@@ -20,6 +20,8 @@ public class UIManager : MonoBehaviour
     public DialogUI dialogUI;
     [Tooltip("Panel de muerte")]
     public DeathUI deathUI;
+    [Tooltip("Panel de victoria")]
+    public VictoryUI victoryUI;
 
     private UIContext lastContext = UIContext.None;
 
@@ -177,6 +179,8 @@ public class UIManager : MonoBehaviour
             dialogUI.Hide();
         if (deathUI != null)
             deathUI.OcultarPantallaMuerte();
+        if (victoryUI != null)
+            victoryUI.Hide();
         
         // Hide child objects that aren't managed by these specific classes (e.g. HUD, Boss UI)
         // by disabling their specific scripts or canvases if we had references.

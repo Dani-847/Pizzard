@@ -29,6 +29,7 @@ public class DelayedHealthBar : MonoBehaviour
         // --- Background (static, dark) ---
         var bgGO = new GameObject("HealthBg", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         bgGO.transform.SetParent(transform, false);
+        bgGO.transform.SetAsFirstSibling(); // Render behind siblings like the border
         var bgRT = bgGO.GetComponent<RectTransform>();
         bgRT.anchorMin = Vector2.zero;
         bgRT.anchorMax = Vector2.one;
@@ -39,6 +40,8 @@ public class DelayedHealthBar : MonoBehaviour
         // --- Foreground (scales with HP) ---
         var fgGO = new GameObject("HealthFill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         fgGO.transform.SetParent(transform, false);
+        // Set index to 1 so it renders above the background (index 0) but still behind the border
+        fgGO.transform.SetSiblingIndex(1); 
         foreground = fgGO.GetComponent<RectTransform>();
         // Anchor to left-stretch so we only change width (mirrors ManaUI bottom-stretch)
         foreground.anchorMin = new Vector2(0f, 0f);

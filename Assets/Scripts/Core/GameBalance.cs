@@ -68,16 +68,13 @@ namespace Pizzard.Core
                 { "piña|piña|pepperoni", 26f },
                 { "piña|queso|piña", 28f },
                 { "piña|queso|queso", 28f },
-                { "piña|queso|pepperoni", 28f },
                 { "piña|pepperoni|piña", 30f },
                 { "piña|pepperoni|pepperoni", 32f },
 
                 // T3 queso variants
                 { "queso|piña|piña", 28f },
                 { "queso|piña|queso", 30f },
-                { "queso|piña|pepperoni", 30f },
                 { "queso|pepperoni|pepperoni", 28f },
-                { "queso|pepperoni|piña", 28f },
                 { "queso|pepperoni|queso", 26f },
             };
 

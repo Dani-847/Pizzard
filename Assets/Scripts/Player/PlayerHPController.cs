@@ -140,14 +140,15 @@ void Start()
     /// </summary>
     public void OnDeath()
     {
-        // Notificar a GameFlowManager si existe
+        Debug.Log("💀 [PlayerHPController] OnDeath called!");
         if (GameFlowManager.Instance != null)
         {
+            Debug.Log("💀 [PlayerHPController] Delegating to GameFlowManager.Instance.OnPlayerDeath()");
             GameFlowManager.Instance.OnPlayerDeath();
         }
         else if (deathUI != null)
         {
-            // Fallback: usar DeathUI directamente
+            Debug.Log("💀 [PlayerHPController] GameFlowManager not found, using local deathUI.");
             deathUI.MostrarPantallaMuerte();
         }
     }

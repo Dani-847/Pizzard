@@ -18,20 +18,10 @@ public class DialogUI : MonoBehaviour
     public GameObject dialogPanel;
     [Tooltip("Main dialogue text (centered)")]
     public TMP_Text dialogText;
-    [Tooltip("Speaker name label above dialogue text")]
-    public TMP_Text speakerNameText;
-    [Tooltip("Left portrait image (player — Bob)")]
-    public Image leftPortrait;
-    [Tooltip("Right portrait image (NPC — Raberto)")]
-    public Image rightPortrait;
 
     [Header("Typewriter Settings")]
     [Tooltip("Seconds between each character reveal")]
     public float typewriterSpeed = 0.03f;
-
-    [Header("Portrait Colors (Placeholders)")]
-    public Color bobColor = new Color(0f, 0.85f, 0.85f, 1f);      // Cyan/teal
-    public Color rabertoColor = new Color(1f, 0.55f, 0f, 1f);      // Orange
 
     [Header("Dialogue Config (Fallback)")]
     [TextArea(2, 4)]
@@ -129,7 +119,6 @@ public class DialogUI : MonoBehaviour
     {
         flowManager = manager;
         advancePhaseOnEnd = true;
-        SetPortraits("Raberto", isPlayerSpeaking: false);
         StartDialogWithLocalization(introDialogKeyPrefix, introDialogLines);
     }
 
@@ -141,7 +130,6 @@ public class DialogUI : MonoBehaviour
     {
         flowManager = manager;
         advancePhaseOnEnd = true;
-        SetPortraits("Raberto", isPlayerSpeaking: false);
         string dynamicKey = preBossDialogKeyPrefix + manager.currentBossIndex + "_";
         StartDialogWithLocalization(dynamicKey, preBossDialogLines);
     }
@@ -153,7 +141,6 @@ public class DialogUI : MonoBehaviour
     {
         flowManager = manager;
         advancePhaseOnEnd = true;
-        SetPortraits("Raberto", isPlayerSpeaking: false);
         string dynamicKey = postBossDialogKeyPrefix + manager.currentBossIndex + "_";
         StartDialogWithLocalization(dynamicKey, postBossDialogLines);
     }
@@ -165,7 +152,6 @@ public class DialogUI : MonoBehaviour
     {
         flowManager = manager;
         advancePhaseOnEnd = false;
-        SetPortraits("Raberto", isPlayerSpeaking: false);
         StartDialogWithLocalization(deathShopDialogKeyPrefix, deathShopDialogLines);
     }
 
@@ -181,7 +167,6 @@ public class DialogUI : MonoBehaviour
             if (!loc.StartsWith("["))
             {
                 if (dialogText != null) dialogText.text = loc;
-                if (speakerNameText != null) speakerNameText.text = "Raberto";
                 Show();
                 StartCoroutine(HideAfterWarning());
             }
@@ -192,28 +177,6 @@ public class DialogUI : MonoBehaviour
     {
         yield return new WaitForSeconds(3.5f);
         Hide();
-    }
-
-    // ─────────────────────────────────────────────
-    //  PORTRAITS
-    // ─────────────────────────────────────────────
-
-    private void SetPortraits(string speakerName, bool isPlayerSpeaking)
-    {
-        if (speakerNameText != null)
-            speakerNameText.text = speakerName;
-
-        // Show both portrait slots with placeholder colors
-        if (leftPortrait != null)
-        {
-            leftPortrait.color = bobColor;
-            leftPortrait.gameObject.SetActive(true);
-        }
-        if (rightPortrait != null)
-        {
-            rightPortrait.color = rabertoColor;
-            rightPortrait.gameObject.SetActive(true);
-        }
     }
 
     // ─────────────────────────────────────────────

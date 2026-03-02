@@ -198,20 +198,20 @@ All values come from `GameBalance.cs` — no new hardcoded numbers.
 ---
 
 ### Phase 21: Spell Completion — All Combos (T2 + T3)
-**Status**: ⬚ Not Started
+**Status**: ✅ Complete
 **Dependencies**: Phase 20
-**Plans:** 9 plans
+**Plans:** 9/9 plans complete
 
 Plans:
-- [ ] 21-01-PLAN.md — GameBalance constants + mana costs + PlayerAimAndCast dispatch stubs (all prerequisites)
-- [ ] 21-02-PLAN.md — T2: pepperoni|queso (sticky) + queso|piña (pillar)
-- [ ] 21-03-PLAN.md — T2: queso|pepperoni (burn area) + queso|queso (reflective wall with HP)
-- [ ] 21-04-PLAN.md — T3: piña|piña|piña, piña|piña|queso, piña|piña|pepperoni (splitter variants)
-- [ ] 21-05-PLAN.md — T3: piña|queso|piña, piña|queso|queso, piña|queso|pepperoni (absorbing variants)
-- [ ] 21-06-PLAN.md — T3: piña|pepperoni|piña, piña|pepperoni|pepperoni, piña|pepperoni|queso (teleport variants)
-- [ ] 21-07-PLAN.md — T3: queso|piña|* and queso|pepperoni|* placed-object variants (6 combos)
-- [ ] 21-08-PLAN.md — T3: queso|queso|queso black hole (standalone, most complex)
-- [ ] 21-09-PLAN.md — Verify all 16 existing T2+T3 combos + human checkpoint
+- [x] 21-01-PLAN.md — GameBalance constants + mana costs + PlayerAimAndCast dispatch stubs (all prerequisites)
+- [x] 21-02-PLAN.md — T2: pepperoni|queso (sticky) + queso|piña (pillar)
+- [x] 21-03-PLAN.md — T2: queso|pepperoni (burn area) + queso|queso (reflective wall with HP)
+- [x] 21-04-PLAN.md — T3: piña|piña|piña, piña|piña|queso, piña|piña|pepperoni (splitter variants)
+- [x] 21-05-PLAN.md — T3: piña|queso|piña, piña|queso|queso, piña|queso|pepperoni (absorbing variants)
+- [x] 21-06-PLAN.md — T3: piña|pepperoni|piña, piña|pepperoni|pepperoni, piña|pepperoni|queso (teleport variants)
+- [x] 21-07-PLAN.md — T3: queso|piña|* and queso|pepperoni|* placed-object variants (6 combos)
+- [x] 21-08-PLAN.md — T3: queso|queso|queso black hole (standalone, most complex)
+- [x] 21-09-PLAN.md — Verify all 16 existing T2+T3 combos + human checkpoint
 
 **Objective**: Implement all missing T2 and T3 spell combinations and verify all existing ones work correctly. No VFX/SFX — mechanics only. All values from `GameBalance.Spells.*`.
 

@@ -297,6 +297,16 @@ namespace Pizzard.Core
         public void VolverAlMenu()
         {
             Time.timeScale = 1f;
+
+            // Full reset — returning to menu starts fresh
+            if (Progression.SaveManager.Instance != null)
+                Progression.SaveManager.Instance.ResetSave();
+
+            currentBossIndex = 1;
+
+            var combiner = FindObjectOfType<ElementsCombiner>(true);
+            if (combiner != null) combiner.ClearSelectedElements();
+
             ChangeState(GameState.MainMenu);
         }
 
@@ -315,13 +325,9 @@ namespace Pizzard.Core
         {
             Time.timeScale = 1f;
 
-            // --- WAVE 3: DEATH LOOP FIX ---
-            // Revert state to the last auto-save (which happens upon Boss Defeat, meaning this resets to the state entering the *current* boss's pre-shop)
-            if (Progression.SaveManager.Instance != null && HasSavedGame())
-            {
-                Debug.Log("[GameFlowManager] Player died. Reloading last save to revert spent tokens/HP...");
-                Progression.SaveManager.Instance.LoadGame();
-            }
+            // Don't reload from disk — in-memory state already has correct elements + tokens.
+            // Just go back to Shop with current state preserved.
+            Debug.Log("[GameFlowManager] Player died. Returning to shop with current elements + tokens.");
 
             ChangeState(GameState.Shop);
             StartCoroutine(ShowDeathDialogAfterLoad());
@@ -384,16 +390,25 @@ namespace Pizzard.Core
                     ChangeState(GameState.PostBossDialogue);
                     break;
                 case GameState.PostBossDialogue:
-                    if (currentBossIndex < 4)
+                    if (currentBossIndex >= 2)
                     {
-                        currentBossIndex++;
-                        ChangeState(GameState.Shop);
+                        // Final boss defeated — show victory screen
+                        Debug.Log("[GameFlowManager] Final boss defeated! Showing victory screen.");
+                        var victoryUI = FindObjectOfType<VictoryUI>(true);
+                        if (victoryUI != null)
+                        {
+                            victoryUI.Show();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("[GameFlowManager] No VictoryUI found! Falling back to menu.");
+                            VolverAlMenu();
+                        }
                     }
                     else
                     {
-                        // Win Condition: All bosses defeated.
-                        Debug.Log("[GameFlowManager] All bosses defeated! Returning to Main Menu.");
-                        VolverAlMenu();
+                        currentBossIndex++;
+                        ChangeState(GameState.Shop);
                     }
                     break;
                 case GameState.Credits:
@@ -407,14 +422,25 @@ namespace Pizzard.Core
 
         public void OnPlayerDeath()
         {
-            var deathUI = FindObjectOfType<DeathUI>(true);
-            if (deathUI != null)
+            Debug.Log("💀 [GameFlowManager] OnPlayerDeath triggered!");
+            if (UIManager.Instance != null && UIManager.Instance.deathUI != null)
             {
-                deathUI.MostrarPantallaMuerte();
+                Debug.Log("💀 [GameFlowManager] DeathUI found via UIManager. Calling MostrarPantallaMuerte().");
+                UIManager.Instance.deathUI.MostrarPantallaMuerte();
             }
             else
             {
-                VolverAlMenu();
+                var deathUI = FindObjectOfType<DeathUI>(true);
+                if (deathUI != null)
+                {
+                    Debug.Log("💀 [GameFlowManager] DeathUI found via FindObjectOfType. Calling MostrarPantallaMuerte().");
+                    deathUI.MostrarPantallaMuerte();
+                }
+                else
+                {
+                    Debug.LogWarning("💀 [GameFlowManager] DeathUI NOT found! Calling VolverAlMenu().");
+                    VolverAlMenu();
+                }
             }
         }
     }

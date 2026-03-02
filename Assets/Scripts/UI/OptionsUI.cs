@@ -94,6 +94,12 @@ public class OptionsUI : MonoBehaviour
     {
         gameObject.SetActive(true);
 
+        if (SoundManager.Instance == null)
+        {
+            Debug.LogError("[OptionsUI] SoundManager.Instance is NULL in Show() — skipping volume sync");
+            return;
+        }
+
         slicesActuales = Mathf.RoundToInt(SoundManager.Instance.GetMusicVolume() * maxPizzaSlices);
         ActualizarPizzaVisual();
     }

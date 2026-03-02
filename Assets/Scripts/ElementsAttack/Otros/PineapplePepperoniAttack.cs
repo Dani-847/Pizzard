@@ -173,7 +173,7 @@ public class PineapplePepperoniAttack : MonoBehaviour
         return player.position;
     }
 
-    private void CreateExplosion(Vector3 position)
+    protected virtual void CreateExplosion(Vector3 position)
     {
         // Mostrar efecto visual de explosión
         if (explosionEffect != null)
@@ -186,13 +186,19 @@ public class PineapplePepperoniAttack : MonoBehaviour
         
         foreach (Collider2D collider in hitColliders)
         {
-            if (collider.CompareTag("Boss"))
+            if (collider.CompareTag("Boss") || collider.CompareTag("Enemy"))
             {
                 // Aplicar daño
                 PblobController boss = collider.GetComponent<PblobController>();
                 if (boss != null)
                 {
                     boss.TakeDamage(explosionDamage);
+                }
+                
+                var bossBase = collider.GetComponent<Pizzard.Bosses.BossBase>();
+                if (bossBase != null)
+                {
+                    bossBase.TakeDamage((int)explosionDamage);
                 }
 
                 // Aplicar fuerza de explosión

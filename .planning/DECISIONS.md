@@ -90,3 +90,44 @@
 
 ### Constraints & Edge Cases
 - **Death Loop:** If the player dies during the boss fight, they get 2 options: Return to the last Shop (preserving original incoming tokens) or Return to Main Menu. (Ties into Phase 15 implementation).
+
+## Phase 22 Decisions
+
+**Date:** 2026-03-02
+
+### Scope (dramatically reduced from ROADMAP)
+- **NO corruption validation** — not needed for v1.0.
+- **NO version field / migration** — not needed for v1.0.
+- **NO manual save in pause menu** — not needed.
+- **NO "Continue" from main menu** — leaving the game = fresh start from 0.
+- **Pause → Main Menu = full restart** — same as closing the game.
+
+### What save DOES need to persist
+- **On death/retry ONLY**: element selection and unspent tokens carry over between retries.
+- **Everything else resets** on quit or return to main menu.
+
+### Approach
+- Chose: **Option A — Minimal hardening**
+- Reason: Just need a functional v1.0. No save complexity needed.
+
+### Dependencies
+- Phase 19 (Niggel) is fully complete, just needs ROADMAP marked.
+
+## Phase 23 Decisions
+
+**Date:** 2026-03-02
+
+### Scope (dramatically reduced from ROADMAP)
+- **YES — End Screen**: Simple "You Win" screen after defeating Niggel. Space for a sprite, congratulations text, 2 buttons (Main Menu + Exit Game).
+- **YES — Sprite Pass**: Final plan (23-02) to replace placeholder sprites. User will provide sprites.
+- **NO credits** — skip entirely.
+- **NO balance pass** — user handles via GameBalance.cs directly.
+- **NO build** — user knows how, handles it themselves.
+- **NO code/scene audits** — not needed for v1.0.
+- **NO bug sweep** — not needed right now.
+
+### Plan Structure
+- 23-01: End screen implementation (trigger after Niggel defeat, UI, buttons)
+- 23-02: Sprite replacement pass (final, user provides assets)
+
+

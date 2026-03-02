@@ -51,12 +51,21 @@ public class DeathUI : MonoBehaviour
 
         _estaActiva = true;
 
+        // Force this exact GameObject to be active
+        gameObject.SetActive(true);
+
         if (pantallaMuerte != null)
             pantallaMuerte.SetActive(true);
         if (darkOverlay != null)
             darkOverlay.gameObject.SetActive(true);
         if (deathImage != null)
             deathImage.gameObject.SetActive(true);
+            
+        // Explicitly activate buttons just in case
+        if (botonReintentar != null)
+            botonReintentar.gameObject.SetActive(true);
+        if (botonSalirAlMenu != null)
+            botonSalirAlMenu.gameObject.SetActive(true);
 
         // Pausar el juego
         Time.timeScale = 0f;

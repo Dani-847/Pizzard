@@ -10,7 +10,11 @@ public class CharacterHPUI : MonoBehaviour
     [Header("Configuración de UI")]
     // Array de imágenes de corazones (3 corazones)
     public GameObject[] corazones;
-    // Imagen corazón completo
+    [Header("Sprites de Vida")]
+    public Sprite fullHeart;
+    public Sprite halfHeart;
+    public Sprite emptyHeart;
+
     public void ActualizarUI(int vidaActual)
     {
         for (int i = 0; i < corazones.Length; i++)
@@ -20,12 +24,15 @@ public class CharacterHPUI : MonoBehaviour
 
             if (heartImage == null) continue;
 
+            // Asegurar que el color sea blanco puro para que el sprite se vea tal cual
+            heartImage.color = Color.white;
+
             if (valor >= 2) {
-                heartImage.color = Color.red;
+                if (fullHeart != null) heartImage.sprite = fullHeart;
             } else if (valor == 1) {
-                heartImage.color = Color.yellow;
+                if (halfHeart != null) heartImage.sprite = halfHeart;
             } else {
-                heartImage.color = Color.gray;
+                if (emptyHeart != null) heartImage.sprite = emptyHeart;
             }
         }
     }
