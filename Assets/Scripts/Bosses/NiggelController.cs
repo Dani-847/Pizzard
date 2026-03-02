@@ -61,6 +61,7 @@ namespace Pizzard.Bosses
         [SerializeField] private Transform playerTransform;
         private Rigidbody2D rb;
         private SpriteRenderer spriteRenderer;
+        private Animator animator;
 
         // ── Public accessors ─────────────────────────────
         public int CurrentCoinVault => coinVault;
@@ -76,6 +77,7 @@ protected override void Awake()
             // Do NOT call base.Awake() — we manage currentHealth ourselves via coinVault sync.
             rb = GetComponent<Rigidbody2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
+            animator = GetComponent<Animator>();
 
             if (playerTransform == null)
             {
@@ -150,10 +152,14 @@ protected override void Awake()
             {
                 Vector2 target = Vector2.MoveTowards(transform.position, playerTransform.position,
                     currentMoveSpeed * Time.deltaTime);
+                Vector3 prev = transform.position;
                 transform.position = new Vector3(
                     Mathf.Clamp(target.x, arenaCenter.x - arenaClampX, arenaCenter.x + arenaClampX),
                     Mathf.Clamp(target.y, arenaCenter.y - arenaClampY, arenaCenter.y + arenaClampY),
                     transform.position.z);
+                bool moved = (transform.position - prev).sqrMagnitude > 0.00001f;
+                if (animator != null) animator.SetBool("isMoving", moved);
+                if (spriteRenderer != null && playerTransform != null) spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
             }
 
             // Dash cooldown
@@ -176,6 +182,7 @@ protected override void Awake()
         public override void TakeDamage(int amount)
         {
             if (isDead) return;
+            if (lastStandActive) return;   // invulnerable during last-stand phase
 
             coinVault = Mathf.Max(0, coinVault - amount);
             currentHealth = coinVault;
@@ -547,7 +554,7 @@ private IEnumerator CoinShieldRoutine()
             GUILayout.EndArea();
         }
 
-        
+
 protected override void Die()
         {
             isDead = true;
@@ -571,6 +578,13 @@ protected override void Die()
             if (rb != null) rb.velocity = Vector2.zero;
 
             base.Die(); // Awards currency and fires OnBossDefeated via BossBase
+
+            // BossArena_2 has no BossArenaManager, so call AvanzarFase directly
+            // (same pattern as PblobController)
+            if (Pizzard.Core.GameFlowManager.Instance != null)
+            {
+                Pizzard.Core.GameFlowManager.Instance.AvanzarFase();
+            }
         }
     
 

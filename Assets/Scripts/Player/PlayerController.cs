@@ -18,6 +18,8 @@ namespace Pizzard.Player
 
         private Rigidbody2D rb;
         private Vector2 movementInput;
+        private Animator animator;
+        private SpriteRenderer spriteRenderer;
         
         private bool isDashing = false;
         private float dashTimeRemaining;
@@ -33,6 +35,8 @@ namespace Pizzard.Player
             }
 
             rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
             if (rb == null)
             {
                 try 
@@ -140,6 +144,8 @@ namespace Pizzard.Player
             float baseSpeed = moveSpeed * Pizzard.Bosses.NiggelController.PlayerSpeedMultiplier;
             float currentSpeed = isDashing ? baseSpeed * dashSpeedMultiplier : baseSpeed;
             rb.velocity = movementInput * currentSpeed;
+            if (animator != null) animator.SetBool("isMoving", movementInput != Vector2.zero);
+            if (spriteRenderer != null && movementInput.x != 0f) spriteRenderer.flipX = movementInput.x < 0f;
         }
     }
 }
