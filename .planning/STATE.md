@@ -3,14 +3,29 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Polish + Playground
 status: planning
-stopped_at: Completed 24-01-PLAN.md
-last_updated: "2026-03-08T16:52:38.377Z"
+stopped_at: Completed 24-02-PLAN.md
+last_updated: "2026-03-08T16:54:14.277Z"
 last_activity: 2026-03-08 — Roadmap created, v1.1 phases defined
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 4
+---
+
+---
+gsd_state_version: 1.0
+milestone: v1.1
+milestone_name: Polish + Playground
+status: planning
+stopped_at: Checkpoint — awaiting human-verify for 24-05 (Playground full run)
+last_updated: "2026-03-08T17:00:00.000Z"
+last_activity: 2026-03-08 — Roadmap created, v1.1 phases defined
+progress:
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 5
+  completed_plans: 5
   percent: 0
 ---
 
@@ -57,6 +72,10 @@ Progress: [░░░░░░░░░░] 0%
 
 - Wand orbits player center (not its own pivot) — clarified by user
 - Playground progress fully isolated from main save/token state — avoids affecting main game
+- onDeathOverride Action hook added to PlayerHPController — checked before GameFlowManager so existing game flow is unaffected when null
+- EnemyProjectile velocity override requires 1-frame delay coroutine because EnemyProjectile.Start() runs after Instantiate and sets horizontal velocity
+- [Phase 24]: Pulse is in-memory only via _playgroundPulseActive bool — no PlayerPrefs, resets each launch automatically
+- [Phase 24]: AnimatorUpdateMode.UnscaledTime used on playgroundButtonAnimator so pulse continues when Time.timeScale = 0
 
 ### Pending Todos
 
@@ -68,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-08T16:52:38.375Z
-Stopped at: Completed 24-01-PLAN.md
+Last session: 2026-03-08T16:54:14.181Z
+Stopped at: Completed 24-02-PLAN.md
 Resume file: None

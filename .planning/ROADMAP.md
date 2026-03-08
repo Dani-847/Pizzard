@@ -65,6 +65,6 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. Playground Mode | 1/5 | In Progress|  |
+| 24. Playground Mode | 4/5 | In Progress|  |
 | 25. Sprite and Debug Polish | 0/TBD | Not started | - |
 | 26. Wand Control Rework | 0/TBD | Not started | - |
