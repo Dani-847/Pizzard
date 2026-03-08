@@ -13,12 +13,23 @@ namespace Pizzard.UI
         [SerializeField] private int wandUpgradeCost = 100;
         [SerializeField] private int healthCost = 50;
 
+        private ITokenSource _tokenSource;
+
+        /// <summary>
+        /// Sets the token source for this controller. If not called, falls back to ProgressionManager.
+        /// </summary>
+        public void SetTokenSource(ITokenSource source)
+        {
+            _tokenSource = source;
+        }
+
         /// <summary>
         /// Triggered by a "Buy Wand Upgrade" UI Button.
         /// </summary>
         public void OnBuyWandUpgrade()
         {
-            if (ProgressionManager.Instance.SpendCurrency(wandUpgradeCost))
+            ITokenSource src = _tokenSource ?? ProgressionManager.Instance as ITokenSource;
+            if (src != null && src.SpendTokens(wandUpgradeCost))
             {
                 Debug.Log("[ShopController] Wand Upgrade purchased successfully.");
                 
@@ -36,7 +47,8 @@ namespace Pizzard.UI
         /// </summary>
         public void OnBuyHealth()
         {
-            if (ProgressionManager.Instance.SpendCurrency(healthCost))
+            ITokenSource src = _tokenSource ?? ProgressionManager.Instance as ITokenSource;
+            if (src != null && src.SpendTokens(healthCost))
             {
                 Debug.Log("[ShopController] Health purchased successfully.");
                 
@@ -54,8 +66,8 @@ namespace Pizzard.UI
         {
             GUILayout.BeginArea(new Rect(Screen.width - 160f, 10f, 150f, 70f));
             GUI.Box(new Rect(0, 0, 150f, 70f), "");
-            int current = Progression.ProgressionManager.Instance != null
-                ? Progression.ProgressionManager.Instance.BossCurrency : 0;
+            ITokenSource dbgSrc = _tokenSource ?? Progression.ProgressionManager.Instance as ITokenSource;
+            int current = dbgSrc != null ? dbgSrc.GetTokens() : 0;
             GUILayout.Label($"Tokens: {current}");
             if (GUILayout.Button("+1 Token"))
                 Progression.ProgressionManager.Instance?.AddCurrency(1);

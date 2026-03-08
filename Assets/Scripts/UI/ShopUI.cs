@@ -24,6 +24,16 @@ public class ShopUI : MonoBehaviour
     public PlayerEquip playerEquip;
 
     private GameFlowManager flowManager;
+    private ITokenSource _tokenSource;
+
+    /// <summary>
+    /// Sets the token source for this shop. If not called, falls back to ProgressionManager.
+    /// Call this from PlaygroundScene to wire the isolated playground token balance.
+    /// </summary>
+    public void SetTokenSource(ITokenSource source)
+    {
+        _tokenSource = source;
+    }
 
     void Start()
     {
@@ -42,7 +52,8 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnUpgradeMaxPotion()
     {
-        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
+        ITokenSource src = _tokenSource ?? Pizzard.Progression.ProgressionManager.Instance as ITokenSource;
+        if (src != null && src.SpendTokens(1))
         {
             hasPurchasedInRun1 = true;
             RefreshTokens();
@@ -60,7 +71,8 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnUpgradeMana()
     {
-        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
+        ITokenSource src = _tokenSource ?? Pizzard.Progression.ProgressionManager.Instance as ITokenSource;
+        if (src != null && src.SpendTokens(1))
         {
             hasPurchasedInRun1 = true;
             RefreshTokens();
@@ -81,7 +93,8 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnUpgradeWand()
     {
-        if (Pizzard.Progression.ProgressionManager.Instance != null && Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
+        ITokenSource src = _tokenSource ?? Pizzard.Progression.ProgressionManager.Instance as ITokenSource;
+        if (src != null && src.SpendTokens(1))
         {
             hasPurchasedInRun1 = true;
             RefreshTokens();
@@ -127,7 +140,8 @@ public class ShopUI : MonoBehaviour
         int currentTier = playerEquip != null ? playerEquip.CurrentWandTier 
             : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 1);
         
-        int tokens = Pizzard.Progression.ProgressionManager.Instance != null ? Pizzard.Progression.ProgressionManager.Instance.BossCurrency : 0;
+        ITokenSource wandSrc = _tokenSource ?? Pizzard.Progression.ProgressionManager.Instance as ITokenSource;
+        int tokens = wandSrc != null ? wandSrc.GetTokens() : 0;
 
         if (currentTier >= 3)
         {
@@ -285,9 +299,10 @@ public class ShopUI : MonoBehaviour
 
     public void RefreshTokens()
     {
-        if (txtTokenCount != null && Pizzard.Progression.ProgressionManager.Instance != null)
+        ITokenSource src = _tokenSource ?? Pizzard.Progression.ProgressionManager.Instance as ITokenSource;
+        if (txtTokenCount != null && src != null)
         {
-            int tokens = Pizzard.Progression.ProgressionManager.Instance.BossCurrency;
+            int tokens = src.GetTokens();
             string tokenFmt = LocalizationManager.Instance != null ? LocalizationManager.Instance.GetText("shop_token_count") : "Tokens: {0}";
             txtTokenCount.text = string.Format(tokenFmt, tokens);
             txtTokenCount.color = tokens > 0 ? Color.white : new Color(1f, 0.4f, 0.4f); // Red if zero tokens
@@ -315,10 +330,11 @@ public class ShopUI : MonoBehaviour
     /// <summary>
     /// Oculta la tienda y sus componentes.
     /// </summary>
-    public void Hide()
+    /// <param name="suppressSave">Pass true from Playground context to skip SaveManager.SaveGame().</param>
+    public void Hide(bool suppressSave = false)
     {
         // --- WAVE 3: AUTO-SAVE on shop close ---
-        if (Pizzard.Progression.SaveManager.Instance != null)
+        if (!suppressSave && Pizzard.Progression.SaveManager.Instance != null)
         {
             Pizzard.Progression.SaveManager.Instance.SaveGame();
             Debug.Log("[ShopUI] Auto-saved on shop close.");
@@ -353,8 +369,8 @@ public class ShopUI : MonoBehaviour
 #if UNITY_EDITOR
     private void OnGUI()
     {
-        int tokens = Pizzard.Progression.ProgressionManager.Instance != null
-            ? Pizzard.Progression.ProgressionManager.Instance.BossCurrency : 0;
+        ITokenSource dbgSrc = _tokenSource ?? Pizzard.Progression.ProgressionManager.Instance as ITokenSource;
+        int tokens = dbgSrc != null ? dbgSrc.GetTokens() : 0;
         GUILayout.BeginArea(new Rect(Screen.width - 170f, 10f, 160f, 80f));
         GUI.Box(new Rect(0, 0, 160f, 80f), "");
         GUILayout.Label($"Tokens: {tokens}");
