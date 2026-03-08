@@ -3,6 +3,7 @@
 using UnityEngine;
 using Pizzard.Core;
 using static Pizzard.Core.GameBalance;
+using System;
 
 /// <summary>
 /// Gestiona la lógica de la vida del personaje, comunica los cambios a la UI 
@@ -16,6 +17,11 @@ public class PlayerHPController : MonoBehaviour
     [Tooltip("Valor actual de vida del personaje (0 a 6)")]
     public int vidaActual;
     
+    /// <summary>
+    /// If set, called instead of GameFlowManager.OnPlayerDeath(). Used by PlaygroundRespawnHandler.
+    /// </summary>
+    public Action onDeathOverride;
+
     [Header("Referencias")]
     [Tooltip("Referencia al script que gestiona la UI")]
     public CharacterHPUI hpUI;
@@ -141,6 +147,14 @@ void Start()
     public void OnDeath()
     {
         Debug.Log("💀 [PlayerHPController] OnDeath called!");
+
+        if (onDeathOverride != null)
+        {
+            Debug.Log("💀 [PlayerHPController] onDeathOverride set — delegating to Playground respawn handler.");
+            onDeathOverride.Invoke();
+            return; // Do NOT continue to GameFlowManager
+        }
+
         if (GameFlowManager.Instance != null)
         {
             Debug.Log("💀 [PlayerHPController] Delegating to GameFlowManager.Instance.OnPlayerDeath()");
