@@ -48,18 +48,18 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PLAY-01 | Phase 1 | Pending |
-| PLAY-02 | Phase 1 | Pending |
-| PLAY-03 | Phase 1 | Pending |
-| PLAY-04 | Phase 1 | Pending |
-| PLAY-05 | Phase 1 | Pending |
-| ONBD-01 | Phase 1 | Pending |
-| DEBG-01 | Phase 2 | Pending |
-| SPRT-01 | Phase 2 | Pending |
-| SPRT-02 | Phase 2 | Pending |
-| SPRT-03 | Phase 2 | Pending |
-| CTRL-01 | Phase 3 | Pending |
-| CTRL-02 | Phase 3 | Pending |
+| PLAY-01 | Phase 24 | Pending |
+| PLAY-02 | Phase 24 | Pending |
+| PLAY-03 | Phase 24 | Pending |
+| PLAY-04 | Phase 24 | Pending |
+| PLAY-05 | Phase 24 | Pending |
+| ONBD-01 | Phase 24 | Pending |
+| DEBG-01 | Phase 25 | Pending |
+| SPRT-01 | Phase 25 | Pending |
+| SPRT-02 | Phase 25 | Pending |
+| SPRT-03 | Phase 25 | Pending |
+| CTRL-01 | Phase 26 | Pending |
+| CTRL-02 | Phase 26 | Pending |
 
 **Coverage:**
 - v1 requirements: 12 total
@@ -68,4 +68,4 @@
 
 ---
 *Requirements defined: 2026-03-08*
-*Last updated: 2026-03-08 after initial definition*
+*Last updated: 2026-03-08 after roadmap creation (phases renumbered 24-26 to continue from v1)*
