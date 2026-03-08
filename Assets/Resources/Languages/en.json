@@ -5,6 +5,7 @@
     { "key": "menu_options", "value": "Options" },
     { "key": "menu_exit", "value": "Exit" },
     { "key": "menu_continue", "value": "Continue" },
+    { "key": "menu_playground", "value": "Playground" },
 
     { "key": "options_language", "value": "Language" },
     { "key": "options_volume", "value": "Volume" },

@@ -8,8 +8,8 @@
 ### Playground Mode
 
 - [ ] **PLAY-01**: Playground scene is accessible from the main menu via a dedicated button
-- [ ] **PLAY-02**: Playground has completely separate token count and progress from the main game
-- [ ] **PLAY-03**: Playground shop starts with 10 tokens each session
+- [x] **PLAY-02**: Playground has completely separate token count and progress from the main game
+- [x] **PLAY-03**: Playground shop starts with 10 tokens each session
 - [ ] **PLAY-04**: Playground scene includes a dummy on the right side with a live DPS counter
 - [ ] **PLAY-05**: Playground scene includes a falling projectile on the left that damages the player
 
@@ -49,8 +49,8 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | PLAY-01 | Phase 24 | Pending |
-| PLAY-02 | Phase 24 | Pending |
-| PLAY-03 | Phase 24 | Pending |
+| PLAY-02 | Phase 24 | Complete |
+| PLAY-03 | Phase 24 | Complete |
 | PLAY-04 | Phase 24 | Pending |
 | PLAY-05 | Phase 24 | Pending |
 | ONBD-01 | Phase 24 | Pending |

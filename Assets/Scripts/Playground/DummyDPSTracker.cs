@@ -16,7 +16,22 @@ public class DummyDPSTracker : Pizzard.Bosses.BossBase
 {
     [SerializeField] private TextMeshPro dpsText; // World-space TMP (not UGUI)
 
+    private SpriteRenderer _spriteRenderer;
+    private Color _originalColor;
+    private Coroutine _flashCoroutine;
     private readonly List<(float time, float damage)> _hits = new();
+
+    protected override void Awake()
+    {
+        base.Awake();
+        // CharacterProjectile checks CompareTag("Boss") — ensure this is set regardless of Inspector
+        gameObject.tag = "Boss";
+        if (dpsText == null)
+            dpsText = GetComponentInChildren<TextMeshPro>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (_spriteRenderer != null)
+            _originalColor = _spriteRenderer.color;
+    }
 
     /// <summary>
     /// Called by CharacterProjectile when a player spell hits the training dummy.
@@ -26,7 +41,23 @@ public class DummyDPSTracker : Pizzard.Bosses.BossBase
     {
         // Invincible — no HP reduction, no death
         RegisterHit(damage);
+        FlashWhite();
         Debug.Log($"[DummyDPSTracker] Registered hit: {damage} damage.");
+    }
+
+    private void FlashWhite()
+    {
+        if (_spriteRenderer == null) return;
+        if (_flashCoroutine != null) StopCoroutine(_flashCoroutine);
+        _flashCoroutine = StartCoroutine(FlashRoutine());
+    }
+
+    private System.Collections.IEnumerator FlashRoutine()
+    {
+        _spriteRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.08f);
+        _spriteRenderer.color = _originalColor;
+        _flashCoroutine = null;
     }
 
     /// <summary>

@@ -231,6 +231,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 5815884320831830844, guid: eebcf59ba1ecac74bbddc52ded54ab4f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8071733795298672769, guid: eebcf59ba1ecac74bbddc52ded54ab4f, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -385,6 +389,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 992146004865286905, guid: d1ff22ae7c2688046a5cd894009a571d, type: 3}
+      propertyPath: m_ColliderPaths.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1892360483733102002, guid: d1ff22ae7c2688046a5cd894009a571d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.775084
@@ -428,6 +436,10 @@ PrefabInstance:
     - target: {fileID: 8150434937407305042, guid: d1ff22ae7c2688046a5cd894009a571d, type: 3}
       propertyPath: m_Name
       value: Environment
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150434937407305042, guid: d1ff22ae7c2688046a5cd894009a571d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -653,17 +665,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 68720684181442850, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 68720684181442850, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.26
+      objectReference: {fileID: 0}
     - target: {fileID: 124000759078162819, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3
+      value: -6.08
       objectReference: {fileID: 0}
     - target: {fileID: 124000759078162819, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2.03
       objectReference: {fileID: 0}
     - target: {fileID: 124000759078162819, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.05
       objectReference: {fileID: 0}
     - target: {fileID: 124000759078162819, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -697,7 +717,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 4356866130259589962, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2883954686938868416, guid: d111798b2ce20bf49a250bcb743ec74b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -718,6 +743,10 @@ PrefabInstance:
     - target: {fileID: 7912238152363197390, guid: bb7f31596c1f5f545be530d45c3f0167, type: 3}
       propertyPath: m_Name
       value: EventSystem
+      objectReference: {fileID: 0}
+    - target: {fileID: 7912238152363197390, guid: bb7f31596c1f5f545be530d45c3f0167, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8137438443667661522, guid: bb7f31596c1f5f545be530d45c3f0167, type: 3}
       propertyPath: m_LocalPosition.x
@@ -954,6 +983,18 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 0c8406a2b49d9c145b8d0402fd6d0714, type: 3}
+    - target: {fileID: 1245036755921972128, guid: db666eefbc241df4d959bb8050742063, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245036755921972128, guid: db666eefbc241df4d959bb8050742063, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245036755921972128, guid: db666eefbc241df4d959bb8050742063, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8460767401694941113, guid: db666eefbc241df4d959bb8050742063, type: 3}
     - {fileID: 8119186634493984726, guid: db666eefbc241df4d959bb8050742063, type: 3}
@@ -1054,6 +1095,10 @@ PrefabInstance:
     - target: {fileID: 1259420103686882099, guid: 799af96ebac99a9458f91c33e7f92faf, type: 3}
       propertyPath: m_Name
       value: CameraPivot
+      objectReference: {fileID: 0}
+    - target: {fileID: 1259420103686882099, guid: 799af96ebac99a9458f91c33e7f92faf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1330020123822236052, guid: 799af96ebac99a9458f91c33e7f92faf, type: 3}
       propertyPath: offset.y

@@ -22,13 +22,22 @@ public class EquipSelectorUI : MonoBehaviour
         foreach (Transform child in buttonContainer)
             Destroy(child.gameObject);
 
-        int currentTier = Pizzard.Progression.SaveManager.Instance != null 
-            ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier 
-            : 0;
-        
-        int tokens = Pizzard.Progression.ProgressionManager.Instance != null 
-            ? Pizzard.Progression.ProgressionManager.Instance.BossCurrency 
-            : 0;
+        int currentTier;
+        int tokens;
+        if (PlaygroundManager.IsPlaygroundSession)
+        {
+            currentTier = PlaygroundManager.PlaygroundWandTier;
+            tokens = PlaygroundManager.GetCachedTokens();
+        }
+        else
+        {
+            currentTier = Pizzard.Progression.SaveManager.Instance != null
+                ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier
+                : 0;
+            tokens = Pizzard.Progression.ProgressionManager.Instance != null
+                ? Pizzard.Progression.ProgressionManager.Instance.BossCurrency
+                : 0;
+        }
 
         foreach (var equip in availableEquipables)
         {
@@ -74,19 +83,31 @@ public class EquipSelectorUI : MonoBehaviour
 
     private void OnWandPurchased(EquipableObject equip)
     {
-        // Spend 1 token
-        if (Pizzard.Progression.ProgressionManager.Instance == null || 
-            !Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
+        if (PlaygroundManager.IsPlaygroundSession)
         {
-            Debug.LogWarning("[EquipSelector] Cannot afford wand!");
-            return;
+            if (!PlaygroundManager.SpendCachedTokens(1))
+            {
+                Debug.LogWarning("[EquipSelector] Cannot afford wand (playground)!");
+                return;
+            }
+            PlaygroundManager.PlaygroundWandTier = equip.tier;
         }
-
-        // Update wandTier in SaveData
-        if (Pizzard.Progression.SaveManager.Instance != null)
+        else
         {
-            Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier = equip.tier;
-            Pizzard.Progression.SaveManager.Instance.SaveGame();
+            // Spend 1 token
+            if (Pizzard.Progression.ProgressionManager.Instance == null ||
+                !Pizzard.Progression.ProgressionManager.Instance.SpendCurrency(1))
+            {
+                Debug.LogWarning("[EquipSelector] Cannot afford wand!");
+                return;
+            }
+
+            // Update wandTier in SaveData
+            if (Pizzard.Progression.SaveManager.Instance != null)
+            {
+                Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier = equip.tier;
+                Pizzard.Progression.SaveManager.Instance.SaveGame();
+            }
         }
 
         // Equip on the player if available

@@ -2,20 +2,18 @@
 
 ## Overview
 
-v1.1 delivers three focused improvements to the shipped v1 game: a Playground mode so new players can experiment without risk, sprite and debug UX polish to eliminate visual inconsistencies from v1, and a reworked wand control system that orbits the player center. Phases execute in dependency order — Playground is self-contained, sprite fixes come next, and control rework depends on correct sprites being in place.
+v1.1 added a Playground mode so new players can experiment without risk. Visual fixes (sprites, UI, projectiles) are complete. Sprite/debug polish and wand control rework have been moved to PIZZARD.md as deferred items.
 
 ## Milestones
 
 - [x] **v1.0 MVP** - Core game shipped (phases 1-23)
-- [ ] **v1.1 Polish + Playground** - Phases 24-26 (in progress)
+- [x] **v1.1 Polish + Playground** - Phase 24 (completed 2026-03-08)
 
 ## Phases
 
 ### v1.1 Polish + Playground
 
-- [x] **Phase 24: Playground Mode** - Build the Playground scene and wire it from the main menu with onboarding cue (completed 2026-03-08)
-- [ ] **Phase 25: Sprite and Debug Polish** - Replace v1 sprites with v1.1 assets, normalize sizes, move debug button
-- [ ] **Phase 26: Wand Control Rework** - Decouple player body rotation from mouse; implement wand orbit around player center
+- [x] **Phase 24: Playground Mode** - Build the Playground scene and wire it from the main menu with onboarding cue (completed 2026-03-08)
 
 ## Phase Details
 
@@ -32,39 +30,20 @@ v1.1 delivers three focused improvements to the shipped v1 game: a Playground mo
 **Plans**: 5 plans
 
 Plans:
-- [ ] 24-01-PLAN.md — ITokenSource interface + PlaygroundManager singleton (token economy foundation)
-- [ ] 24-02-PLAN.md — MenuUI Playground button + pulse Animator (main menu entry point)
-- [ ] 24-03-PLAN.md — ShopUI/ShopController ITokenSource decoupling (token isolation wiring)
-- [ ] 24-04-PLAN.md — PlaygroundScene construction: dummy, DPS counter, HUD
-- [ ] 24-05-PLAN.md — Falling projectile spawner + respawn handler + human verify
-
-### Phase 25: Sprite and Debug Polish
-**Goal**: All character sprites use v1.1 assets at consistent scale, and the debug button is where developers expect it
-**Depends on**: Phase 24
-**Requirements**: DEBG-01, SPRT-01, SPRT-02, SPRT-03
-**Success Criteria** (what must be TRUE):
-  1. Pblob, main character, and Niggel animate correctly using v1.1 sprite sheets
-  2. All character sprites appear at a coherent pixel art scale (no character looks oversized or undersized relative to others)
-  3. Wand sprites from Assets/Sprites/v1.1/ are visible in the game
-  4. The debug button is accessible from the pause menu and not present in its old location
-**Plans**: TBD
-
-### Phase 26: Wand Control Rework
-**Goal**: Players aim only with the wand — the character body stays forward-facing while the wand orbits the player center toward the mouse
-**Depends on**: Phase 25
-**Requirements**: CTRL-01, CTRL-02
-**Success Criteria** (what must be TRUE):
-  1. Moving the mouse left/right does not rotate the player's body sprite
-  2. The wand visibly orbits around the player's center point, always pointing toward the mouse cursor
-  3. Spell projectiles still fire in the correct direction after the rework
-**Plans**: TBD
+- [x] 24-01-PLAN.md — ITokenSource interface + PlaygroundManager singleton (token economy foundation)
+- [x] 24-02-PLAN.md — MenuUI Playground button + pulse Animator (main menu entry point)
+- [x] 24-03-PLAN.md — ShopUI/ShopController ITokenSource decoupling (token isolation wiring)
+- [x] 24-04-PLAN.md — PlaygroundScene construction: dummy, DPS counter, HUD
+- [x] 24-05-PLAN.md — Falling projectile spawner + respawn handler + human verify
 
 ## Progress
 
-**Execution Order:** 24 → 25 → 26
-
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. Playground Mode | 5/5 | Complete   | 2026-03-08 |
-| 25. Sprite and Debug Polish | 0/TBD | Not started | - |
-| 26. Wand Control Rework | 0/TBD | Not started | - |
+| 24. Playground Mode | 5/5 | Complete | 2026-03-08 |
+
+## Deferred to PIZZARD.md
+
+The following items were originally planned as phases 25 and 26 but have been moved to `PIZZARD.md` under v1.1 Planned items:
+- Sprite and Debug Polish (v1.1 sprite assets, size normalization, debug button relocation)
+- Wand Control Rework (orbit around player center, decouple body rotation)

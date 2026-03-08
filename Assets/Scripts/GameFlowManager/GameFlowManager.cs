@@ -253,11 +253,13 @@ namespace Pizzard.Core
 
             currentBossIndex = 1;
 
-            if (Progression.ProgressionManager.Instance != null && Progression.ProgressionManager.Instance.BossCurrency == 0)
+            if (Progression.ProgressionManager.Instance != null)
             {
+                // Always reset currency for a new run — prevents playground tokens leaking in
+                Progression.ProgressionManager.Instance.SetCurrencyFromSave(0);
                 Progression.ProgressionManager.Instance.AddCurrency(1);
                 Debug.Log("[GameFlowManager] Granted 1 starting token for Shop 1 mandatory purchase.");
-                
+
                 if (Progression.SaveManager.Instance != null)
                 {
                     Progression.SaveManager.Instance.SaveGame();

@@ -156,30 +156,30 @@ namespace Pizzard.Core
                 public const int Enrage3Threshold = 50;
 
                 // ── Movement (progressive: interpolates from slow→fast as HP drops) ──
-                public const float BaseMoveSpeed = 1.5f;   // speed at full HP
-                public const float MaxMoveSpeed  = 5.5f;   // speed at 0 HP
+                public const float BaseMoveSpeed = 1.8f;   // speed at full HP
+                public const float MaxMoveSpeed  = 7.5f;   // speed at 0 HP
 
                 // ── Dash ──
-                public const float BaseDashCooldown = 20f;
-                public const float Enrage2DashCooldown = 12f;
-                public const float Enrage3DashCooldown = 8f;
+                public const float BaseDashCooldown = 15f;
+                public const float Enrage2DashCooldown = 10f;
+                public const float Enrage3DashCooldown = 6f;
                 public const float DashDistance = 5f;
                 public const float DashDuration = 0.25f;
 
                 // ── Coin bag (Attack 1) ──
                 public const float CoinBagSpeed = 3f;
                 public const float Enrage1CoinBagSpeed = 5f;
-                public const float CoinBagDamage = 1f;
+                public const float CoinBagDamage = 2f;
 
                 // ── Healing coin (Enrage 2+) ──
-                public const float HealingCoinSpeed = 7f;
-                public const int HealingCoinAmount = 30;
-                public const float HealingCoinCooldown = 8f;
+                public const float HealingCoinSpeed = 9f;
+                public const int HealingCoinAmount = 67;
+                public const float HealingCoinCooldown = 6f;
 
                 // ── Coin shield burst (Enrage 3) ──
-                public const float ShieldCooldown = 8f;
+                public const float ShieldCooldown = 6f;
                 public const float ShieldChargeDuration = 1.5f;
-                public const int ShieldBurstCount = 8;
+                public const int ShieldBurstCount = 10;
                 public const float ShieldBurstDamage = 2f;
 
                 // ── Black dot barriers (Enrage 1) ──
@@ -194,9 +194,9 @@ namespace Pizzard.Core
                 public const float MomentumSpeedPerStack = 0.08f;  // Increased to make buff obvious (max 40% extra speed)
 
                 // ── Attack timing ──
-                public const float BaseAttackInterval = 3f;
+                public const float BaseAttackInterval = 2.5f;
                 public const float Enrage1AttackInterval = 2.5f;
-                public const float Enrage2AttackInterval = 2f;
+                public const float Enrage2AttackInterval = 1.7f;
 
                 // ── Legacy constants (kept for backward compatibility) ──
                 public const float AttackInterval = 3f;

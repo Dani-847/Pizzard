@@ -49,7 +49,7 @@ public class EnemyProjectile : MonoBehaviour
         // Dañar al JUGADOR
         if (other.CompareTag("Player"))
         {
-            PlayerHPController playerHealth = other.GetComponent<PlayerHPController>();
+            PlayerHPController playerHealth = other.GetComponentInParent<PlayerHPController>();
             if (playerHealth != null)
             {
                 playerHealth.RecibirDaño((int)damage);

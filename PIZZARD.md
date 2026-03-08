@@ -1,7 +1,7 @@
 # Pizzard — Official Project Documentation
 
 > A 2D top-down spell-casting game built in Unity where a pizza wizard defeats bosses using food-element combo spells.
-> **Engine:** Unity 2022.3.62f1 LTS · **Platform:** Windows Standalone · **Version:** v1.0 — Complete
+> **Engine:** Unity 2022.3.62f1 LTS · **Platform:** Windows Standalone · **Version:** v1.1 — Complete
 
 ---
 
@@ -10,8 +10,9 @@
 1. [Project Overview](#1-project-overview)
 2. [Development Methodology](#2-development-methodology)
 3. [v1.0 Completed Phases](#3-v10-completed-phases)
-4. [v2.0 — Future Roadmap](#4-v20--future-roadmap)
-5. [Technology Index](#5-technology-index)
+4. [v1.1 — Polish + Playground](#4-v11--polish--playground)
+5. [v2.0 — Future Roadmap](#5-v20--future-roadmap)
+6. [Technology Index](#6-technology-index)
 
 ---
 
@@ -34,6 +35,7 @@ Main Menu → Intro Dialogue → Shop 1 → Boss 1 (P'blob) → Post-Boss Dialog
 |-------|---------|
 | `MainMenu.unity` | Main menu, options/settings, intro dialogue |
 | `Shop.unity` | Between-boss upgrade shop — wands, potions, mana |
+| `PlaygroundScene.unity` | Playground mode — isolated practice arena (v1.1) |
 | `BossArena_1.unity` | P'blob fight — three-phase encounter |
 | `BossArena_2.unity` | Niggel Worthington fight — enrage/steal mechanic |
 | `BossArena_3.unity` | Reserved — Boss 3 (v2.0) |
@@ -439,7 +441,51 @@ All placeholder sprites replaced with final artwork. Player, bosses (P'blob, Nig
 
 ---
 
-## 4. v2.0 — Future Roadmap
+## 4. v1.1 — Polish + Playground
+
+v1.1 delivers a Playground mode for new players, a visual polish pass across sprites/UI/projectiles, token isolation bug fixes, and playground localization. Animated sprite sheets and wand control rework are deferred to a future update.
+
+---
+
+### Visual Fixes — Sprites, UI, and Projectiles
+**Delivered:** Comprehensive visual polish pass across characters, UI elements, buttons, and projectile prefabs.
+
+- **Character sprites** — Player, Pblob, and Niggel replaced with final static art from `Assets/Sprites/3last/`; PPU set to 512 to match circle collider sizes
+- **Sprite consistency** — all character sprites normalized to a coherent pixel art scale so no character looks oversized or undersized relative to others
+- **UI polish** — button layouts, shop interface, token counter display, and HUD panels cleaned up for consistency
+- **Projectile visuals** — projectile prefab sprites updated to match the final art style
+- **Localization** — playground button added to EN/ES string tables (`menu_playground`)
+
+---
+
+### Phase 24 — Playground Mode
+**Delivered:** Playground scene accessible from main menu with isolated token economy, DPS dummy, falling projectile hazard, and first-launch onboarding pulse.
+
+Built a fully isolated Playground mode so new players can try game mechanics without risk:
+
+- **PlaygroundScene** — standalone scene with a dummy target (DPS counter) and falling projectile hazard
+- **Token Isolation** — `ITokenSource` interface + `PlaygroundManager` singleton; playground shop uses 10 tokens that never touch `ProgressionManager`
+- **Menu Entry** — Playground button on main menu with pulse animation on first launch (Animator or code fallback)
+- **Shop Bridge** — `PlaygroundShopBridge` (DontDestroyOnLoad) wires Shop scene to playground tokens via `PlaygroundTokenProxy`, captures wand elements, and routes exit back to PlaygroundScene
+- **State Cleanup** — exiting playground resets HP, mana, potions, and hides combat HUD panels so nothing leaks into normal mode
+- **Bug Fixes** — token leak from playground to normal mode fixed (BossCurrency reset + stale token source cleared); playground button localized
+
+Key scripts: `PlaygroundManager.cs`, `PlaygroundHUDController.cs`, `PlaygroundShopBridge.cs`, `DummyDPSTracker.cs`, `PlaygroundProjectileSpawner.cs`, `PlaygroundRespawnHandler.cs`
+
+---
+
+### Deferred to Future Update
+
+The following items from the original v1.1 plan are deferred:
+
+- **Animated sprite sheets** — v1.1 `.ase` files exist in `Assets/Sprites/v1.1/` (Pblob, PlayerBob, Niggel, wand tiers) but animations are not yet integrated; current sprites are final static art
+- **Wand sprites** — tier 1/2/3 wand `.ase` files in `Assets/Sprites/v1.1/` not yet wired into the game
+- **Debug button relocation** — move debug button from current location to pause menu
+- **Wand control rework** — decouple player body rotation from mouse; implement wand orbit around player center
+
+---
+
+## 5. v2.0 — Future Roadmap
 
 v2.0 extends Pizzard to a four-boss full run with audio, a tutorial, New Game+, and controller support. All items below are explicitly out of scope for v1.0 and planned for a future update.
 
@@ -459,7 +505,7 @@ Menu → Dialogue → Shop → Boss 1 → Shop → Boss 2 → Shop → Boss 3 �
 
 ---
 
-## 5. Technology Index
+## 6. Technology Index
 
 ### Engine & Runtime
 
@@ -510,6 +556,7 @@ Menu → Dialogue → Shop → Boss 1 → Shop → Boss 2 → Shop → Boss 3 �
 | Dialogue | `DialogUI.cs` | Overlay system for narrative sequences. Accepts a panel queue (speaker + text), displays them in order, and notifies `GameFlowManager` on completion. |
 | UI Manager | `UIManager.cs` | Persistent HUD canvas — health hearts, mana bar, boss health bar. No boss scene creates its own canvas; all HUD lives here. |
 | Boss Base | `BossController.cs` | Abstract base class for all bosses. Defines HP system, phase threshold checks, death trigger → `GameFlowManager.AvanzarFase()`, and the initialization contract. |
+| Playground | `PlaygroundManager.cs` | Isolated practice mode with its own token economy (`ITokenSource`). `PlaygroundShopBridge` wires the existing Shop scene to playground tokens without touching main save data. |
 
 ### Spell System — Full Combination Table
 
@@ -543,7 +590,9 @@ Assets/
 │   ├── Items/           — Shop item logic
 │   ├── Languaje/        — LocalizationManager, LocalizedText
 │   ├── Pblob/           — P'blob-specific scripts
+│   ├── Interfaces/      — ITokenSource and shared contracts
 │   ├── Player/          — PlayerController, ManaSystem, HP
+│   ├── Playground/      — PlaygroundManager, HUD, shop bridge, DPS tracker
 │   ├── Progression/     — ProgressionManager, SaveManager
 │   ├── Sound/           — SoundManager (v2.0)
 │   ├── Status/          — Burn, slow, and other status effects
@@ -557,5 +606,5 @@ Assets/
 
 ---
 
-*Pizzard v1.0 — Complete*
+*Pizzard v1.1 — Complete*
 *Unity 2022.3.62f1 · Windows Standalone · Released 2026*

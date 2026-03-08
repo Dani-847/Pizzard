@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 public class PlaygroundShopBridge : MonoBehaviour
 {
     private static PlaygroundShopBridge _instance;
+    private static readonly string[] _combatPanels = { "Elementos", "HealthUI", "PotionUI", "ManaUI" };
 
     public static void Activate(int currentTokens)
     {
@@ -21,6 +22,9 @@ public class PlaygroundShopBridge : MonoBehaviour
         DontDestroyOnLoad(go);
         _instance = go.AddComponent<PlaygroundShopBridge>();
         PlaygroundManager.BeginShopSession(currentTokens);
+
+        // Hide combat HUD panels while in shop
+        SetCombatPanelsActive(false);
     }
 
     private void OnEnable()
@@ -42,6 +46,14 @@ public class PlaygroundShopBridge : MonoBehaviour
         }
         else if (scene.name == "PlaygroundScene")
         {
+            // Hide the shop UI — UIManager.Start() won't re-run since it's persistent
+            var shopUI = FindObjectOfType<ShopUI>(true);
+            if (shopUI != null && shopUI.gameObject.activeSelf)
+                shopUI.Hide(suppressSave: true);
+
+            // Restore combat HUD panels for playground gameplay
+            SetCombatPanelsActive(true);
+
             Destroy(gameObject);
             _instance = null;
         }
@@ -78,8 +90,30 @@ public class PlaygroundShopBridge : MonoBehaviour
         if (shopUI?.btnShopExit != null)
             shopUI.btnShopExit.onClick.RemoveListener(OnShopExit);
 
+        // Capture chosen elements before the shop scene (and its EquipableObjects) is destroyed
+        var playerEquip = FindObjectOfType<PlayerEquip>(true);
+        if (playerEquip != null && playerEquip.equipedObject != null)
+        {
+            PlaygroundManager.PlaygroundWandElements = new System.Collections.Generic.List<ElementType>(playerEquip.equipedObject.elements);
+        }
+
         PlaygroundManager.EndShopSession(PlaygroundManager.GetCachedTokens());
         Pizzard.Core.SceneLoader.LoadScene("PlaygroundScene");
+    }
+
+    /// <summary>
+    /// Shows or hides combat HUD panels (potions, mana, elements, health) on UIManager.
+    /// </summary>
+    private static void SetCombatPanelsActive(bool active)
+    {
+        if (UIManager.Instance == null) return;
+        Transform uiRoot = UIManager.Instance.transform;
+        foreach (string panelName in _combatPanels)
+        {
+            Transform panel = uiRoot.Find(panelName);
+            if (panel != null)
+                panel.gameObject.SetActive(active);
+        }
     }
 }
 

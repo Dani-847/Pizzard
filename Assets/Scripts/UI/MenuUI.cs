@@ -34,6 +34,7 @@ public class MenuUI : MonoBehaviour
     [Header("Estado")]
     private GameFlowManager flowManager;
     private bool _playgroundPulseActive = true;
+    private Coroutine _pulseCoroutine;
 
     void Start()
     {
@@ -52,10 +53,21 @@ public class MenuUI : MonoBehaviour
 
         if (botonPlayground != null)
             botonPlayground.onClick.AddListener(OnClickPlayground);
-        if (_playgroundPulseActive && playgroundButtonAnimator != null)
+
+        if (_playgroundPulseActive && botonPlayground != null)
         {
-            playgroundButtonAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-            playgroundButtonAnimator.SetBool("Pulsing", true);
+            if (playgroundButtonAnimator != null && playgroundButtonAnimator.runtimeAnimatorController != null)
+            {
+                playgroundButtonAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+                playgroundButtonAnimator.SetBool("Pulsing", true);
+            }
+            else
+            {
+                // No AnimatorController assigned — disable animator to silence errors, use code pulse
+                if (playgroundButtonAnimator != null)
+                    playgroundButtonAnimator.enabled = false;
+                _pulseCoroutine = StartCoroutine(PulseButtonCoroutine(botonPlayground.transform));
+            }
         }
 
         // Show/hide Continue based on saved progress
@@ -79,6 +91,15 @@ public class MenuUI : MonoBehaviour
                     : "Play";
         }
 
+        if (botonPlayground != null)
+        {
+            var txtPlay = botonPlayground.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (txtPlay != null)
+                txtPlay.text = LocalizationManager.Instance != null
+                    ? LocalizationManager.Instance.GetText("menu_playground")
+                    : "Playground";
+        }
+
         if (botonContinuar == null) return;
 
         var txtCont = botonContinuar.GetComponentInChildren<TextMeshProUGUI>(true);
@@ -96,10 +117,29 @@ public class MenuUI : MonoBehaviour
     /// </summary>
     public void OnClickPlayground()
     {
-        if (playgroundButtonAnimator != null)
-            playgroundButtonAnimator.SetBool("Pulsing", false);
         _playgroundPulseActive = false;
+        if (playgroundButtonAnimator != null && playgroundButtonAnimator.runtimeAnimatorController != null)
+            playgroundButtonAnimator.SetBool("Pulsing", false);
+        if (_pulseCoroutine != null)
+        {
+            StopCoroutine(_pulseCoroutine);
+            _pulseCoroutine = null;
+            if (botonPlayground != null)
+                botonPlayground.transform.localScale = Vector3.one;
+        }
         SceneLoader.LoadScene("PlaygroundScene");
+    }
+
+    private System.Collections.IEnumerator PulseButtonCoroutine(Transform target)
+    {
+        float t = 0f;
+        while (true)
+        {
+            t += Time.unscaledDeltaTime * 2.5f;
+            float scale = 1f + Mathf.Sin(t) * 0.06f;
+            target.localScale = new Vector3(scale, scale, 1f);
+            yield return null;
+        }
     }
 
     /// <summary>

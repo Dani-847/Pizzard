@@ -5,6 +5,7 @@
     { "key": "menu_options", "value": "Opciones" },
     { "key": "menu_exit", "value": "Salir" },
     { "key": "menu_continue", "value": "Continuar" },
+    { "key": "menu_playground", "value": "Parque" },
 
     { "key": "options_language", "value": "Idioma" },
     { "key": "options_volume", "value": "Volumen" },

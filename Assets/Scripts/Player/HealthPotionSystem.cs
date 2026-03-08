@@ -53,9 +53,9 @@ public class HealthPotionSystem : MonoBehaviour
         maxPociones++;
         Debug.Log("Pociones mejoradas a " + maxPociones);
         RecargarPociones();
-        
-        // --- WAVE 2: Sync to SaveData ---
-        if (Pizzard.Progression.SaveManager.Instance != null)
+
+        // --- WAVE 2: Sync to SaveData (skip in Playground) ---
+        if (!PlaygroundManager.IsPlaygroundSession && Pizzard.Progression.SaveManager.Instance != null)
         {
             Pizzard.Progression.SaveManager.Instance.CurrentSave.potionCount = maxPociones;
             Pizzard.Progression.SaveManager.Instance.SaveGame();

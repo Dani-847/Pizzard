@@ -98,8 +98,13 @@ public class ShopUI : MonoBehaviour
         {
             hasPurchasedInRun1 = true;
             RefreshTokens();
-            
-            if (Pizzard.Progression.SaveManager.Instance != null)
+
+            if (PlaygroundManager.IsPlaygroundSession)
+            {
+                if (PlaygroundManager.PlaygroundWandTier < 3)
+                    PlaygroundManager.PlaygroundWandTier++;
+            }
+            else if (Pizzard.Progression.SaveManager.Instance != null)
             {
                 int savedTier = Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier;
                 if (savedTier < 3)
@@ -114,7 +119,11 @@ public class ShopUI : MonoBehaviour
             UpdateWandButtonUI();
             
             // --- WAVE 2: IMMEDIATE REACTIVE REFRESH ---
-            int newTier = Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 1;
+            int newTier;
+            if (PlaygroundManager.IsPlaygroundSession)
+                newTier = PlaygroundManager.PlaygroundWandTier;
+            else
+                newTier = Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 1;
             if (elementSelectionUI != null)
             {
                 elementSelectionUI.RefreshFromWandTier(newTier);
@@ -136,9 +145,17 @@ public class ShopUI : MonoBehaviour
     private void UpdateWandButtonUI()
     {
         if (btnUpgradeWand == null) return;
-        
-        int currentTier = playerEquip != null ? playerEquip.CurrentWandTier 
-            : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 1);
+
+        int currentTier;
+        if (PlaygroundManager.IsPlaygroundSession)
+        {
+            currentTier = PlaygroundManager.PlaygroundWandTier;
+        }
+        else
+        {
+            currentTier = playerEquip != null ? playerEquip.CurrentWandTier
+                : (Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 1);
+        }
         
         ITokenSource wandSrc = _tokenSource ?? Pizzard.Progression.ProgressionManager.Instance as ITokenSource;
         int tokens = wandSrc != null ? wandSrc.GetTokens() : 0;
@@ -182,6 +199,9 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnBtnShopExit()
     {
+        // In playground, PlaygroundShopBridge handles the exit — skip all normal-game logic
+        if (PlaygroundManager.IsPlaygroundSession) return;
+
         // --- WAVE 2: SHOP 1 HARD-LOCK (FRONTEND) ---
         if (Pizzard.Progression.SaveManager.Instance != null &&
             Pizzard.Progression.SaveManager.Instance.CurrentSave.bossIndex == 1 &&
@@ -235,6 +255,10 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     private void InitializeShopUI()
     {
+        // Clear stale playground token source when opening shop in normal mode
+        if (!PlaygroundManager.IsPlaygroundSession)
+            _tokenSource = null;
+
         // Reset exit warning counter on every shop open
         exitClicks = 0;
         
@@ -242,6 +266,7 @@ public class ShopUI : MonoBehaviour
         if (elementSelectionUI == null) elementSelectionUI = FindObjectOfType<ElementSelectionUI>(true);
         if (equipSelectorUI == null) equipSelectorUI = FindObjectOfType<EquipSelectorUI>(true);
         if (playerEquip == null) playerEquip = FindObjectOfType<PlayerEquip>(true);
+        if (healthPotionSystem == null) healthPotionSystem = FindObjectOfType<HealthPotionSystem>(true);
         
         // --- Auto-create token counter if not wired in Inspector ---
         if (txtTokenCount == null)
@@ -265,7 +290,11 @@ public class ShopUI : MonoBehaviour
             Debug.Log("[ShopUI] Auto-created TokenCounter text (top-right).");
         }
 
-        int currentWandTier = Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 0;
+        int currentWandTier;
+        if (PlaygroundManager.IsPlaygroundSession)
+            currentWandTier = PlaygroundManager.PlaygroundWandTier;
+        else
+            currentWandTier = Pizzard.Progression.SaveManager.Instance != null ? Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier : 0;
 
         // --- WAVE 2: ALWAYS show element selection UI, reactive to wandTier ---
         if (elementSelectionUI != null)
@@ -318,11 +347,16 @@ public class ShopUI : MonoBehaviour
     
     public void RefreshExitButton()
     {
-        if (btnShopExit != null && Pizzard.Progression.SaveManager.Instance != null)
+        if (btnShopExit == null) return;
+        if (PlaygroundManager.IsPlaygroundSession)
         {
-            bool isShop1Locked = Pizzard.Progression.SaveManager.Instance.CurrentSave.bossIndex == 1 && 
+            btnShopExit.interactable = true;
+            return;
+        }
+        if (Pizzard.Progression.SaveManager.Instance != null)
+        {
+            bool isShop1Locked = Pizzard.Progression.SaveManager.Instance.CurrentSave.bossIndex == 1 &&
                                  Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier == 0;
-            
             btnShopExit.interactable = !isShop1Locked;
         }
     }
@@ -334,7 +368,7 @@ public class ShopUI : MonoBehaviour
     public void Hide(bool suppressSave = false)
     {
         // --- WAVE 3: AUTO-SAVE on shop close ---
-        if (!suppressSave && Pizzard.Progression.SaveManager.Instance != null)
+        if (!suppressSave && !PlaygroundManager.IsPlaygroundSession && Pizzard.Progression.SaveManager.Instance != null)
         {
             Pizzard.Progression.SaveManager.Instance.SaveGame();
             Debug.Log("[ShopUI] Auto-saved on shop close.");
@@ -375,9 +409,19 @@ public class ShopUI : MonoBehaviour
         GUI.Box(new Rect(0, 0, 160f, 80f), "");
         GUILayout.Label($"Tokens: {tokens}");
         if (GUILayout.Button("+1 Token"))
-            Pizzard.Progression.ProgressionManager.Instance?.AddCurrency(1);
+        {
+            if (PlaygroundManager.IsPlaygroundSession)
+                PlaygroundManager.SpendCachedTokens(-1); // negative spend = add
+            else
+                Pizzard.Progression.ProgressionManager.Instance?.AddCurrency(1);
+        }
         if (GUILayout.Button("+50 Tokens"))
-            Pizzard.Progression.ProgressionManager.Instance?.AddCurrency(50);
+        {
+            if (PlaygroundManager.IsPlaygroundSession)
+                for (int i = 0; i < 50; i++) PlaygroundManager.SpendCachedTokens(-1);
+            else
+                Pizzard.Progression.ProgressionManager.Instance?.AddCurrency(50);
+        }
         GUILayout.EndArea();
     }
 #endif

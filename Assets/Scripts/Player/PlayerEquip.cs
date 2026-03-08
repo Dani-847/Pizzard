@@ -22,7 +22,11 @@ public class PlayerEquip : MonoBehaviour
 
     void Start()
     {
-        if (Pizzard.Progression.SaveManager.Instance != null)
+        if (PlaygroundManager.IsPlaygroundSession)
+        {
+            LoadTierFromSave(PlaygroundManager.PlaygroundWandTier);
+        }
+        else if (Pizzard.Progression.SaveManager.Instance != null)
         {
             LoadTierFromSave(Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier);
         }
@@ -64,13 +68,17 @@ public class PlayerEquip : MonoBehaviour
         {
             CurrentWandTier++;
             Debug.Log($"[PlayerEquip] Wand upgraded to Tier {CurrentWandTier}!");
-            
-            if (Pizzard.Progression.SaveManager.Instance != null)
+
+            if (PlaygroundManager.IsPlaygroundSession)
+            {
+                PlaygroundManager.PlaygroundWandTier = CurrentWandTier;
+            }
+            else if (Pizzard.Progression.SaveManager.Instance != null)
             {
                 Pizzard.Progression.SaveManager.Instance.CurrentSave.wandTier = CurrentWandTier;
                 Pizzard.Progression.SaveManager.Instance.SaveGame();
             }
-            
+
             // Automatically equip the new visual properties based on tier
             LoadTierFromSave(CurrentWandTier);
         }
@@ -97,19 +105,27 @@ public class PlayerEquip : MonoBehaviour
             if (selector != null && selector.availableEquipables != null)
                 equip = selector.availableEquipables.Find(e => e.tier == CurrentWandTier);
 
-            // Fallback for boss scenes: EquipableObjects are destroyed with the Shop scene.
+            // Fallback for boss/playground scenes: EquipableObjects are destroyed with the Shop scene.
             // Reconstruct a temporary wand from the palette saved before scene load.
             if (equip == null)
             {
-                var save = Pizzard.Progression.SaveManager.Instance?.CurrentSave;
-                var palette = save?.pendingWandElements;
+                List<ElementType> palette = null;
+                if (PlaygroundManager.IsPlaygroundSession || PlaygroundManager.PlaygroundWandElements.Count > 0)
+                {
+                    palette = PlaygroundManager.PlaygroundWandElements;
+                }
+                else if (Pizzard.Progression.SaveManager.Instance != null)
+                {
+                    var save = Pizzard.Progression.SaveManager.Instance.CurrentSave;
+                    palette = save?.pendingWandElements;
+                }
                 var tempGO = new GameObject("_TempWand_Tier" + CurrentWandTier);
                 var tempEquip = tempGO.AddComponent<EquipableObject>();
                 tempEquip.tier = CurrentWandTier;
                 if (palette != null && palette.Count > 0)
                     tempEquip.elements = new List<ElementType>(palette);
                 equip = tempEquip;
-                Debug.Log($"[PlayerEquip] Created temp wand (Tier {CurrentWandTier}, {tempEquip.elements.Count} elements) for boss scene.");
+                Debug.Log($"[PlayerEquip] Created temp wand (Tier {CurrentWandTier}, {tempEquip.elements.Count} elements).");
             }
 
             EquipObject(equip);

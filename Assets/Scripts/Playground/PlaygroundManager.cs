@@ -1,4 +1,5 @@
 // Assets/Scripts/Playground/PlaygroundManager.cs
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlaygroundManager : MonoBehaviour, ITokenSource
@@ -13,6 +14,16 @@ public class PlaygroundManager : MonoBehaviour, ITokenSource
     // Static bridge: survives scene transitions so Shop scene can read/write tokens
     public static bool IsPlaygroundSession { get; private set; }
     private static int _cachedTokens = StartingTokens;
+
+    /// <summary>
+    /// Wand tier tracked independently of the real save — starts at 1, increases per shop buy.
+    /// </summary>
+    public static int PlaygroundWandTier = 1;
+
+    /// <summary>
+    /// Element choices made in the playground shop — persists across scene transitions.
+    /// </summary>
+    public static List<ElementType> PlaygroundWandElements = new List<ElementType>();
 
     /// <summary>
     /// Called by PlaygroundHUDController before loading Shop scene.
@@ -31,7 +42,8 @@ public class PlaygroundManager : MonoBehaviour, ITokenSource
     public static void EndShopSession(int remainingTokens)
     {
         _cachedTokens = remainingTokens;
-        IsPlaygroundSession = false;
+        // Don't clear IsPlaygroundSession here — PlayerEquip.Start() still needs it
+        // when PlaygroundScene loads. It gets cleared in ClearSession().
     }
 
     /// <summary>
@@ -57,6 +69,7 @@ public class PlaygroundManager : MonoBehaviour, ITokenSource
             return;
         }
         Instance = this;
+        IsPlaygroundSession = true;
         // Restore tokens from cache (set by BeginShopSession) or use starting value
         _playgroundTokens = _cachedTokens;
     }
@@ -64,6 +77,17 @@ public class PlaygroundManager : MonoBehaviour, ITokenSource
     private void OnDestroy()
     {
         if (Instance == this) Instance = null;
+    }
+
+    /// <summary>
+    /// Resets all static playground state. Call when leaving playground entirely (back to menu).
+    /// </summary>
+    public static void ClearSession()
+    {
+        IsPlaygroundSession = false;
+        _cachedTokens = StartingTokens;
+        PlaygroundWandTier = 1;
+        PlaygroundWandElements.Clear();
     }
 
     // ITokenSource implementation

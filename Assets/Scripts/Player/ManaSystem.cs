@@ -85,7 +85,7 @@ namespace Pizzard.Core
             MaxMana = oldMax * GameBalance.Mana.UpgradeMultiplier;
             CurrentMana = (CurrentMana / oldMax) * MaxMana;
             
-            if (SaveManager.Instance != null)
+            if (!PlaygroundManager.IsPlaygroundSession && SaveManager.Instance != null)
             {
                 SaveManager.Instance.CurrentSave.manaMax = MaxMana;
                 SaveManager.Instance.SaveGame();

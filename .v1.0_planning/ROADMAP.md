@@ -1,0 +1,394 @@
+# ROADMAP.md
+
+> **Current Phase**: 19 — Boss 2 Niggel Worthington AI
+> **Milestone**: v1.0 (Full Loop, 2 Bosses, Spell Polish, End Screen)
+> **Phases Complete**: 1–18 (including 13.1 Mana + 13.2 GameBalance + 14 Dialogue + 15 Boss Loop + 16 Language + 17 UI Polish + 18 P'blob)
+> **Phases Remaining**: 19–24
+
+---
+
+## Completed Phases (1–15)
+
+| Phase | Status | Summary |
+|-------|--------|---------|
+| 1 | ✅ | Foundation & Refactoring — Archive folder, GameFlowManager singleton, scene pipeline |
+| 2 | ✅ | Core UI & Main Menu — Menu, Settings, Dialog UI wired to GameFlowManager |
+| 3 | ✅ | Player Mechanics & Wand Combinations — Movement, damage, Tiers 1-3, element combos |
+| 4 | ✅ | Progression & Shop System — Currency drops, Shop interface, item logic |
+| 5 | ✅ | Bosses Part 1 — P'blob (mustache + simon-says) and Hec'kiel (elemental dragon) |
+| 6 | ✅ | Bosses Part 2 — Pomodoro Paganini (pong) and Niggel Worthington (buff/debuff) |
+| 7 | ✅ | Boss State Standardization — Boss loading context, GameFlowManager edge cases |
+| 8 | ✅ | Main Menu & UI Cleanup — Settings, intro dialogue sequences |
+| 9 | ✅ | Boss Debugging — Input freeze, rigidbodies, UI bars, timescale |
+| 10 | ✅ | Codebase Refactor & Polish — Cinemachine, Pblob AI, Shop element selection |
+| 11 | ✅ | Critical Loop & UI Fixes — Health bar, camera, Shop buttons, progression loop |
+| 12 | ✅ | Shop Progression & Layout Rework — Shop UI, Wand unlocking, Token/Mana tracking |
+| 13.1 | ✅ | Mana System — Rename Fatigue→Mana, per-spell cost dictionary, cast gating |
+| 13.2 | ✅ | GameBalance Centralization — 123+ constants into `GameBalance.cs`, 36 files updated |
+| 14 | ✅ | Dialogue System & Narrative Flow — DialogUI overlay, intro/pre/post-boss/death-shop dialogue sequences |
+| 15 | ✅ | Complete    | 2026-02-28 | After Boss | Earned | Available at Next Shop |
+|------------|--------|------------------------|
+| Boss 1     | 1      | 1 (spent 1 in Shop 1)  |
+| Boss 2     | 2      | 2 + unspent            |
+| Boss 3     | 2      | 2 + unspent            |
+| Boss 4     | N/A    | Game ends              |
+
+Starting token = 1 (given before Shop 1).
+
+**Game Over**: Return to last save point. "Game Over" screen with Continue.
+
+**Verify**: Full loop: Menu → Dialogue → Shop1 → Dialogue → Boss1 → … → Boss4 → Credits.
+
+---
+
+### Phase 16: Language System Completion
+**Status**: ⬚ Planned
+**Dependencies**: Phase 14
+**Plans:** 3/3 plans complete
+
+Plans:
+- [ ] 16-01-PLAN.md — Write complete EN/ES JSON string tables with real dialogue
+- [ ] 16-02-PLAN.md — Replace hardcoded strings in C# scripts with GetText() calls
+- [ ] 16-03-PLAN.md — Attach LocalizedText components to scene UI + human verification
+
+**Objective**: Complete the EN ↔ ES translation system.
+
+**Requirements**:
+- Options menu: language toggle (functional).
+- On toggle: ALL UI text updates in real-time without scene reload.
+- Sources: `Resources/Languages/en.json` and `Resources/Languages/es.json`.
+- Every UI text uses a localization key, never hardcoded strings.
+
+**Localization Keys** (minimum):
+- Menu: `play`, `options`, `exit`, `volume`, `language`, `combinations`, `accept`
+- Shop: `upgrade_wand`, `upgrade_potion`, `upgrade_mana`, `exit_shop`, `token_count`, `warning_exit`
+- Dialogue: all narrative keys
+- Combat UI: `health`, `mana`, `potion_count`
+- Boss names, Game over, Credits
+
+**Implementation**:
+- `LocalizationManager` singleton loads JSON on startup.
+- `LocalizedText` component on all Text/TMP with a key.
+- On language change: event fires, all components refresh.
+- Language preference saved in SaveData.
+
+**Verify**: Switch in Options, confirm ALL text changes. Screenshot both EN and ES.
+
+---
+
+### ✅ Phase 17: UI Polish & Resolution Independence
+**Status**: Executed
+**Focus**: Unity UI anchors, button styling, ElementSelection grid polish, Boss/Mana bar verifications.
+**Dependencies**: Phase 16
+**Plans:** 3/3 plans complete
+
+Plans:
+- [x] 17-01-PLAN.md — Setup Canvas Scalers
+- [x] 17-02-PLAN.md — Shop Buttons & Element Selection Polish
+- [x] 17-03-PLAN.md — Mana Bar & Boss Health Bars Polish
+
+**Objective**: Final UI polish pass across all scenes.
+
+**Requirements**:
+- Every Canvas: Scale With Screen Size (1920×1080, Match 0.5).
+- Test at: 1920×1080, 1366×768, 2560×1440, 1280×720.
+- No clipping or off-screen elements at any resolution.
+- Consistent visual style across all screens.
+
+**Fixes**:
+- Shop buttons: uniform size, spacing, hover/press feedback.
+- Element selection: tier-based layout (1/2/3 slots by tier).
+- Mana bar: vertical fill bottom→top, color gradient.
+- Boss health bars: consistent across all boss scenes.
+- Dialogue box: no overlap with combat UI.
+
+**Verify**: Unity MCP for anchor verification. Screenshot at EACH resolution.
+
+---
+
+### Phase 18: Boss 1 — P'blob AI & Patterns
+**Status**: ⬚ Planned
+**Dependencies**: Phase 15, `GameBalance.Bosses.Pblob`
+**Plans:** 3/3 plans complete
+
+Plans:
+- [ ] 18-01-PLAN.md — P'blob Core Refactor & Phase 1
+- [ ] 18-02-PLAN.md — P'blob Phase 2 (Circle Minigame)
+- [ ] 18-03-PLAN.md — P'blob Phase 3 (Grid Puzzle & Death)
+
+**Objective**: Full P'blob boss fight implementation.
+
+**Current State**: `PblobController` exists with basic phase system, vulnerability windows, knockback, and wander AI. Attack patterns are stubbed.
+
+**Design**:
+- All phases occur within `BossArena_1.unity`.
+- **Phase 1 (100%-66%):** Boss alternates 2s moving (vulnerable) and 2s standing still shooting (invulnerable).
+- **Phase 2 (66%-33%):** Boss center, invulnerable. 30s timer. 3 circles spawn (2 Red, 1 Green) and move randomly for 5s. They stop and hide colors. Player steps on them to reveal. Player must stand in Green circle to damage boss.
+- **Phase 3 (< 33%):** Boss Top-Center, Player Bottom-Center. Grid spawns. Gray -> Red/Green flash -> reveals green path. Player must follow green path (red damages/slows). Reaching the boss makes it permanently vulnerable.
+
+**Implementation**:
+- Use `GameBalance.Bosses.Pblob` for all timing/HP values.
+- Refactor `PblobController.cs` to explicit states rather than automatic pattern cycling.
+
+**Verify**: Each phase independently in Play mode + Death screen loop to Shop.
+
+---
+
+### Phase 19: Boss 2 — Niggel Worthington AI
+**Status**: ⬚ In Progress (1/3 plans complete)
+**Dependencies**: Phase 18 (pattern template), `GameBalance.Bosses.Niggel`
+**Plans:** 3/3 plans complete
+
+Plans:
+- [x] 19-01-PLAN.md — GameBalance constants + NiggelController core (CoinVault HP, enrage state machine, momentum)
+- [ ] 19-02-PLAN.md — Attack coroutines + projectile scripts + black dot barriers
+- [ ] 19-03-PLAN.md — NiggelCoinMeterUI HUD + scene wiring in BossArena_2 + human verification
+
+**Objective**: Full Niggel Worthington (The Rich Guy) boss fight — role reversal where player gets stronger as they steal Niggel's coins.
+
+**Current State**: `NiggelController` exists with attack interval, steal mechanic (range check + currency theft + speed buff), and 3 stubbed attacks.
+
+**Design**:
+- Mobile boss that steals currency and buffs himself.
+- Gets faster with each successful steal (`speedMultiplier`).
+- Has toy soldiers as minions.
+
+**Attacks**:
+1. Throw Money — coin bag projectiles.
+2. Rich Dash — high-speed dash across room (uses `speedMultiplier`).
+3. Steal Stats — if close enough, steals currency or HP.
+
+**Buff/Debuff System**:
+- Each steal gives Niggel +0.2x speed (`GameBalance.Bosses.Niggel.SpeedBuffPerSteal`).
+- Player gets debuffed: slightly slower, slightly weaker.
+- Defeating Niggel restores all stolen stats/currency.
+
+**Minions**:
+- Toy soldiers spawn at intervals.
+- They don't deal much damage but body-block player spells.
+- Must be cleared to reach Niggel effectively.
+
+**Implementation**:
+- Need: coin bag projectile prefab, minion prefab, dash trail VFX.
+- Steal mechanic already functional — add visual feedback.
+
+**Verify**: Steal mechanic, speed scaling, and minion spawning.
+
+---
+
+### Phase 20: Spell Polish — Tier 1 (Single Element)
+**Status**: ✅ Complete — VFX/SFX and GameBalance verify deferred to Phase 24
+**Dependencies**: Phase 19
+
+**Objective**: Polish and complete all 3 Tier 1 single-element spells.
+
+**Spells**:
+1. **Queso** — Cheese Shield (orbiting, reflects projectiles, contact damage). Current: `CheeseShield.cs` works. Polish: visual feedback, sound, particle trail.
+2. **Pepperoni** — Fire projectile with burn DoT. Current: `PepperoniAttack.cs` works. Polish: fire VFX, burn indicator on target.
+3. **Piña** — Fast straight projectile. Current: `PiñaAttack.cs` works (inherits `CharacterProjectile`). Polish: unique VFX.
+
+**For Each Spell**:
+- Verify damage values match `GameBalance.Spells.*`
+- Add particle effects (spawn + travel + impact).
+- Add sound effects (cast + impact).
+- Verify mana cost deduction works correctly.
+
+All values come from `GameBalance.cs` — no new hardcoded numbers.
+
+---
+
+### Phase 21: Spell Completion — All Combos (T2 + T3)
+**Status**: ✅ Complete
+**Dependencies**: Phase 20
+**Plans:** 9/9 plans complete
+
+Plans:
+- [x] 21-01-PLAN.md — GameBalance constants + mana costs + PlayerAimAndCast dispatch stubs (all prerequisites)
+- [x] 21-02-PLAN.md — T2: pepperoni|queso (sticky) + queso|piña (pillar)
+- [x] 21-03-PLAN.md — T2: queso|pepperoni (burn area) + queso|queso (reflective wall with HP)
+- [x] 21-04-PLAN.md — T3: piña|piña|piña, piña|piña|queso, piña|piña|pepperoni (splitter variants)
+- [x] 21-05-PLAN.md — T3: piña|queso|piña, piña|queso|queso, piña|queso|pepperoni (absorbing variants)
+- [x] 21-06-PLAN.md — T3: piña|pepperoni|piña, piña|pepperoni|pepperoni, piña|pepperoni|queso (teleport variants)
+- [x] 21-07-PLAN.md — T3: queso|piña|* and queso|pepperoni|* placed-object variants (6 combos)
+- [x] 21-08-PLAN.md — T3: queso|queso|queso black hole (standalone, most complex)
+- [x] 21-09-PLAN.md — Verify all 16 existing T2+T3 combos + human checkpoint
+
+**Objective**: Implement all missing T2 and T3 spell combinations and verify all existing ones work correctly. No VFX/SFX — mechanics only. All values from `GameBalance.Spells.*`.
+
+**Missing T2 (4 to implement):**
+
+| Key | Mechanic |
+|-----|----------|
+| `queso\|queso` | Wall on ground — damages + reflects projectiles, has HP |
+| `queso\|pepperoni` | Ground area — applies burn on contact, damage scales with time |
+| `queso\|piña` | Pillar — ticking damage in an area |
+| `pepperoni\|queso` | Sticky projectile — burn + more damage the longer it sticks (2s) |
+
+**Existing T2 (5 to verify):**
+
+| Key | Mechanic |
+|-----|----------|
+| `piña\|piña` | Splitter — explodes into smaller sub-projectiles |
+| `piña\|queso` | Absorbing projectile that grows + explodes |
+| `piña\|pepperoni` | Teleport + explosion at destination |
+| `pepperoni\|piña` | Catapult that explodes and applies burn |
+| `pepperoni\|pepperoni` | Projectile leaves fire trail, burn on impact |
+
+**Missing T3 (16 to implement):**
+
+| Key | Mechanic |
+|-----|----------|
+| `piña\|piña\|piña` | Explodes → sub-projectiles each also explode |
+| `piña\|piña\|queso` | Explodes → sub-projectiles absorb incoming projectiles |
+| `piña\|piña\|pepperoni` | Explodes → sub-projectiles apply burn |
+| `piña\|queso\|piña` | Absorbing projectile — damage = absorbed count |
+| `piña\|queso\|queso` | Absorbing projectile — becomes a cone |
+| `piña\|queso\|pepperoni` | Absorbing projectile — burn stacks = absorbed count |
+| `piña\|pepperoni\|piña` | Dual projectiles damage en route → teleport → explosion |
+| `piña\|pepperoni\|pepperoni` | Same → bigger explosion |
+| `piña\|pepperoni\|queso` | Same → explosion reflects projectiles |
+| `queso\|queso\|queso` | Black hole — absorbs projectiles, returns at ×1.5 damage |
+| `queso\|piña\|piña` | Pillar — bigger area, more damage |
+| `queso\|piña\|queso` | Pillar — more HP, slows projectiles |
+| `queso\|piña\|pepperoni` | Pillar — ticking damage + burn stacks, bonus per stack |
+| `queso\|pepperoni\|pepperoni` | Ground area — double burn stacks |
+| `queso\|pepperoni\|piña` | Ground area — burn + DoT |
+| `queso\|pepperoni\|queso` | Ground area — larger radius |
+
+**Existing T3 (9 to verify):**
+
+| Key | Status |
+|-----|--------|
+| `pepperoni\|pepperoni\|pepperoni` | Verify |
+| `pepperoni\|pepperoni\|piña` | Verify |
+| `pepperoni\|pepperoni\|queso` | Verify |
+| `pepperoni\|piña\|pepperoni` | Verify |
+| `pepperoni\|piña\|piña` | Verify |
+| `pepperoni\|piña\|queso` | Verify |
+| `pepperoni\|queso\|pepperoni` | Verify |
+| `pepperoni\|queso\|piña` | Verify |
+| `pepperoni\|queso\|queso` | Verify |
+| `queso\|queso\|piña` | Verify |
+| `queso\|queso\|pepperoni` | Verify |
+
+---
+
+### Phase 22: Save System Polish
+**Status**: ⬚ Not Started
+**Dependencies**: Phase 19
+
+**Objective**: Harden the save/load system.
+
+**Requirements**:
+- Validate JSON on load — handle corruption gracefully.
+- Prevent external JSON editing from breaking game state.
+- Add version field to SaveData for future migration.
+- Auto-save at key checkpoints: after boss defeat, after shop close.
+- Manual save option in pause menu.
+- "New Game" properly resets all state.
+- "Continue" loads exact loop position.
+
+**Edge Cases**:
+- Corrupted file → warning + offer to start new game.
+- Missing fields in old saves → fill with defaults.
+- `bossIndex` out of range → clamp to valid range.
+
+**Verify**: Corrupt save file manually, confirm graceful recovery.
+
+---
+
+### Phase 23: End Screen & Final Polish
+**Status**: ⬚ Not Started
+**Dependencies**: Phases 19–22
+
+**Objective**: End screen sequence after Boss 2 + final balance/bug pass before v1.0 release.
+
+**End Screen**:
+- After Boss 2 (Niggel) defeated: final short dialogue with Raberto.
+- Victory screen: "You did it!" with pizza reward visual.
+- Scrolling credits: team names, auto-scroll with TMP text.
+- "Return to Menu" button after credits.
+- Save file marks game as complete (`bossIndex = 2`).
+
+**Bug Sweep**:
+- Play full loop (Menu → Shop → Boss 1 → Shop → Boss 2 → Credits) 3 times.
+- Fix all blocking bugs (crashes, softlocks, progression breaks).
+- Fix all visual bugs (Z-order, clipping, missing sprites).
+- **Project structure audit**: verify every script, prefab, and asset is in its correct folder (no stray files in root `Assets/`, correct subfolders under `Scripts/`, `Prefabs/`, etc.).
+- **Scene tree hygiene**: audit all boss arena scenes for duplicate GameObjects, leftover debug objects, or misplaced UI canvases. Ensure no scene has its own UIManager canvas (all HUD must live in the persistent MainMenu canvas). Verify no DontDestroyOnLoad conflicts.
+
+**Balance Pass** (all via `GameBalance.cs`):
+- Boss HP: each boss should take 2–5 minutes.
+- Spell costs: mana shouldn't run out in <10 seconds of sustained casting.
+- Potion economy: 3 potions enough for Boss 1, tight for Boss 2.
+- Damage values: no one-shotting in either direction.
+- Verify all Tier 1 spell damage, mana costs, and status effect values (Queso, Pepperoni, Piña) match GameBalance.Spells.*.
+- Verify all Tier 2 combo spell values match GameBalance.
+
+**Sprite Pass**:
+- Replace all placeholder/missing sprites with final art for: player, bosses (Pblob, Niggel), projectiles, UI elements, and backgrounds.
+- Verify no missing sprite references (pink squares) anywhere in the full loop.
+
+**Build**:
+- Create Windows standalone build.
+- Test build outside editor.
+- Verify save file paths work in build.
+
+**Verify**: Full loop end-to-end: Menu → Boss 1 → Shop → Boss 2 → Credits → Menu.
+
+---
+
+---
+
+## Deferred — v2.0
+
+The following phases are scoped out of v1.0 and planned for a future v2.0 update.
+
+| Phase (v2.0) | Name | Notes |
+|---|---|---|
+| v2-01 | Boss 3 — Pomodoro Paganini AI | Pong mechanic, deflectable projectiles, AoE hazards |
+| v2-02 | Boss 4 — Hec'kiel AI & Patterns | Elemental dragon, phase split, dual-head controller |
+| v2-03 | Tutorial System | First-playthrough interactive tutorial, TutorialManager |
+| v2-04 | Audio & SFX | SoundManager, music tracks, full SFX pass |
+| v2-05 | Credits & Full Endgame | Boss 4 endgame, localized credits, New Game+ |
+| v2-06 | Controller Support | Xbox/gamepad full support, input icon swapper |
+
+---
+
+## Phase Dependency Graph
+
+```
+13 ✅ ─→ 14 ─→ 15 ─→ 16 ✅ ─→ 17 ✅ ─→ 18 ✅ ─→ 19
+                                                      │
+                                              ┌───────┘
+                                              │
+                                              ├→ 20 ─→ 21 ─→ 22
+                                              │
+                                              ├→ 23
+                                              │
+                                              └→ 24 (end screen + polish, all complete)
+```
+
+---
+
+## Appendix: Session Protocol
+
+**Every session start**: `/resume` or `/progress`. If new, `/new-project`. Then `/map` to regenerate `ARCHITECTURE.md`.
+
+**Phase workflow**: `/discuss-phase N` → `/plan` → `/execute` → `/verify`
+
+**Emergency**: `/debug [problem]` if stuck. `/pause → new chat → /resume` if context degrades.
+
+---
+
+## Appendix: Golden Rules
+
+1. **Always `/resume` at session start** — never assume context carries over.
+2. **Always `/verify` before moving on** — demand screenshots and code evidence.
+3. **Never skip the plan** — no code without `/plan` first.
+4. **One phase at a time** — never combine phases.
+5. **Screenshot every UI change.**
+6. **If something breaks, `/debug` immediately** — don't let errors compound.
+7. **Save state before closing** — always `/pause` at end of session.
+8. **All balance values go through `GameBalance.cs`** — no new hardcoded numbers after Phase 13.2.
+9. **Suggest next GSD commands to the user** — always show what comes next.
