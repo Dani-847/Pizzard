@@ -4,7 +4,7 @@ milestone: v1.1
 milestone_name: Polish + Playground
 status: planning
 stopped_at: Completed 24-02-PLAN.md
-last_updated: "2026-03-08T16:54:14.277Z"
+last_updated: "2026-03-08T16:54:26.314Z"
 last_activity: 2026-03-08 — Roadmap created, v1.1 phases defined
 progress:
   total_phases: 3
@@ -76,6 +76,8 @@ Progress: [░░░░░░░░░░] 0%
 - EnemyProjectile velocity override requires 1-frame delay coroutine because EnemyProjectile.Start() runs after Instantiate and sets horizontal velocity
 - [Phase 24]: Pulse is in-memory only via _playgroundPulseActive bool — no PlayerPrefs, resets each launch automatically
 - [Phase 24]: AnimatorUpdateMode.UnscaledTime used on playgroundButtonAnimator so pulse continues when Time.timeScale = 0
+- [Phase 24]: Fallback pattern ensures main-game scenes need zero changes when ITokenSource not set
+- [Phase 24]: ShopUI.Hide(suppressSave=false) defaults preserve backward compatibility for existing callers
 
 ### Pending Todos
 
