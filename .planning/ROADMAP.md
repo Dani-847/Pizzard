@@ -13,7 +13,7 @@ v1.1 delivers three focused improvements to the shipped v1 game: a Playground mo
 
 ### v1.1 Polish + Playground
 
-- [ ] **Phase 24: Playground Mode** - Build the Playground scene and wire it from the main menu with onboarding cue
+- [x] **Phase 24: Playground Mode** - Build the Playground scene and wire it from the main menu with onboarding cue (completed 2026-03-08)
 - [ ] **Phase 25: Sprite and Debug Polish** - Replace v1 sprites with v1.1 assets, normalize sizes, move debug button
 - [ ] **Phase 26: Wand Control Rework** - Decouple player body rotation from mouse; implement wand orbit around player center
 
@@ -65,6 +65,6 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. Playground Mode | 4/5 | In Progress|  |
+| 24. Playground Mode | 5/5 | Complete   | 2026-03-08 |
 | 25. Sprite and Debug Polish | 0/TBD | Not started | - |
 | 26. Wand Control Rework | 0/TBD | Not started | - |

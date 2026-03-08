@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Polish + Playground
-status: in-progress
-stopped_at: Checkpoint — awaiting human-verify for 24-05 (Playground full run)
-last_updated: "2026-03-08T17:00:00.000Z"
+status: executing
+stopped_at: Completed 24-04-PLAN.md
+last_updated: "2026-03-08T16:55:40.468Z"
 last_activity: 2026-03-08 — 24-05 scripts committed, checkpoint reached
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
   completed_plans: 5
   percent: 0
@@ -64,6 +64,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 24]: AnimatorUpdateMode.UnscaledTime used on playgroundButtonAnimator so pulse continues when Time.timeScale = 0
 - [Phase 24]: Fallback pattern ensures main-game scenes need zero changes when ITokenSource not set
 - [Phase 24]: ShopUI.Hide(suppressSave=false) defaults preserve backward compatibility for existing callers
+- [Phase 24]: DummyDPSTracker extends BossBase so CharacterProjectile routing works without modifying projectile system
+- [Phase 24]: PlaygroundScene created via Editor MenuItem in FlowScenes/ to match project conventions
 
 ### Pending Todos
 
@@ -75,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-08T17:00:00.000Z
-Stopped at: Checkpoint human-verify — 24-05 scripts done, scene wiring needed in Unity Editor
-Resume file: .planning/phases/24-playground-mode/24-05-SUMMARY.md
+Last session: 2026-03-08T16:55:35.907Z
+Stopped at: Completed 24-04-PLAN.md
+Resume file: None
