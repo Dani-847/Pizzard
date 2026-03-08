@@ -2,25 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Polish + Playground
-status: planning
-stopped_at: Completed 24-02-PLAN.md
-last_updated: "2026-03-08T16:54:26.314Z"
-last_activity: 2026-03-08 — Roadmap created, v1.1 phases defined
-progress:
-  total_phases: 3
-  completed_phases: 0
-  total_plans: 5
-  completed_plans: 4
----
-
----
-gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Polish + Playground
-status: planning
+status: in-progress
 stopped_at: Checkpoint — awaiting human-verify for 24-05 (Playground full run)
 last_updated: "2026-03-08T17:00:00.000Z"
-last_activity: 2026-03-08 — Roadmap created, v1.1 phases defined
+last_activity: 2026-03-08 — 24-05 scripts committed, checkpoint reached
 progress:
   total_phases: 3
   completed_phases: 0
@@ -41,28 +26,29 @@ See: .planning/PROJECT.md (updated 2026-03-08)
 ## Current Position
 
 Phase: 24 of 26 (Playground Mode)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-08 — Roadmap created, v1.1 phases defined
+Plan: 5 of 5 in current phase (awaiting human-verify checkpoint)
+Status: In progress — awaiting checkpoint approval
+
+Last activity: 2026-03-08 — 24-05 scripts committed, checkpoint reached
 
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0 (v1.1 milestone)
-- Average duration: -
-- Total execution time: -
+- Total plans completed: 5 (v1.1 milestone)
+- Average duration: ~15min
+- Total execution time: ~1h15min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 24    | 5     | ~1h15m | ~15min |
 
 **Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: 24-01, 24-02, 24-03, 24-04, 24-05
+- Trend: Steady
 
 *Updated after each plan completion*
 
@@ -81,7 +67,7 @@ Progress: [░░░░░░░░░░] 0%
 
 ### Pending Todos
 
-None yet.
+- Wire PlaygroundProjectileSpawner and PlaygroundRespawnHandler in PlaygroundScene Unity Editor (see 24-05-SUMMARY.md)
 
 ### Blockers/Concerns
 
@@ -89,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-08T16:54:14.181Z
-Stopped at: Completed 24-02-PLAN.md
-Resume file: None
+Last session: 2026-03-08T17:00:00.000Z
+Stopped at: Checkpoint human-verify — 24-05 scripts done, scene wiring needed in Unity Editor
+Resume file: .planning/phases/24-playground-mode/24-05-SUMMARY.md
