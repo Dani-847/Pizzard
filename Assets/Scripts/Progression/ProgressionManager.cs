@@ -6,7 +6,7 @@ namespace Pizzard.Progression
     /// Manages persistent player data across runs, such as boss currency (drops)
     /// and unlocked upgrades.
     /// </summary>
-    public class ProgressionManager : MonoBehaviour
+    public class ProgressionManager : MonoBehaviour, ITokenSource
     {
         public static ProgressionManager Instance { get; private set; }
 
@@ -60,6 +60,10 @@ namespace Pizzard.Progression
             SaveManager.Instance?.SaveGame();
             return true;
         }
+
+        // ITokenSource implementation
+        public int GetTokens() => BossCurrency;
+        public bool SpendTokens(int amount) => SpendCurrency(amount);
 
         /// <summary>
         /// Called by SaveManager to overwrite the in-memory currency upon load.
