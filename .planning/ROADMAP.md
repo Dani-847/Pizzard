@@ -29,7 +29,14 @@ v1.1 delivers three focused improvements to the shipped v1 game: a Playground mo
   3. The Playground scene contains a dummy on the right side displaying a live DPS counter
   4. The Playground scene contains a falling projectile on the left that can damage the player
   5. On first game launch the Playground button blinks/pulses until the player clicks it
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 24-01-PLAN.md — ITokenSource interface + PlaygroundManager singleton (token economy foundation)
+- [ ] 24-02-PLAN.md — MenuUI Playground button + pulse Animator (main menu entry point)
+- [ ] 24-03-PLAN.md — ShopUI/ShopController ITokenSource decoupling (token isolation wiring)
+- [ ] 24-04-PLAN.md — PlaygroundScene construction: dummy, DPS counter, HUD
+- [ ] 24-05-PLAN.md — Falling projectile spawner + respawn handler + human verify
 
 ### Phase 25: Sprite and Debug Polish
 **Goal**: All character sprites use v1.1 assets at consistent scale, and the debug button is where developers expect it
@@ -58,6 +65,6 @@ v1.1 delivers three focused improvements to the shipped v1 game: a Playground mo
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. Playground Mode | 0/TBD | Not started | - |
+| 24. Playground Mode | 0/5 | Not started | - |
 | 25. Sprite and Debug Polish | 0/TBD | Not started | - |
 | 26. Wand Control Rework | 0/TBD | Not started | - |
