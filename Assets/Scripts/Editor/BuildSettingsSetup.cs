@@ -23,7 +23,8 @@ namespace Pizzard.EditorTools
                 "Assets/FlowScenes/BossArena_1.unity",
                 "Assets/FlowScenes/BossArena_2.unity",
                 "Assets/FlowScenes/BossArena_3.unity",
-                "Assets/FlowScenes/BossArena_4.unity"
+                "Assets/FlowScenes/BossArena_4.unity",
+                "Assets/FlowScenes/PlaygroundScene.unity"
             };
 
             List<EditorBuildSettingsScene> buildScenes = new List<EditorBuildSettingsScene>();
