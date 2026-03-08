@@ -23,6 +23,9 @@ public class MenuUI : MonoBehaviour
     public Button botonReanudar;
     [Tooltip("Botón para volver al menú principal desde la pausa")]
     public Button botonVolverMenu;
+    [Tooltip("Opens Playground scene")]
+    public Button botonPlayground;
+    [SerializeField] private Animator playgroundButtonAnimator;
 
     [Header("Referencias externas")]
     [Tooltip("Panel de ajustes (activar/desactivar)")]
@@ -30,6 +33,7 @@ public class MenuUI : MonoBehaviour
 
     [Header("Estado")]
     private GameFlowManager flowManager;
+    private bool _playgroundPulseActive = true;
 
     void Start()
     {
@@ -45,6 +49,14 @@ public class MenuUI : MonoBehaviour
             botonReanudar.onClick.AddListener(OnClickReanudar);
         if (botonVolverMenu != null)
             botonVolverMenu.onClick.AddListener(OnClickVolverMenu);
+
+        if (botonPlayground != null)
+            botonPlayground.onClick.AddListener(OnClickPlayground);
+        if (_playgroundPulseActive && playgroundButtonAnimator != null)
+        {
+            playgroundButtonAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            playgroundButtonAnimator.SetBool("Pulsing", true);
+        }
 
         // Show/hide Continue based on saved progress
         RefreshContinueButton();
@@ -77,6 +89,17 @@ public class MenuUI : MonoBehaviour
 
         bool hasSave = GameFlowManager.Instance != null && GameFlowManager.Instance.HasSavedGame();
         botonContinuar.gameObject.SetActive(hasSave);
+    }
+
+    /// <summary>
+    /// Abre el modo Playground, detiene el pulso del botón para esta sesión.
+    /// </summary>
+    public void OnClickPlayground()
+    {
+        if (playgroundButtonAnimator != null)
+            playgroundButtonAnimator.SetBool("Pulsing", false);
+        _playgroundPulseActive = false;
+        SceneLoader.LoadScene("PlaygroundScene");
     }
 
     /// <summary>
