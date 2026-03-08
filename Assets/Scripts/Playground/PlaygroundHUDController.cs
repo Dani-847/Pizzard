@@ -48,7 +48,7 @@ public class PlaygroundHUDController : MonoBehaviour
             return;
         }
 
-        PlaygroundManager.BeginShopSession(PlaygroundManager.Instance.PlaygroundTokens);
+        PlaygroundShopBridge.Activate(PlaygroundManager.Instance.PlaygroundTokens);
         Pizzard.Core.SceneLoader.LoadScene("Shop");
     }
 
