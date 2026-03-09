@@ -1,8 +1,0 @@
-v1.1 plan
-Playground/parque (un botón en el menú de inicio que te lleva a una escena completamente a parte en la que los tokens y progreso van por separado, no se avanza pero si tiene tienda que inicia con 10 tokens. Dentro de esta escena habrá un muñeco a la derecha con un contador de DPS, y la izquierda un proyectil que podrá hacer daño al jugador que caiga constantemente en vertical)
-Debug en el menu de pausa (mover el botón de debug al menú de pausa)
-Guia para iniciar primero en playground/parque (que la primera vez que se inicie el juego el botón del playground parpadee un poco pero constantemente hasta que el jugador le de para sugestionarle que primero pruebe ese modo)
-fixear los sprites animados para pblob, el main character, y niggel (en la carpeta v1.1)
-fixear el main carácter para que su modelo no de vueltas basado en la posición del raton, si no que solo el modelo de la varita se mueva para saber donde se esta apuntando
-fixear tamaño de los sprites para que sea coerente (actualmente como son pixel art y no todos tienen el mismo tamaño no queda coherente, buscar forma de implementarlos apropiadamente)
-Meter los sprites de varitas (en la carpeta v1.1)

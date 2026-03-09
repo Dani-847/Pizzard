@@ -184,19 +184,32 @@ protected override void Awake()
             if (isDead) return;
             if (lastStandActive) return;   // invulnerable during last-stand phase
 
-            coinVault = Mathf.Max(0, coinVault - amount);
+            // Damage resistance based on missing HP: up to 50% reduction at 0 HP
+            float missingHpRatio = 1f - (float)coinVault / GameBalance.Bosses.Niggel.CoinVaultMax;
+            float resistance = missingHpRatio * GameBalance.Bosses.Niggel.MaxDamageResistance;
+            int reducedAmount = Mathf.Max(1, Mathf.RoundToInt(amount * (1f - resistance)));
+
+            coinVault = Mathf.Max(0, coinVault - reducedAmount);
             currentHealth = coinVault;
-            Debug.Log($"[Niggel] TakeDamage({amount}) → CoinVault={coinVault}/{GameBalance.Bosses.Niggel.CoinVaultMax}");
+            Debug.Log($"[Niggel] TakeDamage({amount}→{reducedAmount} after {resistance * 100f:F0}% resist) → CoinVault={coinVault}/{GameBalance.Bosses.Niggel.CoinVaultMax}");
 
             OnPlayerHitNiggel();
             CheckEnrageThresholds();
 
             // Last-stand: trigger 3s invulnerability at ≤20 HP (once per fight)
-            if (!lastStandUsed && coinVault <= 20 && coinVault > 0)
+            // If a hit would skip last-stand (HP goes from >20 straight to 0), force-trigger it
+            if (!lastStandUsed && coinVault <= 20)
             {
                 lastStandUsed = true;
+                if (coinVault <= 0)
+                {
+                    // Prevent death — clamp to 1 HP so last-stand can play out
+                    coinVault = 1;
+                    currentHealth = 1;
+                }
                 if (lastStandCoroutine != null) StopCoroutine(lastStandCoroutine);
                 lastStandCoroutine = StartCoroutine(LastStandRoutine());
+                return; // don't check death — last-stand is active
             }
 
             if (coinVault <= 0 && !lastStandActive) Die();

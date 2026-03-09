@@ -187,6 +187,9 @@ namespace Pizzard.Core
                 public const int BarrierDotsPerRow = 5;
                 public const float BarrierDotSpacing = 0.8f;
 
+                // ── Damage resistance (scales with missing HP) ──
+                public const float MaxDamageResistance = 0.50f; // 50% reduction at 0 HP
+
                 // ── Momentum (player side) ──
                 public const int MaxMomentum = 5;
                 public const float MomentumResetDelay = 4f;
